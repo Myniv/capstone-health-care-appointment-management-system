@@ -287,6 +287,100 @@ class UserController extends BaseController
         return redirect()->to('admin/users')->with('message', 'User Created Successfully');
     }
 
+    public function updateDoctor($id)
+    {
+        $type = $this->request->getMethod();
+        if ($type === 'GET') {
+            $data = [
+                'doctor_category' => $this->doctorCategoryModel->findAll(),
+                'user' => $this->userModel->getUserWithFullName($id),
+            ];
+
+            if (empty($data['user'])) {
+                return redirect()->to('/users')->with('error', 'User Not Found');
+            }
+
+            return view('page/user/v_user_doctor_form', $data);
+        }
+
+        $user = $this->userModel->find($id);
+        if (!$user) {
+            return redirect()->to('admin/users')->with('error', 'User Not Found');
+        }
+
+        $validation = \Config\Services::validation();
+
+        // make the unique rules dynamic if change
+        $usernameRule = 'required|min_length[3]|max_length[255]';
+        if ($user->username !== $this->request->getVar('username')) {
+            $usernameRule .= '|is_unique[users.username]';
+        }
+
+        $emailRule = 'required|valid_email|max_length[150]';
+        if ($user->email !== $this->request->getVar('email')) {
+            $emailRule .= '|is_unique[users.email]';
+        }
+
+        $rules = [
+            'username' => $usernameRule,
+            'email' => $emailRule,
+            'first_name' => 'required|min_length[2]|max_length[100]',
+            'last_name' => 'required|min_length[2]|max_length[100]',
+            'phone' => 'required|regex_match[/^[0-9\-\+\s\(\)]+$/]',
+            'address' => 'required|max_length[500]',
+            'sex' => 'required|in_list[male,female]',
+            'dob' => 'required|valid_date',
+            'doctor_category_id' => 'required',
+        ];
+
+        //if there is password, it validate
+        if (!empty($this->request->getVar('password'))) {
+            $rules['password'] = 'required|min_length[8]';
+            $rules['pass_confirm'] = 'required|matches[password]';
+        }
+
+        $validation->setRules($rules);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+        }
+
+        // Update User
+        $user->username = $this->request->getVar('username');
+        $user->email = $this->request->getVar('email');
+        if (!empty($this->request->getVar('password'))) {
+            $user->password = $this->request->getVar('password');
+        }
+
+        if ($user->hasChanged()) {
+            if (!$this->userModel->save($user)) {
+                return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
+            }
+        }
+
+        // Update Patient
+        $doctor = $this->doctorModel->getDoctorByUserId($user->id);
+        $doctorData = [
+            'id' => $doctor->id,
+            'first_name' => $this->request->getPost('first_name'),
+            'last_name' => $this->request->getPost('last_name'),
+            'phone' => $this->request->getPost('phone'),
+            'address' => $this->request->getPost('address'),
+            'sex' => $this->request->getPost('sex'),
+            'dob' => $this->request->getPost('dob'),
+            'doctor_category_id' => $this->request->getPost('doctor_category_id'),
+            'profile_picture' => '',
+        ];
+
+        if ($doctor->first_name !== $doctorData['first_name'] || $doctor->last_name !== $doctorData['last_name'] || $doctor->phone !== $doctorData['phone'] || $doctor->address !== $doctorData['address'] || $doctor->sex !== $doctorData['sex'] || $doctor->dob !== $doctorData['dob'] || $doctor->profile_picture !== $doctorData['profile_picture']) {
+            if (!$this->doctorModel->save($doctorData)) {
+                return redirect()->back()->withInput()->with('errors', $this->patientModel->errors());
+            }
+        }
+
+        return redirect()->to('admin/users')->with('message', 'User Updated Successfully');
+    }
+    
     public function deleteDoctor($id)
     {
         $user = $this->userModel->find($id);

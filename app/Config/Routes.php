@@ -15,5 +15,6 @@ $routes->group('admin', [], function ($routes) {
     $routes->delete('users/patient/delete/(:num)', [UserController::class, 'deletePatient/$1']);
     
     $routes->match(['get', 'post'], 'users/doctor/create', [UserController::class, 'createDoctor']);
+    $routes->match(['get', 'put'], 'users/doctor/update/(:num)', [UserController::class, 'updateDoctor']);
     $routes->delete('users/doctor/delete/(:num)', [UserController::class, 'deleteDoctor/$1']);
 });
