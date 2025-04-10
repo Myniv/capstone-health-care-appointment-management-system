@@ -62,22 +62,21 @@ class UserController extends BaseController
         if ($type == "GET") {
             return view('page/user/v_user_form');
         }
+        $validation = \Config\Services::validation();
+        $validation->setRules([
+            'username' => 'required|min_length[3]|max_length[255]|is_unique[users.username]',
+            'email' => 'required|valid_email|max_length[150]|is_unique[users.email]',
+            'password' => 'required|min_length[8]',
+            'first_name' => 'required|min_length[2]|max_length[100]',
+            'last_name' => 'required|min_length[2]|max_length[100]',
+            'phone' => 'required|regex_match[/^[0-9\-\+\s\(\)]+$/]',
+            'address' => 'required|max_length[500]',
+            'sex' => 'required|in_list[male,female]',
+            'dob' => 'required|valid_date'
+        ]);
 
-        //Check if the data is valid for patient model
-        $data = [
-            'first_name' => $this->request->getPost('first_name'),
-            'last_name' => $this->request->getPost('last_name'),
-            'phone' => $this->request->getPost('phone'),
-            'address' => $this->request->getPost('address'),
-            'sex' => $this->request->getPost('sex'),
-            'dob' => $this->request->getPost('dob'),
-            'email' => $this->request->getPost('email'),
-            'profile_picture' => '',
-            'userId' => '',
-        ];
-
-        if (!$this->patientModel->validate($data)) {
-            return redirect()->back()->withInput()->with('errors', $this->patientModel->errors());
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
         }
 
         $user = new \Myth\Auth\Entities\User();
@@ -86,26 +85,9 @@ class UserController extends BaseController
         $user->password = $this->request->getVar('password');
         $user->active = 1;
 
-        $checkExistingEmail = $this->userModel->where('email', $user->email)->first();
-        $checkExistingEmailSoftDelete = $this->userModel->withDeleted()->where('email', $user->email)->first();
-        if ($checkExistingEmail) {
-            return redirect()->back()->withInput()->with('errorEmail', 'Email already exists');
-        } elseif ($checkExistingEmailSoftDelete) {
-            return redirect()->back()->withInput()->with('errorEmail', 'Email already exists as deleted user');
+        if (!$this->userModel->save($user)) {
+            return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
         }
-
-
-        $checkExistingUsername = $this->userModel->where('username', $user->username)->first();
-        $checkExistingUsernameSoftDelete = $this->userModel->withDeleted()->where('username', $user->username)->first();
-        if ($checkExistingUsername) {
-            return redirect()->back()->withInput()->with('errorUsername', 'Username already exists');
-        } elseif ($checkExistingUsernameSoftDelete) {
-            return redirect()->back()->withInput()->with('errorUsername', 'Username already exists as deleted user');
-        } elseif ($this->request->getPost('username') == null || $this->request->getPost('username') == '') {
-            return redirect()->back()->withInput()->with('errorUsername', 'Username is required');
-        }
-
-        $this->userModel->save($user);
 
         $newUser = $this->userModel->where('email', $user->email)->first();
         $userId = $newUser->id;
@@ -113,10 +95,19 @@ class UserController extends BaseController
         $groupId = $this->groupModel->where('name', 'patient')->first()->id;
         $this->groupModel->addUserToGroup($userId, $groupId);
 
-        //Add user Id and then save to patient model
-        $data['userId'] = $userId;
-        $this->patientModel->save($data);
-
+        $patientData = [
+            'first_name' => $this->request->getPost('first_name'),
+            'last_name' => $this->request->getPost('last_name'),
+            'phone' => $this->request->getPost('phone'),
+            'address' => $this->request->getPost('address'),
+            'sex' => $this->request->getPost('sex'),
+            'dob' => $this->request->getPost('dob'),
+            'email' => $user->email,
+            'profile_picture' => '',
+            'userId' => $userId,
+        ];
+        // dd($patientData);
+        $this->patientModel->save($patientData);
 
         return redirect()->to('admin/users')->with('message', 'User Created Successfully');
     }

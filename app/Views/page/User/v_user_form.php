@@ -74,7 +74,6 @@
                             <option value="">Select Gender</option>
                             <option value="male" <?= old('sex') == 'male' ? 'selected' : '' ?>>Male</option>
                             <option value="female" <?= old('sex') == 'female' ? 'selected' : '' ?>>Female</option>
-                            <option value="other" <?= old('sex') == 'other' ? 'selected' : '' ?>>Other</option>
                         </select>
                         <div class="text-danger"><?= session('errors.sex') ?? '' ?></div>
                     </div>

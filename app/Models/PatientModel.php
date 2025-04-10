@@ -50,7 +50,7 @@ class PatientModel extends Model
         'sex' => 'required|in_list[male,female,other]',
         'dob' => 'required|valid_date[Y-m-d]',
         'email' => 'required|valid_email|max_length[150]',
-        'profile_picture' => 'required|max_length[255]',
+        'profile_picture' => 'permit_empty|max_length[255]',
         'userId' => 'permit_empty|integer',
     ];
     protected $validationMessages = [
