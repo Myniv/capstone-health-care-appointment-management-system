@@ -414,21 +414,4 @@ class AuthController extends Controller
     {
         return view($view, $data);
     }
-
-    private function redirectBasedOnRole()
-    {
-        $userId = user_id();
-        $userGroups = $this->groupModel->getGroupsForUser($userId);
-        foreach ($userGroups as $group) {
-            if ($group['name'] === 'admin') {
-                return redirect()->to('/admin/dashboard');
-            } else if ($group['name'] === 'lecturer') {
-                return redirect()->to('/lecturer/dashboard');
-            } else if ($group['name'] === 'student') {
-                return redirect()->to('/student/dashboard');
-            }
-        }
-
-        return redirect()->to('/');
-    }
 }
