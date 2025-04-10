@@ -118,6 +118,98 @@ class UserController extends BaseController
         return redirect()->to('admin/users')->with('message', 'User Created Successfully');
     }
 
+    public function updatePatient($id)
+    {
+        $type = $this->request->getMethod();
+        if ($type === 'GET') {
+            $data = [
+                'user' => $this->userModel->getUserWithFullName($id),
+            ];
+
+            if (empty($data['user'])) {
+                return redirect()->to('/users')->with('error', 'User Not Found');
+            }
+
+            return view('page/user/v_user_patient_form', $data);
+        }
+
+        $user = $this->userModel->find($id);
+        if (!$user) {
+            return redirect()->to('admin/users')->with('error', 'User Not Found');
+        }
+
+        $validation = \Config\Services::validation();
+
+        // make the unique rules dynamic if change
+        $usernameRule = 'required|min_length[3]|max_length[255]';
+        if ($user->username !== $this->request->getVar('username')) {
+            $usernameRule .= '|is_unique[users.username]';
+        }
+
+        $emailRule = 'required|valid_email|max_length[150]';
+        if ($user->email !== $this->request->getVar('email')) {
+            $emailRule .= '|is_unique[users.email]';
+        }
+
+        $rules = [
+            'username' => $usernameRule,
+            'email' => $emailRule,
+            'first_name' => 'required|min_length[2]|max_length[100]',
+            'last_name' => 'required|min_length[2]|max_length[100]',
+            'phone' => 'required|regex_match[/^[0-9\-\+\s\(\)]+$/]',
+            'address' => 'required|max_length[500]',
+            'sex' => 'required|in_list[male,female]',
+            'dob' => 'required|valid_date',
+        ];
+
+        //if there is password, it validate
+        if (!empty($this->request->getVar('password'))) {
+            $rules['password'] = 'required|min_length[8]';
+            $rules['pass_confirm'] = 'required|matches[password]';
+        }
+
+        $validation->setRules($rules);
+
+        if (!$validation->withRequest($this->request)->run()) {
+            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
+        }
+
+        // Update User
+        $user->username = $this->request->getVar('username');
+        $user->email = $this->request->getVar('email');
+        if (!empty($this->request->getVar('password'))) {
+            $user->password = $this->request->getVar('password');
+        }
+
+        if ($user->hasChanged()) {
+            if (!$this->userModel->save($user)) {
+                return redirect()->back()->withInput()->with('errors', $this->userModel->errors());
+            }
+        }
+
+        // Update Patient
+        $patient = $this->patientModel->getPatientByUserId($user->id);
+        $patientData = [
+            'id' => $patient->id,
+            'first_name' => $this->request->getPost('first_name'),
+            'last_name' => $this->request->getPost('last_name'),
+            'phone' => $this->request->getPost('phone'),
+            'address' => $this->request->getPost('address'),
+            'sex' => $this->request->getPost('sex'),
+            'dob' => $this->request->getPost('dob'),
+            'profile_picture' => '',
+        ];
+
+        if ($patient->first_name !== $patientData['first_name'] || $patient->last_name !== $patientData['last_name'] || $patient->phone !== $patientData['phone'] || $patient->address !== $patientData['address'] || $patient->sex !== $patientData['sex'] || $patient->dob !== $patientData['dob'] || $patient->profile_picture !== $patientData['profile_picture']) {
+            if (!$this->patientModel->save($patientData)) {
+                return redirect()->back()->withInput()->with('errors', $this->patientModel->errors());
+            }
+        }
+
+        return redirect()->to('admin/users')->with('message', 'User Updated Successfully');
+    }
+
+
     public function deletePatient($id)
     {
         $user = $this->userModel->find($id);

@@ -4,16 +4,19 @@
             <h4 class="mb-3"><?= isset($user) ? 'Edit Patient' : 'Add Patient'; ?></h4>
         </div>
         <div class="card-body">
-            <form action="<?= base_url('admin/users/patient/create') ?>" method="post" enctype="multipart/form-data"
-                id="formData" novalidate>
-                <?= csrf_field() ?>
-
+            <form action="<?= isset($user) ? base_url('admin/users/patient/update/' . $user->user_id) : base_url('admin/users/patient/create') ?>"
+                  method="post" enctype="multipart/form-data" id="formData" novalidate>
+                  <?= csrf_field() ?>
+                <?php if (isset($user)): ?>
+                    <input type="hidden" name="_method" value="PUT">
+                <?php endif; ?>
+                
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="username" class="form-label">Username</label>
                         <input type="text" name="username"
                             class="form-control <?= session('errors.username') ? 'is-invalid' : '' ?>"
-                            value="<?= old('username') ?>" required>
+                            value="<?= old('username', isset($user) ? $user->username : '') ?>" required>
                         <div class="text-danger"><?= session('errors.username') ?? '' ?></div>
                     </div>
 
@@ -21,24 +24,34 @@
                         <label for="email" class="form-label">Email</label>
                         <input type="email" name="email"
                             class="form-control <?= session('errors.email') ? 'is-invalid' : '' ?>"
-                            value="<?= old('email') ?>" required>
+                            value="<?= old('email', isset($user) ? $user->email : '') ?>" required>
                         <div class="text-danger"><?= session('errors.email') ?? '' ?></div>
                     </div>
                 </div>
 
                 <div class="mb-3">
-                    <label for="password" class="form-label">Password</label>
+                    <label for="password" class="form-label">Password <?= isset($user) ? '(Leave blank to keep current password)' : '' ?></label>
                     <input type="password" name="password"
-                        class="form-control <?= session('errors.password') ? 'is-invalid' : '' ?>" required>
+                        class="form-control <?= session('errors.password') ? 'is-invalid' : '' ?>"
+                        <?= isset($user) ? '' : 'required' ?>>
                     <div class="text-danger"><?= session('errors.password') ?? '' ?></div>
                 </div>
+                <?php if (!isset($user)) : ?>
+                <div class="mb-3">
+                    <label for="pass_confirm" class="form-label">Confirm Password <?= isset($user) ? '(Leave blank to keep current password)' : '' ?></label>
+                    <input type="password" name="pass_confirm"
+                        class="form-control <?= session('errors.pass_confirm') ? 'is-invalid' : '' ?>"
+                        <?= isset($user) ? '' : 'required' ?>>
+                    <div class="text-danger"><?= session('errors.pass_confirm') ?? '' ?></div>
+                </div>
+                <?php endif; ?>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="first_name" class="form-label">First Name</label>
                         <input type="text" name="first_name"
                             class="form-control <?= session('errors.first_name') ? 'is-invalid' : '' ?>"
-                            value="<?= old('first_name') ?>" required>
+                            value="<?= old('first_name', isset($user) ? $user->first_name : '') ?>" required>
                         <div class="text-danger"><?= session('errors.first_name') ?? '' ?></div>
                     </div>
 
@@ -46,7 +59,7 @@
                         <label for="last_name" class="form-label">Last Name</label>
                         <input type="text" name="last_name"
                             class="form-control <?= session('errors.last_name') ? 'is-invalid' : '' ?>"
-                            value="<?= old('last_name') ?>" required>
+                            value="<?= old('last_name', isset($user) ? $user->last_name : '') ?>" required>
                         <div class="text-danger"><?= session('errors.last_name') ?? '' ?></div>
                     </div>
                 </div>
@@ -55,25 +68,26 @@
                     <label for="phone" class="form-label">Phone</label>
                     <input type="tel" name="phone"
                         class="form-control <?= session('errors.phone') ? 'is-invalid' : '' ?>"
-                        value="<?= old('phone') ?>">
+                        value="<?= old('phone', isset($user) ? $user->phone : '') ?>">
                     <div class="text-danger"><?= session('errors.phone') ?? '' ?></div>
                 </div>
 
                 <div class="mb-3">
                     <label for="address" class="form-label">Address</label>
-                    <textarea name="address" class="form-control <?= session('errors.address') ? 'is-invalid' : '' ?>"
-                        rows="2"><?= old('address') ?></textarea>
+                    <textarea name="address"
+                        class="form-control <?= session('errors.address') ? 'is-invalid' : '' ?>"
+                        rows="2"><?= old('address', isset($user) ? $user->address : '') ?></textarea>
                     <div class="text-danger"><?= session('errors.address') ?? '' ?></div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="sex" class="form-label">Sex</label>
-                        <select name="sex" class="form-select <?= session('errors.sex') ? 'is-invalid' : '' ?>"
-                            required>
+                        <select name="sex"
+                            class="form-select <?= session('errors.sex') ? 'is-invalid' : '' ?>" required>
                             <option value="">Select Gender</option>
-                            <option value="male" <?= old('sex') == 'male' ? 'selected' : '' ?>>Male</option>
-                            <option value="female" <?= old('sex') == 'female' ? 'selected' : '' ?>>Female</option>
+                            <option value="male" <?= old('sex', isset($user) ? $user->sex : '') == 'male' ? 'selected' : '' ?>>Male</option>
+                            <option value="female" <?= old('sex', isset($user) ? $user->sex : '') == 'female' ? 'selected' : '' ?>>Female</option>
                         </select>
                         <div class="text-danger"><?= session('errors.sex') ?? '' ?></div>
                     </div>
@@ -82,7 +96,7 @@
                         <label for="dob" class="form-label">Date of Birth</label>
                         <input type="date" name="dob"
                             class="form-control <?= session('errors.dob') ? 'is-invalid' : '' ?>"
-                            value="<?= old('dob') ?>" required>
+                            value="<?= old('dob', isset($user) ? $user->dob : '') ?>" required>
                         <div class="text-danger"><?= session('errors.dob') ?? '' ?></div>
                     </div>
                 </div>

@@ -151,7 +151,7 @@
                         <td><?= $user->address ?></td>
                         <td><?= $user->sex ?></td>
                         <td><?= $user->dob ?></td>
-                        <td><?= $user->doctor_category ?></td>
+                        <td><?= $user->doctor_category?></td>
                         <td><?= $user->role ?></td>
                         <td>
                             <?php if ($user->role == 'patient'): ?>
