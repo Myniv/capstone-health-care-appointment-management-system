@@ -22,7 +22,7 @@ class CreateDoctorCategoryTable extends Migration
                 'null' => true,
             ],
         ]);
-        $this->forge->addKey('doctor_categoryId', true);
+        $this->forge->addKey('id', true);
         $this->forge->createTable('doctor_category');
     }
 

@@ -11,7 +11,7 @@ class UserModel extends \Myth\Auth\Models\UserModel
     {
         $this
             ->select("
-                users.id as userId,
+                users.id as user_id,
                 users.username,
                 users.email as email,
                 COALESCE(doctors.first_name, patients.first_name, 'N/A') as first_name,
@@ -24,9 +24,9 @@ class UserModel extends \Myth\Auth\Models\UserModel
                 auth_groups.name as role,
                 auth_groups.id as group_id, 
             ")
-            ->join('doctors', 'doctors.userId = users.id', 'left')
-            ->join('patients', 'patients.userId = users.id', 'left')
-            ->join('doctor_category', 'doctor_category.doctor_categoryId = doctors.doctor_categoryId', 'left')
+            ->join('doctors', 'doctors.user_id = users.id', 'left')
+            ->join('patients', 'patients.user_id = users.id', 'left')
+            ->join('doctor_category', 'doctor_category.id = doctors.doctor_category_id', 'left')
             ->join('auth_groups_users', 'auth_groups_users.user_id = users.id', 'left')
             ->join('auth_groups', 'auth_groups.id = auth_groups_users.group_id', 'left');
 
@@ -40,7 +40,6 @@ class UserModel extends \Myth\Auth\Models\UserModel
                 ->orLike('role', $params->search)
                 ->orLike('doctor_category', $params->search)
                 ->orLike('sex', $params->search)
-                ->orWhere('CAST(phone AS TEXT) LIKE', "%$params->search%")
                 ->orWhere('CAST(phone AS TEXT) LIKE', "%$params->search%")
                 ->orWhere('CAST(users.id AS TEXT) LIKE', "%$params->search%")
                 ->groupEnd();

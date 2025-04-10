@@ -104,7 +104,7 @@ class UserController extends BaseController
             'dob' => $this->request->getPost('dob'),
             'email' => $user->email,
             'profile_picture' => '',
-            'userId' => $userId,
+            'user_id' => $userId,
         ];
         // dd($patientData);
         $this->patientModel->save($patientData);
@@ -122,7 +122,7 @@ class UserController extends BaseController
 
         $patient = $this->patientModel->getPatientByUserId($user->id);
         if (!empty($patient)) {
-            $this->patientModel->delete($patient->patientId);
+            $this->patientModel->delete($patient->id);
         }
 
         $this->userModel->delete($user->id);

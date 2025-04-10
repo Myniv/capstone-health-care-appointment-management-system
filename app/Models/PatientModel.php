@@ -8,7 +8,7 @@ use CodeIgniter\Model;
 class PatientModel extends Model
 {
     protected $table = 'patients';
-    protected $primaryKey = 'patientId';
+    protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
     protected $returnType = Patient::class;
     protected $useSoftDeletes = true;
@@ -22,7 +22,7 @@ class PatientModel extends Model
         'dob',
         'email',
         'profile_picture',
-        'userId',
+        'user_id',
         'createdAt',
         'updatedAt',
         'deletedAt'
@@ -51,7 +51,7 @@ class PatientModel extends Model
         'dob' => 'required|valid_date[Y-m-d]',
         'email' => 'required|valid_email|max_length[150]',
         'profile_picture' => 'permit_empty|max_length[255]',
-        'userId' => 'permit_empty|integer',
+        'user_id' => 'permit_empty|integer',
     ];
     protected $validationMessages = [
         'first_name' => [

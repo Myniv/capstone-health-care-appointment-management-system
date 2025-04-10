@@ -9,7 +9,7 @@ class CreatePatientTable extends Migration
     public function up()
     {
         $this->forge->addField([
-            'patientId' => [
+            'id' => [
                 'type' => 'INT',
                 'auto_increment' => true,
             ],
@@ -52,7 +52,7 @@ class CreatePatientTable extends Migration
                 'constraint' => '255',
                 'null' => true
             ],
-            'userId' => [
+            'user_id' => [
                 'type' => 'INT',
                 'null' => true
             ],
@@ -69,8 +69,8 @@ class CreatePatientTable extends Migration
                 'null' => true
             ],
         ]);
-        $this->forge->addKey('patientId', true);
-        $this->forge->addForeignKey('userId', 'users', 'id', 'CASCADE', 'SET NULL');
+        $this->forge->addKey('id', true);
+        $this->forge->addForeignKey('user_id', 'users', 'id', 'CASCADE', 'SET NULL');
         $this->forge->createTable('patients');
     }
 

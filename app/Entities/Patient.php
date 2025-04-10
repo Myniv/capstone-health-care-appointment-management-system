@@ -8,7 +8,7 @@ class Patient extends Entity
 {
     protected $datamap = [];
     protected $attributes = [
-        'patientId' => null,
+        'id' => null,
         'first_name' => null,
         'last_name' => null,
         'phone' => null,
@@ -17,13 +17,13 @@ class Patient extends Entity
         'dob' => null,
         'email' => null,
         'profile_picture' => null,
-        'userId' => null,
+        'user_id' => null,
         'createdAt' => null,
         'updatedAt' => null,
         'deletedAt' => null,
     ];
     protected $casts = [
-        'patientId' => 'integer',
+        'id' => 'integer',
         'first_name' => 'string',
         'last_name' => 'string',
         'phone' => 'string',
@@ -32,7 +32,7 @@ class Patient extends Entity
         'dob' => 'date',
         'email' => 'string',
         'profile_picture' => 'string',
-        'userId' => 'integer',
+        'user_id' => 'integer',
         'createdAt' => 'datetime',
         'updatedAt' => 'datetime',
         'deletedAt' => 'datetime',

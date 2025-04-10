@@ -143,7 +143,7 @@
             <tbody>
                 <?php foreach ($users as $user): ?>
                     <tr>
-                        <td><?= $user->userId ?></td>
+                        <td><?= $user->user_id ?></td>
                         <td><?= $user->username ?></td>
                         <td><?= $user->email ?></td>
                         <td><?= $user->front_name . ' ' . $user->last_name ?></td>
@@ -154,9 +154,9 @@
                         <td><?= $user->doctor_category ?></td>
                         <td><?= $user->role ?></td>
                         <td>
-                            <a href="/admin/customer/profile-parser/<?= $user->id ?>" class="btn btn-info btn-sm">Detail</a>
-                            <a href="/admin/customer/update/<?= $user->id ?>" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="/admin/users/patient/delete/<?= $user->userId ?>" method="post" class="d-inline">
+                            <a href="/admin/customer/profile-parser/<?= $user->user_id ?>" class="btn btn-info btn-sm">Detail</a>
+                            <a href="/admin/customer/update/<?= $user->user_id ?>" class="btn btn-warning btn-sm">Edit</a>
+                            <form action="/admin/users/patient/delete/<?= $user->user_id ?>" method="post" class="d-inline">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure want to delete this user?');">
