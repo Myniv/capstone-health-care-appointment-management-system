@@ -156,7 +156,7 @@
                         <td>
                             <a href="/admin/customer/profile-parser/<?= $user->id ?>" class="btn btn-info btn-sm">Detail</a>
                             <a href="/admin/customer/update/<?= $user->id ?>" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="/admin/customer/delete/<?= $user->id ?>" method="post" class="d-inline">
+                            <form action="/admin/users/patient/delete/<?= $user->userId ?>" method="post" class="d-inline">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('Are you sure want to delete this user?');">

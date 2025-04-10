@@ -9,7 +9,7 @@ class CreateDoctorCategoryTable extends Migration
     public function up()
     {
         $this->forge->addField([
-            'doctor_categoryId' => [
+            'id' => [
                 'type' => 'INT',
                 'auto_increment' => true,
             ],

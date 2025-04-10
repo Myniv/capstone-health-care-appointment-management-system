@@ -100,4 +100,9 @@ class PatientModel extends Model
     protected $afterFind = [];
     protected $beforeDelete = [];
     protected $afterDelete = [];
+
+    public function getPatientByUserId($userId)
+    {
+        return $this->select('*')->where('userId', $userId)->first();
+    }
 }

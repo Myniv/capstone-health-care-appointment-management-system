@@ -111,4 +111,22 @@ class UserController extends BaseController
 
         return redirect()->to('admin/users')->with('message', 'User Created Successfully');
     }
+
+    public function deletePatient($id)
+    {
+        $user = $this->userModel->find($id);
+
+        if (empty($user)) {
+            return redirect()->to('admin/users')->with('error', 'User Not Found');
+        }
+
+        $patient = $this->patientModel->getPatientByUserId($user->id);
+        if (!empty($patient)) {
+            $this->patientModel->delete($patient->patientId);
+        }
+
+        $this->userModel->delete($user->id);
+
+        return redirect()->to('admin/users')->with('message', 'User Deleted Successfully');
+    }
 }
