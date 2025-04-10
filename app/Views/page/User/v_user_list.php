@@ -1,7 +1,8 @@
 <div class="container mt-4">
     <h2 class="mb-3">User List</h2>
 
-    <a href="/admin/customer/create" class="btn btn-success mb-3">Add User</a>
+    <a href="/admin/users/doctor/create" class="btn btn-success mb-3">Add Doctor</a>
+    <a href="/admin/users/patient/create" class="btn btn-success mb-3">Add Patient</a>
 
     <form action="<?= $baseUrl ?>" method="get" class="form-inline mb-3">
         <div class="row mb-4">
