@@ -56,15 +56,15 @@ class CreatePatientTable extends Migration
                 'type' => 'INT',
                 'null' => true
             ],
-            'createdAt' => [
+            'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true
             ],
-            'updatedAt' => [
+            'updated_at' => [
                 'type' => 'DATETIME',
                 'null' => true
             ],
-            'deletedAt' => [
+            'deleted_at' => [
                 'type' => 'DATETIME',
                 'null' => true
             ],
