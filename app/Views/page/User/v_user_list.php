@@ -154,15 +154,37 @@
                         <td><?= $user->doctor_category ?></td>
                         <td><?= $user->role ?></td>
                         <td>
-                            <a href="/admin/customer/profile-parser/<?= $user->user_id ?>" class="btn btn-info btn-sm">Detail</a>
-                            <a href="/admin/customer/update/<?= $user->user_id ?>" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="/admin/users/patient/delete/<?= $user->user_id ?>" method="post" class="d-inline">
-                                <input type="hidden" name="_method" value="DELETE">
-                                <button type="submit" class="btn btn-danger btn-sm"
-                                    onclick="return confirm('Are you sure want to delete this user?');">
-                                    Delete
-                                </button>
-                            </form>
+                            <?php if ($user->role == 'patient'): ?>
+                                <a href="/admin/users/patient/profile/<?= $user->user_id ?>"
+                                    class="btn btn-info btn-sm">Detail</a>
+
+                                <a href="/admin/users/patient/update/<?= $user->user_id ?>"
+                                    class="btn btn-warning btn-sm">Edit</a>
+
+                                <form action="/admin/users/patient/delete/<?= $user->user_id ?>" method="post" class="d-inline">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Are you sure want to delete this user?');">
+                                        Delete
+                                    </button>
+                                </form>
+                            <?php elseif ($user->role == 'doctor'): ?>
+                                <a href="/admin/users/doctor/profile/<?= $user->user_id ?>"
+                                    class="btn btn-info btn-sm">Detail</a>
+
+                                <a href="/admin/users/doctor/update/<?= $user->user_id ?>"
+                                    class="btn btn-warning btn-sm">Edit</a>
+
+                                <form action="/admin/users/doctor/delete/<?= $user->user_id ?>" method="post" class="d-inline">
+                                    <input type="hidden" name="_method" value="DELETE">
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Are you sure want to delete this user?');">
+                                        Delete
+                                    </button>
+                                </form>
+                            <?php else: ?>
+                                N/A
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

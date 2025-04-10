@@ -2,15 +2,15 @@
 
 namespace App\Models;
 
-use App\Entities\Patient;
+use App\Entities\Doctor;
 use CodeIgniter\Model;
 
-class PatientModel extends Model
+class DoctorModel extends Model
 {
-    protected $table = 'patients';
+    protected $table = 'doctors';
     protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType = Patient::class;
+    protected $returnType = Doctor::class;
     protected $useSoftDeletes = true;
     protected $protectFields = true;
     protected $allowedFields = [
@@ -22,12 +22,12 @@ class PatientModel extends Model
         'dob',
         'email',
         'profile_picture',
+        'doctor_category_id',
         'user_id',
         'createdAt',
         'updatedAt',
         'deletedAt'
     ];
-
     protected bool $allowEmptyInserts = false;
     protected bool $updateOnlyChanged = true;
 
@@ -51,6 +51,7 @@ class PatientModel extends Model
         'dob' => 'required|valid_date[Y-m-d]',
         'email' => 'required|valid_email|max_length[150]',
         'profile_picture' => 'permit_empty|max_length[255]',
+        'doctor_category_id' => 'permit_empty|integer',
         'user_id' => 'permit_empty|integer',
     ];
     protected $validationMessages = [
@@ -86,7 +87,6 @@ class PatientModel extends Model
             'max_length' => 'Email must not exceed 150 characters.',
         ],
     ];
-
     protected $skipValidation = false;
     protected $cleanValidationRules = true;
 
@@ -101,8 +101,8 @@ class PatientModel extends Model
     protected $beforeDelete = [];
     protected $afterDelete = [];
 
-    public function getPatientByUserId($userId)
+    public function getDoctorByUserId($userId)
     {
-        return $this->select('*')->where('user_id', $userId)->first();
+        return $this->where('user_id', $userId)->first();
     }
 }
