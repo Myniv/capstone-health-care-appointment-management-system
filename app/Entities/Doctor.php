@@ -30,7 +30,7 @@ class Doctor extends Entity
         'phone' => 'string',
         'address' => 'string',
         'sex' => 'string',
-        'dob' => 'date',
+        'dob' => 'datetime',
         'email' => 'string',
         'profile_picture' => 'string',
         'doctor_category_id' => 'integer',

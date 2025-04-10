@@ -29,7 +29,7 @@ class Patient extends Entity
         'phone' => 'string',
         'address' => 'string',
         'sex' => 'string',
-        'dob' => 'date',
+        'dob' => 'datetime',
         'email' => 'string',
         'profile_picture' => 'string',
         'user_id' => 'integer',
