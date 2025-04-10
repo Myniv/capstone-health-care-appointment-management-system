@@ -69,71 +69,71 @@
                 <tr>
                     <th>
                         <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('users.id', $baseUrl) ?>">
-                            ID <?= $params->isSortedBy('users.id') ? ($params->getSortDirection() == 'asc' ?
+                            href="<?= $params->getSortUrl('user_id', $baseUrl) ?>">
+                            ID <?= $params->isSortedBy('user_id') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('users.username', $baseUrl) ?>">
-                            Username <?= $params->isSortedBy('users.username') ? ($params->getSortDirection() == 'asc' ?
+                            href="<?= $params->getSortUrl('username', $baseUrl) ?>">
+                            Username <?= $params->isSortedBy('username') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('users.email', $baseUrl) ?>">
-                            Email <?= $params->isSortedBy('users.email') ? ($params->getSortDirection() == 'asc' ?
+                            href="<?= $params->getSortUrl('email', $baseUrl) ?>">
+                            Email <?= $params->isSortedBy('email') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('users.first_name', $baseUrl) ?>">
-                            Name <?= $params->isSortedBy('users.first_name') ? ($params->getSortDirection() == 'asc' ?
+                            href="<?= $params->getSortUrl('first_name', $baseUrl) ?>">
+                            Name <?= $params->isSortedBy('first_name') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('users.first_name', $baseUrl) ?>">
-                            Phone <?= $params->isSortedBy('users.first_name') ? ($params->getSortDirection() == 'asc' ?
+                            href="<?= $params->getSortUrl('phone', $baseUrl) ?>">
+                            Phone <?= $params->isSortedBy('phone') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('users.first_name', $baseUrl) ?>">
-                            Address <?= $params->isSortedBy('users.first_name') ? ($params->getSortDirection() == 'asc' ?
+                            href="<?= $params->getSortUrl('address', $baseUrl) ?>">
+                            Address <?= $params->isSortedBy('address') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('users.first_name', $baseUrl) ?>">
-                            Sex <?= $params->isSortedBy('users.first_name') ? ($params->getSortDirection() == 'asc' ?
+                            href="<?= $params->getSortUrl('sex', $baseUrl) ?>">
+                            Sex <?= $params->isSortedBy('sex') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('users.first_name', $baseUrl) ?>">
-                            Dob <?= $params->isSortedBy('users.first_name') ? ($params->getSortDirection() == 'asc' ?
+                            href="<?= $params->getSortUrl('dob', $baseUrl) ?>">
+                            Dob <?= $params->isSortedBy('dob') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('users.first_name', $baseUrl) ?>">
-                            Doctor Category <?= $params->isSortedBy('users.first_name') ? ($params->getSortDirection() == 'asc' ?
+                            href="<?= $params->getSortUrl('doctor_category', $baseUrl) ?>">
+                            Doctor Category <?= $params->isSortedBy('doctor_category') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('auth_groups.name', $baseUrl) ?>">
-                            Role <?= $params->isSortedBy('auth_groups.name') ? ($params->getSortDirection() == 'asc' ?
+                            href="<?= $params->getSortUrl('role', $baseUrl) ?>">
+                            Role <?= $params->isSortedBy('role') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
@@ -146,7 +146,7 @@
                         <td><?= $user->user_id ?></td>
                         <td><?= $user->username ?></td>
                         <td><?= $user->email ?></td>
-                        <td><?= $user->front_name . ' ' . $user->last_name ?></td>
+                        <td><?= $user->first_name . ' ' . $user->last_name ?></td>
                         <td><?= $user->phone ?></td>
                         <td><?= $user->address ?></td>
                         <td><?= $user->sex ?></td>

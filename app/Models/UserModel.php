@@ -54,12 +54,14 @@ class UserModel extends \Myth\Auth\Models\UserModel
         $allowedSort = [
             'user_id',
             'username',
-            'user_email',
+            'email',
             'first_name',
-            'last_name',
+            'phone',
+            'address',
+            'sex',
+            'dob',
             'role',
             'doctor_category',
-            'group_name'
         ];
         $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'user_id';
         $order = ($params->order === 'desc') ? 'DESC' : 'ASC';
