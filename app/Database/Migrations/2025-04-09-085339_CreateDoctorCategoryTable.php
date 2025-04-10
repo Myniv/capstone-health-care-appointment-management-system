@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateDoctorCategoriesTable extends Migration
+class CreateDoctorCategoryTable extends Migration
 {
     public function up()
     {
@@ -23,7 +23,7 @@ class CreateDoctorCategoriesTable extends Migration
             ],
         ]);
         $this->forge->addKey('doctor_categoryId', true);
-        $this->forge->createTable('doctor_categories');
+        $this->forge->createTable('doctor_category');
     }
 
     public function down()

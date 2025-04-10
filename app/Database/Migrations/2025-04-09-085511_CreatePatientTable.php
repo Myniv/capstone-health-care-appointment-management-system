@@ -52,7 +52,7 @@ class CreatePatientTable extends Migration
                 'constraint' => '255',
                 'null' => true
             ],
-            'userid' => [
+            'userId' => [
                 'type' => 'INT',
                 'null' => true
             ],
@@ -70,6 +70,7 @@ class CreatePatientTable extends Migration
             ],
         ]);
         $this->forge->addKey('patientId', true);
+        $this->forge->addForeignKey('userId', 'users', 'id', 'CASCADE', 'SET NULL');
         $this->forge->createTable('patients');
     }
 

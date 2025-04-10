@@ -56,7 +56,7 @@ class CreateDoctorTable extends Migration
                 'type' => 'INT',
                 'null' => true
             ],
-            'userid' => [
+            'userId' => [
                 'type' => 'INT',
                 'null' => true
             ],
@@ -74,7 +74,8 @@ class CreateDoctorTable extends Migration
             ],
         ]);
         $this->forge->addKey('doctorId', true);
-        $this->forge->addForeignKey('doctor_categoryId', 'doctor_categories', 'doctor_categoryId', 'CASCADE', 'SET NULL');
+        $this->forge->addForeignKey('doctor_categoryId', 'doctor_category', 'doctor_categoryId', 'CASCADE', 'SET NULL');
+        $this->forge->addForeignKey('userId', 'users', 'id', 'CASCADE', 'SET NULL');
         $this->forge->createTable('doctors');
     }
 
