@@ -4,7 +4,7 @@ namespace App\Database\Seeds;
 
 use CodeIgniter\Database\Seeder;
 
-class DoctorCategoriesSeeder extends Seeder
+class DoctorCategorySeeder extends Seeder
 {
     public function run()
     {
@@ -14,6 +14,6 @@ class DoctorCategoriesSeeder extends Seeder
             ['name' => 'general_practitioner', 'description' => 'Dokter Umum'],
         ];
 
-        $this->db->table('doctor_categories')->insertBatch($data);
+        $this->db->table('doctor_category')->insertBatch($data);
     }
 }
