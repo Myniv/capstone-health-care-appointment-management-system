@@ -11,17 +11,14 @@ use stdClass;
 
 class GroupModel extends Model
 {
-    protected $table = 'auth_groups';
-    protected $returnType = Group::class;
-    protected $primaryKey = 'id';
-    protected $useAutoIncrement = true;
+    protected $table         = 'auth_groups';
+    protected $returnType    = Group::class;
     protected $allowedFields = [
         'name',
         'description',
     ];
     protected $validationRules = [
-        // 'name'        => 'required|max_length[255]|is_unique[auth_groups.name,name,{name}]',
-        'name' => 'required|max_length[255]',
+        'name'        => 'required|max_length[255]|is_unique[auth_groups.name,name,{name}]',
         'description' => 'max_length[255]',
     ];
 
@@ -48,7 +45,7 @@ class GroupModel extends Model
         cache()->delete("{$userId}_permissions");
 
         $data = [
-            'user_id' => $userId,
+            'user_id'  => $userId,
             'group_id' => $groupId,
         ];
 
@@ -70,7 +67,7 @@ class GroupModel extends Model
 
         return $this->db->table('auth_groups_users')
             ->where([
-                'user_id' => $userId,
+                'user_id'  => $userId,
                 'group_id' => (int) $groupId,
             ])->delete();
     }
@@ -169,7 +166,7 @@ class GroupModel extends Model
     {
         $data = [
             'permission_id' => $permissionId,
-            'group_id' => $groupId,
+            'group_id'      => $groupId,
         ];
 
         return $this->db->table('auth_groups_permissions')->insert($data);
@@ -187,7 +184,7 @@ class GroupModel extends Model
         return $this->db->table('auth_groups_permissions')
             ->where([
                 'permission_id' => $permissionId,
-                'group_id' => $groupId,
+                'group_id'      => $groupId,
             ])->delete();
     }
 
@@ -213,7 +210,7 @@ class GroupModel extends Model
     public function fake(Generator &$faker)
     {
         return new Group([
-            'name' => $faker->word,
+            'name'        => $faker->word,
             'description' => $faker->sentence,
         ]);
     }
