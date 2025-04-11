@@ -67,8 +67,8 @@ class DoctorCategoryModel extends Model
         $this->select('doctor_category.*');
 
         if (!empty($params->search)) {
-            $this->like('name', $params->search)
-                ->orLike('description', $params->search)
+            $this->like('name', $params->search, 'both', null, true)
+                ->orLike('description', $params->search, 'both', null, true)
                 ->orWhere('CAST(id AS TEXT) LIKE', "%$params->search%");
         }
 

@@ -19,7 +19,7 @@
             <div class="col-md-2">
                 <div class="input-group ml-2">
                     <select class="form-select <?= session('errors.group') ? 'is-invalid' : '' ?>" name="role" id="role"
-                        required onchange="this.form.submit()">
+                        onchange="this.form.submit()">
                         <option value="">All Role</option>
                         <?php foreach ($groups as $group): ?>
                             <option value=" <?= $group->id ?>" <?= $params->role == $group->id ? 'selected' : '' ?>>
@@ -82,8 +82,7 @@
                         </a>
                     </th>
                     <th>
-                        <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('email', $baseUrl) ?>">
+                        <a class="text-white text-decoration-none" href="<?= $params->getSortUrl('email', $baseUrl) ?>">
                             Email <?= $params->isSortedBy('email') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
@@ -96,8 +95,7 @@
                         </a>
                     </th>
                     <th>
-                        <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('phone', $baseUrl) ?>">
+                        <a class="text-white text-decoration-none" href="<?= $params->getSortUrl('phone', $baseUrl) ?>">
                             Phone <?= $params->isSortedBy('phone') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
@@ -110,15 +108,13 @@
                         </a>
                     </th>
                     <th>
-                        <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('sex', $baseUrl) ?>">
+                        <a class="text-white text-decoration-none" href="<?= $params->getSortUrl('sex', $baseUrl) ?>">
                             Sex <?= $params->isSortedBy('sex') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
-                        <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('dob', $baseUrl) ?>">
+                        <a class="text-white text-decoration-none" href="<?= $params->getSortUrl('dob', $baseUrl) ?>">
                             Dob <?= $params->isSortedBy('dob') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
@@ -131,8 +127,7 @@
                         </a>
                     </th>
                     <th>
-                        <a class="text-white text-decoration-none"
-                            href="<?= $params->getSortUrl('role', $baseUrl) ?>">
+                        <a class="text-white text-decoration-none" href="<?= $params->getSortUrl('role', $baseUrl) ?>">
                             Role <?= $params->isSortedBy('role') ? ($params->getSortDirection() == 'asc' ?
                                 '↑' : '↓') : '↕' ?>
                         </a>
@@ -151,7 +146,7 @@
                         <td><?= $user->address ?></td>
                         <td><?= $user->sex ?></td>
                         <td><?= $user->dob ?></td>
-                        <td><?= $user->doctor_category?></td>
+                        <td><?= $user->doctor_category ?></td>
                         <td><?= $user->role ?></td>
                         <td>
                             <?php if ($user->role == 'patient'): ?>
