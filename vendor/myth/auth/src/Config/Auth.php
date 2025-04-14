@@ -46,13 +46,13 @@ class Auth extends BaseConfig
      * @var array
      */
     public $reservedRoutes = [
-        'login'                   => 'login',
-        'logout'                  => 'logout',
-        'register'                => 'register',
-        'activate-account'        => 'activate-account',
+        'login' => 'login',
+        'logout' => 'logout',
+        'register' => 'register',
+        'activate-account' => 'activate-account',
         'resend-activate-account' => 'resend-activate-account',
-        'forgot'                  => 'forgot',
-        'reset-password'          => 'reset-password',
+        'forgot' => 'forgot',
+        'reset-password' => 'reset-password',
     ];
 
     /**
@@ -76,12 +76,12 @@ class Auth extends BaseConfig
     public $views = [
         // 'login' => 'Myth\Auth\Views\login',
         // 'register' => 'Myth\Auth\Views\register',
-        'login'           => 'App\Views\Page\Auth\login',
-        'register'        => 'App\Views\Page\Auth\register',
-        'forgot'          => 'Myth\Auth\Views\forgot',
-        'emailForgot'     => 'Myth\Auth\Views\emails\forgot',
+        'login' => 'App\Views\Page\Auth\login',
+        'register' => 'App\Views\Page\Auth\register',
+        'forgot' => 'Myth\Auth\Views\forgot',
+        'emailForgot' => 'Myth\Auth\Views\emails\forgot',
         'emailActivation' => 'Myth\Auth\Views\emails\activation',
-        'reset'           => 'Myth\Auth\Views\reset',
+        'reset' => 'Myth\Auth\Views\reset',
     ];
 
     /**
@@ -350,7 +350,7 @@ class Auth extends BaseConfig
     public $userActivators = [
         'Myth\Auth\Authentication\Activators\EmailActivator' => [
             'fromEmail' => null,
-            'fromName'  => null,
+            'fromName' => null,
         ],
     ];
 
@@ -366,7 +366,7 @@ class Auth extends BaseConfig
     public $userResetters = [
         'Myth\Auth\Authentication\Resetters\EmailResetter' => [
             'fromEmail' => null,
-            'fromName'  => null,
+            'fromName' => null,
         ],
     ];
 
