@@ -1,6 +1,7 @@
 <?php
 
 use App\Controllers\DoctorCategoryController;
+use App\Controllers\DoctorController;
 use App\Controllers\UserController;
 use CodeIgniter\Router\RouteCollection;
 
@@ -23,4 +24,9 @@ $routes->group('admin', [], function ($routes) {
     $routes->match(['get', 'post'], 'doctor-category/create', [DoctorCategoryController::class, 'create']);
     $routes->match(['get', 'put'], 'doctor-category/update/(:num)', [DoctorCategoryController::class, 'update']);
     $routes->delete('doctor-category/delete/(:num)', [DoctorCategoryController::class, 'delete/$1']);
+});
+
+
+$routes->group('doctor', [], function ($routes) {
+    $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
 });
