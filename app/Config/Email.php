@@ -38,12 +38,13 @@ class Email extends BaseConfig
     /**
      * SMTP Password
      */
-    public string $SMTPPass = 'udju qlws euus pvwx';
+    public string $SMTPPass;
 
     /**
      * SMTP Port
      */
     public int $SMTPPort = 465;
+    //
 
     /**
      * SMTP Timeout (in seconds)
@@ -118,4 +119,10 @@ class Email extends BaseConfig
      * Enable notify message from server
      */
     public bool $DSN = false;
+
+    public function __construct()
+    {
+        // Load the environment variable at runtime
+        $this->SMTPPass = getenv('SMTP_PASS') ?: ''; 
+    }
 }
