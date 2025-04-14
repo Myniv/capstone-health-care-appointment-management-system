@@ -1,15 +1,17 @@
 <?php
 
+use App\Controllers\AuthController;
 use App\Controllers\DoctorCategoryController;
 use App\Controllers\UserController;
 use CodeIgniter\Router\RouteCollection;
+use Config\Roles;
 
 /**
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
 
-$routes->group('admin', [], function ($routes) {
+$routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes) {
     $routes->get('users', [UserController::class, 'index']);
     $routes->match(['get', 'post'], 'users/patient/create', [UserController::class, 'createPatient']);
     $routes->match(['get', 'put'], 'users/patient/update/(:num)', [UserController::class, 'updatePatient']);
@@ -24,3 +26,25 @@ $routes->group('admin', [], function ($routes) {
     $routes->match(['get', 'put'], 'doctor-category/update/(:num)', [DoctorCategoryController::class, 'update']);
     $routes->delete('doctor-category/delete/(:num)', [DoctorCategoryController::class, 'delete/$1']);
 });
+
+//Auth routes
+$routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
+    // Registrasi
+    $routes->get('register', [AuthController::class, 'register'], ['as' => 'register']);
+    $routes->post('register', [AuthController::class, 'attemptRegister']);
+
+    // Route lain seperti login, dll
+    $routes->get('login', [AuthController::class, 'login'], ['as' => 'login']);
+    $routes->post('login', [AuthController::class, 'attemptLogin']);
+
+    // //Forgot Password
+    // $routes->get('forgot-password', 'AuthController::forgotPassword', ['as' => 'forgot']);
+    // $routes->post('forgot-password', 'AuthController::attemptForgotPassword');
+
+    // //Reset Password
+    // $routes->get('reset-password', 'AuthController::resetPassword', ['as' => 'reset-password']);
+    // $routes->post('reset-password', 'AuthController::attemptResetPassword');
+
+    $routes->get('unauthorized', [AuthController::class, 'unauthorized']);
+});
+

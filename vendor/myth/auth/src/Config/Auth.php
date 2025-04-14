@@ -74,18 +74,14 @@ class Auth extends BaseConfig
      * @var array
      */
     public $views = [
-        'login' => 'Myth\Auth\Views\login',
-        'register' => 'Myth\Auth\Views\register',
+        // 'login' => 'Myth\Auth\Views\login',
+        // 'register' => 'Myth\Auth\Views\register',
+        'login' => 'App\Views\Page\Auth\login',
+        'register' => 'App\Views\Page\Auth\register',
         'forgot' => 'Myth\Auth\Views\forgot',
         'emailForgot' => 'Myth\Auth\Views\emails\forgot',
         'emailActivation' => 'Myth\Auth\Views\emails\activation',
         'reset' => 'Myth\Auth\Views\reset',
-        // 'login' => 'App\Views\auth\login',
-        // 'register' => 'App\Views\auth\register',
-        // 'forgot' => 'App\Views\auth\forgot',
-        // 'reset' => 'App\Views\auth\reset',
-        // 'emailForgot' => 'App\Views\auth\emails\email_forgot',
-        // 'emailActivation' => 'App\Views\auth\emails\email_activation',
     ];
 
     /**
@@ -192,8 +188,7 @@ class Auth extends BaseConfig
      *
      * @var string|null Name of the ActivatorInterface class
      */
-    // public $requireActivation = 'Myth\Auth\Authentication\Activators\EmailActivator';
-    public $requireActivation = null;
+    public $requireActivation = 'Myth\Auth\Authentication\Activators\EmailActivator';
 
     /**
      * --------------------------------------------------------------------
@@ -220,7 +215,7 @@ class Auth extends BaseConfig
      *
      * @var bool
      */
-    public $allowRemembering = true;
+    public $allowRemembering = false;
 
     /**
      * --------------------------------------------------------------------

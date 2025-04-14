@@ -2,7 +2,6 @@
 
 namespace Myth\Auth\Authentication\Passwords;
 
-// use CodeIgniter\Entity;
 use CodeIgniter\Entity\Entity;
 
 interface ValidatorInterface

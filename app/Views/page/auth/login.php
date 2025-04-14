@@ -5,6 +5,8 @@
 <div class="w-full max-w-md bg-base-100 p-6 rounded-lg shadow-md">
     <h2 class="text-2xl font-bold text-center mb-4"><?= lang('Auth.loginTitle') ?></h2>
 
+    <?= view('Myth\Auth\Views\_message_block') ?>
+
     <form action="<?= url_to('login') ?>" method="post">
         <?= csrf_field() ?>
 
@@ -43,7 +45,7 @@
         <?php if ($config->allowRemembering): ?>
             <div class="mb-4">
                 <label class="cursor-pointer flex items-center">
-                    <input type="checkbox" name="remember" class="checkbox checkbox-primary mr-2" <?php if (old('remember')) : ?> checked <?php endif ?>>
+                    <input type="checkbox" name="remember" class="checkbox checkbox-primary mr-2" <?php if (old('remember')): ?> checked <?php endif ?>>
                     <span class="label-text"><?= lang('Auth.rememberMe') ?></span>
                 </label>
             </div>
