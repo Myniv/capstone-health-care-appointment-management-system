@@ -4,7 +4,8 @@
 <div class="container mx-auto mt-4">
     <h2 class="text-2xl font-bold mb-4"><?= isset($user) ? 'Edit Patient' : 'Add Patient'; ?></h2>
 
-    <form action="<?= isset($user) ? base_url('admin/users/patient/update/' . $user->user_id) : base_url('admin/users/patient/create') ?>"
+    <form
+        action="<?= isset($user) ? base_url('admin/users/patient/update/' . $user->user_id) : base_url('admin/users/patient/create') ?>"
         method="post" enctype="multipart/form-data" id="formData" novalidate>
         <?= csrf_field() ?>
         <?php if (isset($user)): ?>
@@ -37,7 +38,8 @@
         <!-- Password -->
         <div class="mb-4">
             <label for="password" class="label">
-                <span class="label-text">Password <?= isset($user) ? '<small>(Leave blank if unchanged)</small>' : '' ?></span>
+                <span class="label-text">Password
+                    <?= isset($user) ? '<small>(Leave blank if unchanged)</small>' : '' ?></span>
             </label>
             <input type="password" name="password"
                 class="input input-bordered w-full <?= session('errors.password') ? 'input-error' : '' ?>"
@@ -46,14 +48,13 @@
         </div>
 
         <!-- Confirm Password -->
-        <?php if (!isset($user)) : ?>
+        <?php if (!isset($user)): ?>
             <div class="mb-4">
                 <label for="pass_confirm" class="label">
                     <span class="label-text">Confirm Password</span>
                 </label>
                 <input type="password" name="pass_confirm"
-                    class="input input-bordered w-full <?= session('errors.pass_confirm') ? 'input-error' : '' ?>"
-                    required>
+                    class="input input-bordered w-full <?= session('errors.pass_confirm') ? 'input-error' : '' ?>" required>
                 <div class="text-error text-sm"><?= session('errors.pass_confirm') ?? '' ?></div>
             </div>
         <?php endif; ?>
@@ -113,7 +114,8 @@
                     class="select select-bordered w-full <?= session('errors.sex') ? 'select-error' : '' ?>" required>
                     <option value="">Select Gender</option>
                     <option value="male" <?= old('sex', $user->sex ?? '') == 'male' ? 'selected' : '' ?>>Male</option>
-                    <option value="female" <?= old('sex', $user->sex ?? '') == 'female' ? 'selected' : '' ?>>Female</option>
+                    <option value="female" <?= old('sex', $user->sex ?? '') == 'female' ? 'selected' : '' ?>>Female
+                    </option>
                 </select>
                 <div class="text-error text-sm"><?= session('errors.sex') ?? '' ?></div>
             </div>
@@ -127,6 +129,16 @@
                     value="<?= old('dob', $user->dob ?? '') ?>" required>
                 <div class="text-error text-sm"><?= session('errors.dob') ?? '' ?></div>
             </div>
+        </div>
+
+        <!-- Profile Picture Upload Field -->
+        <div class="mb-4">
+            <label for="profile_picture" class="label">
+                <span class="label-text">Profile Picture (optional)</span>
+            </label>
+            <input type="file" name="profile_picture"
+                class="file-input file-input-bordered w-full <?= session('errors.profile_picture') ? 'file-input-error' : '' ?>">
+            <div class="text-error text-sm mt-1"><?= session('errors.profile_picture') ?></div>
         </div>
 
         <!-- Submit Button -->

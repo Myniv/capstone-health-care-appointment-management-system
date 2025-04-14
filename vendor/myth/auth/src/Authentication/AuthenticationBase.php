@@ -192,10 +192,10 @@ class AuthenticationBase
     {
         return $this->loginModel->insert([
             'ip_address' => $ipAddress,
-            'email' => $email,
-            'user_id' => $userID,
-            'date' => date('Y-m-d H:i:s'),
-            'success' => (int) $success,
+            'email'      => $email,
+            'user_id'    => $userID,
+            'date'       => date('Y-m-d H:i:s'),
+            'success'    => (int) $success,
         ]);
     }
 
@@ -209,9 +209,9 @@ class AuthenticationBase
      */
     public function rememberUser(int $userID)
     {
-        $selector = bin2hex(random_bytes(12));
+        $selector  = bin2hex(random_bytes(12));
         $validator = bin2hex(random_bytes(20));
-        $expires = date('Y-m-d H:i:s', time() + $this->config->rememberLength);
+        $expires   = date('Y-m-d H:i:s', time() + $this->config->rememberLength);
 
         $token = $selector . ':' . $validator;
 
@@ -219,20 +219,19 @@ class AuthenticationBase
         $this->loginModel->rememberUser($userID, $selector, hash('sha256', $validator), $expires);
 
         // Save it to the user's browser in a cookie.
-        $appConfig = config('Cookie');
-        // $appConfig = config('App');
-        $response = service('response');
+        $appConfig = config('App');
+        $response  = service('response');
 
         // Create the cookie
         $response->setCookie(
-            'remember',                                  // Cookie Name
-            $token,                                     // Value
-            $this->config->rememberLength,              // # Seconds until it expires
-            $appConfig->domain,
-            $appConfig->path,
-            $appConfig->prefix,
-            $appConfig->secure,                   // Only send over HTTPS?
-            true                                        // Hide from Javascript?
+            'remember',      							// Cookie Name
+            $token,                         			// Value
+            $this->config->rememberLength,  			// # Seconds until it expires
+            $appConfig->cookieDomain,
+            $appConfig->cookiePath,
+            $appConfig->cookiePrefix,
+            $appConfig->cookieSecure,                   // Only send over HTTPS?
+            true                    					// Hide from Javascript?
         );
     }
 
@@ -258,17 +257,17 @@ class AuthenticationBase
         // Save it to the user's browser in a cookie.
         helper('cookie');
 
-        $appConfig = config('Cookie');
+        $appConfig = config('App');
 
         // Create the cookie
         set_cookie(
-            'remember',                              // Cookie Name
-            $selector . ':' . $validator,                 // Value
+            'remember',      						// Cookie Name
+            $selector . ':' . $validator, 				// Value
             (string) $this->config->rememberLength, // # Seconds until it expires
-            $appConfig->domain,
-            $appConfig->path,
-            $appConfig->prefix,
-            $appConfig->secure,                     // Only send over HTTPS?
+            $appConfig->cookieDomain,
+            $appConfig->cookiePath,
+            $appConfig->cookiePrefix,
+            $appConfig->cookieSecure,               // Only send over HTTPS?
             true                                    // Hide from Javascript?
         );
     }
@@ -300,7 +299,7 @@ class AuthenticationBase
      */
     public function retrieveUser(array $wheres)
     {
-        if (!$this->userModel instanceof Model) {
+        if (! $this->userModel instanceof Model) {
             throw AuthException::forInvalidModel('User');
         }
 

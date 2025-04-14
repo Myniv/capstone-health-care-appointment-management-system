@@ -1,16 +1,18 @@
 <?php
 
+use App\Controllers\AuthController;
 use App\Controllers\DoctorCategoryController;
 use App\Controllers\DoctorController;
 use App\Controllers\UserController;
 use CodeIgniter\Router\RouteCollection;
+use Config\Roles;
 
 /**
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
 
-$routes->group('admin', [], function ($routes) {
+$routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes) {
     $routes->get('users', [UserController::class, 'index']);
     $routes->match(['get', 'post'], 'users/patient/create', [UserController::class, 'createPatient']);
     $routes->match(['get', 'put'], 'users/patient/update/(:num)', [UserController::class, 'updatePatient']);
