@@ -78,7 +78,25 @@ class UserController extends BaseController
             'phone' => 'required|regex_match[/^[0-9\-\+\s\(\)]+$/]',
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
-            'dob' => 'required|valid_date'
+            'dob' => 'required|valid_date',
+            'profile_picture' => [
+                'label' => 'Gambar',
+                'rules' => [
+                    'permit_empty',
+                    'uploaded[profile_picture]',
+                    'is_image[profile_picture]',
+                    'mime_in[profile_picture,image/jpg,image/jpeg,image/png]',
+                    'max_size[profile_picture,5120]', // 5MB in KB (5 * 1024)
+                    'min_dims[profile_picture,600,600]',
+                ],
+                'errors' => [
+                    'uploaded' => 'Choose Uploaded File',
+                    'is_image' => 'File Must be an Image',
+                    'mime_in' => 'File must be in format JPG, JPEG, PNG',
+                    'max_size' => 'File size must not exceed more than 5MB',
+                    'min_dims' => 'Image must be at least 600x600',
+                ]
+            ]
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
@@ -112,6 +130,23 @@ class UserController extends BaseController
             'profile_picture' => '',
             'user_id' => $userId,
         ];
+
+        $profilePicture = $this->request->getFile('profile_picture');
+        if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {
+
+            $uploadPath = WRITEPATH . 'uploads/' . 'patients/' . $userId . '/' . 'profile_picture' . '/';
+
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $pictureName = 'profile_picture' . '_' . $userId . '_' . date('Y_m_d') . '_' . time() . '.' . $profilePicture->getClientExtension();
+            $picturePath = $uploadPath . $pictureName;
+            $profilePicture->move($uploadPath, $pictureName);
+
+            $relativePath = 'uploads/' . 'patients/' . $userId . '/' . 'profile_picture' . '/' . $pictureName;
+            $patientData['profile_picture'] = $relativePath;
+        }
         // dd($patientData);
         $this->patientModel->save($patientData);
 
@@ -200,6 +235,30 @@ class UserController extends BaseController
             'profile_picture' => '',
         ];
 
+        $profilePicture = $this->request->getFile('profile_picture');
+        if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {
+            if (!empty($patient->profile_picture) || $patient->profile_picture !== null) {
+                $oldPicturePath = WRITEPATH . $patient->profile_picture;
+                if (is_file($oldPicturePath)) {
+                    unlink($oldPicturePath);
+                }
+                // $this->deleteFolder(dirname(WRITEPATH . $patient->profile_picture));
+            }
+
+            $uploadPath = WRITEPATH . 'uploads/' . 'patients/' . $user->id . '/' . 'profile_picture' . '/';
+
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $pictureName = 'profile_picture' . '_' . $user->id . '_' . date('Y_m_d') . '_' . time() . '.' . $profilePicture->getClientExtension();
+            $picturePath = $uploadPath . $pictureName;
+            $profilePicture->move($uploadPath, $pictureName);
+
+            $relativePath = 'uploads/' . 'patients/' . $user->id . '/' . 'profile_picture' . '/' . $pictureName;
+            $patientData['profile_picture'] = $relativePath;
+        }
+
         if ($patient->first_name !== $patientData['first_name'] || $patient->last_name !== $patientData['last_name'] || $patient->phone !== $patientData['phone'] || $patient->address !== $patientData['address'] || $patient->sex !== $patientData['sex'] || $patient->dob !== $patientData['dob'] || $patient->profile_picture !== $patientData['profile_picture']) {
             if (!$this->patientModel->save($patientData)) {
                 return redirect()->back()->withInput()->with('errors', $this->patientModel->errors());
@@ -220,6 +279,13 @@ class UserController extends BaseController
 
         $patient = $this->patientModel->getPatientByUserId($user->id);
         if (!empty($patient)) {
+            if (!empty($patient->profile_picture) || $patient->profile_picture !== null) {
+                $oldPicturePath = WRITEPATH . $patient->profile_picture;
+                if (is_file($oldPicturePath)) {
+                    unlink($oldPicturePath);
+                }
+                // $this->deleteFolder(dirname(WRITEPATH . $patient->profile_picture));
+            }
             $this->patientModel->delete($patient->id);
         }
 
@@ -246,7 +312,25 @@ class UserController extends BaseController
             'doctor_category_id' => 'required',
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
-            'dob' => 'required|valid_date'
+            'dob' => 'required|valid_date',
+            'profile_picture' => [
+                'label' => 'Gambar',
+                'rules' => [
+                    'permit_empty',
+                    'uploaded[profile_picture]',
+                    'is_image[profile_picture]',
+                    'mime_in[profile_picture,image/jpg,image/jpeg,image/png]',
+                    'max_size[profile_picture,5120]', // 5MB in KB (5 * 1024)
+                    'min_dims[profile_picture,600,600]',
+                ],
+                'errors' => [
+                    'uploaded' => 'Choose Uploaded File',
+                    'is_image' => 'File Must be an Image',
+                    'mime_in' => 'File must be in format JPG, JPEG, PNG',
+                    'max_size' => 'File size must not exceed more than 5MB',
+                    'min_dims' => 'Image must be at least 600x600',
+                ]
+            ]
         ]);
 
         if (!$validation->withRequest($this->request)->run()) {
@@ -269,7 +353,7 @@ class UserController extends BaseController
         $groupId = $this->groupModel->where('name', 'doctor')->first()->id;
         $this->groupModel->addUserToGroup($userId, $groupId);
 
-        $patientData = [
+        $doctorData = [
             'first_name' => $this->request->getPost('first_name'),
             'last_name' => $this->request->getPost('last_name'),
             'phone' => $this->request->getPost('phone'),
@@ -281,8 +365,24 @@ class UserController extends BaseController
             'doctor_category_id' => $this->request->getPost('doctor_category_id'),
             'user_id' => $userId,
         ];
+        $profilePicture = $this->request->getFile('profile_picture');
+        if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {
+
+            $uploadPath = WRITEPATH . 'uploads/' . 'patients/' . $userId . '/' . 'profile_picture' . '/';
+
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $pictureName = 'profile_picture' . '_' . $userId . '_' . date('Y_m_d') . '_' . time() . '.' . $profilePicture->getClientExtension();
+            $picturePath = $uploadPath . $pictureName;
+            $profilePicture->move($uploadPath, $pictureName);
+
+            $relativePath = 'uploads/' . 'doctors/' . $userId . '/' . 'profile_picture' . '/' . $pictureName;
+            $doctorData['profile_picture'] = $relativePath;
+        }
         // dd($patientData);
-        $this->doctorModel->save($patientData);
+        $this->doctorModel->save($doctorData);
 
         return redirect()->to('admin/users')->with('message', 'User Created Successfully');
     }
@@ -331,6 +431,24 @@ class UserController extends BaseController
             'sex' => 'required|in_list[male,female]',
             'dob' => 'required|valid_date',
             'doctor_category_id' => 'required',
+            'profile_picture' => [
+                'label' => 'Gambar',
+                'rules' => [
+                    'permit_empty',
+                    'uploaded[profile_picture]',
+                    'is_image[profile_picture]',
+                    'mime_in[profile_picture,image/jpg,image/jpeg,image/png]',
+                    'max_size[profile_picture,5120]', // 5MB in KB (5 * 1024)
+                    'min_dims[profile_picture,600,600]',
+                ],
+                'errors' => [
+                    'uploaded' => 'Choose Uploaded File',
+                    'is_image' => 'File Must be an Image',
+                    'mime_in' => 'File must be in format JPG, JPEG, PNG',
+                    'max_size' => 'File size must not exceed more than 5MB',
+                    'min_dims' => 'Image must be at least 600x600',
+                ]
+            ]
         ];
 
         //if there is password, it validate
@@ -372,15 +490,40 @@ class UserController extends BaseController
             'profile_picture' => '',
         ];
 
+        $profilePicture = $this->request->getFile('profile_picture');
+        if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {
+            if (!empty($doctor->profile_picture) || $doctor->profile_picture !== null) {
+                $oldPicturePath = WRITEPATH . $doctor->profile_picture;
+                if (is_file($oldPicturePath)) {
+                    unlink($oldPicturePath);
+                }
+                // $this->deleteFolder(dirname(WRITEPATH . $doctor->profile_picture));
+            }
+
+            $uploadPath = WRITEPATH . 'uploads/' . 'doctors/' . $user->id . '/' . 'profile_picture' . '/';
+
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $pictureName = 'profile_picture' . '_' . $user->id . '_' . date('Y_m_d') . '_' . time() . '.' . $profilePicture->getClientExtension();
+            $picturePath = $uploadPath . $pictureName;
+            $profilePicture->move($uploadPath, $pictureName);
+
+            $relativePath = 'uploads/' . 'doctors/' . $user->id . '/' . 'profile_picture' . '/' . $pictureName;
+            $doctorData['profile_picture'] = $relativePath;
+        }
+
         if ($doctor->first_name !== $doctorData['first_name'] || $doctor->last_name !== $doctorData['last_name'] || $doctor->phone !== $doctorData['phone'] || $doctor->address !== $doctorData['address'] || $doctor->sex !== $doctorData['sex'] || $doctor->dob !== $doctorData['dob'] || $doctor->profile_picture !== $doctorData['profile_picture']) {
             if (!$this->doctorModel->save($doctorData)) {
                 return redirect()->back()->withInput()->with('errors', $this->patientModel->errors());
             }
         }
 
+
         return redirect()->to('admin/users')->with('message', 'User Updated Successfully');
     }
-    
+
     public function deleteDoctor($id)
     {
         $user = $this->userModel->find($id);
@@ -391,11 +534,34 @@ class UserController extends BaseController
 
         $doctor = $this->doctorModel->getDoctorByUserId($user->id);
         if (!empty($doctor)) {
+            if (!empty($doctor->profile_picture) || $doctor->profile_picture !== null) {
+                $oldPicturePath = WRITEPATH . $doctor->profile_picture;
+                if (is_file($oldPicturePath)) {
+                    unlink($oldPicturePath);
+                }
+                // $this->deleteFolder(dirname(WRITEPATH . $doctor->profile_picture));
+            }
             $this->doctorModel->delete($doctor->id);
         }
 
         $this->userModel->delete($user->id);
 
         return redirect()->to('admin/users')->with('message', 'User Deleted Successfully');
+    }
+
+    private function deleteFolder($folderPath)
+    {
+        if (!is_dir($folderPath)) {
+            return;
+        }
+
+        $files = glob($folderPath . '/*');
+        foreach ($files as $file) {
+            if (is_file($file)) {
+                unlink($file);
+            }
+        }
+
+        rmdir($folderPath);
     }
 }

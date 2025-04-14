@@ -131,7 +131,6 @@
             <label for="profile_picture" class="label">
                 <span class="label-text">Profile Picture (optional)</span>
             </label>
-            <!-- Using DaisyUI file input -->
             <input type="file" name="profile_picture"
                 class="file-input file-input-bordered w-full <?= session('errors.profile_picture') ? 'file-input-error' : '' ?>">
             <div class="text-error text-sm mt-1"><?= session('errors.profile_picture') ?></div>
