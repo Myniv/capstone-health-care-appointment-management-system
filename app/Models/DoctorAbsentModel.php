@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Entities\DoctorAbsent;
+use App\Libraries\DataParams;
 use CodeIgniter\Model;
 
 class DoctorAbsentModel extends Model
@@ -54,5 +55,32 @@ class DoctorAbsentModel extends Model
     {
         dd($this->where('doctor_id', $id)->findAll());
         return $this->where('doctor_id', $id)->findAll();
+    }
+
+    public function getSortedDoctorAbsent(DataParams $params)
+    {
+        $this->select('doctor_absents.*');
+
+        if (!empty($params->search)) {
+            $this->like('date', $params->search)
+                ->orWhere('CAST(doctor_id AS TEXT) LIKE', "%$params->search%");
+        }
+
+        $allowedSort = [
+            'id',
+            'doctor_id',
+            'date',
+        ];
+
+        $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'id';
+        $order = ($params->order === 'desc') ? 'DESC' : 'ASC';
+
+        $this->orderBy($sort, $order);
+
+        return [
+            'doctor_absent' => $this->paginate($params->perPage, 'doctor_absent', $params->page),
+            'total' => $this->countAllResults(),
+            'pager' => $this->pager
+        ];
     }
 }
