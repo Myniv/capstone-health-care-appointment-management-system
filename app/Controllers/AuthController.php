@@ -165,7 +165,7 @@ class AuthController extends MythController
                 return redirect()->to('/dashboard');
             } else if ($group['name'] === Roles::PATIENT) {
                 //dashboard patient
-                return redirect()->to('/product/catalog');
+                return redirect()->to('/');
             }
         }
         return redirect()->to('/');
@@ -173,7 +173,7 @@ class AuthController extends MythController
 
     public function unauthorized()
     {
-        return view("auth/unauthorized_page");
+        return view("page/auth/unauthorized");
     }
 
     private function createImageVersions($filePath, $fileName)
