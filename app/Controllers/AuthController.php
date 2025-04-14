@@ -125,7 +125,7 @@ class AuthController extends MythController
             ];
 
             $profilePicture = $this->request->getFile('profile_picture');
-            if ($profilePicture !== null || $profilePicture !== '') {
+            if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {
 
                 $uploadPath = WRITEPATH . 'uploads/' . $user->id . '/' . 'profile_picture' . '/';
 
@@ -133,7 +133,7 @@ class AuthController extends MythController
                     mkdir($uploadPath, 0777, true);
                 }
 
-                $pictureName = 'profile_picture' . '_' . $user->id . '.' . date('Y_m_d') . '_' . time() . '.' . $profilePicture->getClientExtension();
+                $pictureName = 'profile_picture' . '_' . $user->id . '_' . date('Y_m_d') . '_' . time() . '.' . $profilePicture->getClientExtension();
                 $picturePath = $uploadPath . $pictureName;
                 $profilePicture->move($uploadPath, $pictureName);
 
