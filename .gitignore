@@ -129,3 +129,8 @@ nb-configuration.xml
 
 /results/
 /phpunit*.xml
+
+# TailwindCSS & DaisyUI
+node_modules/
+public/assets/css/tailwind.css
+package-lock.json

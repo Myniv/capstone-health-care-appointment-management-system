@@ -6,11 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $this->renderSection('title'); ?> Page</title>
 
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind CSS & DaisyUI CDN-->
+    <!-- <script src="https://cdn.tailwindcss.com"></script> -->
+    <!-- <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" /> -->
 
-    <!-- DaisyUI CSS via CDN -->
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" />
+    <!-- Tailwind CSS & DaisyUI -->
+    <link rel="stylesheet" href="<?= base_url('assets/css/tailwind.css') ?>">
 
     <!-- Pristine.js -->
     <script src="<?= base_url('assets/js/pristine.js') ?>"></script>
@@ -25,12 +26,12 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 flex flex-grow gap-4">
         <!-- Sidebar -->
-        <aside class="w-1/4 hidden lg:block">
+        <aside class="hidden lg:block bg-base-100 p-4 rounded-lg shadow-md">
             <?= $this->include('components/sidebar'); ?>
         </aside>
 
         <!-- Page Content -->
-        <section class="w-full bg-base-100 p-4 rounded-lg shadow-md lg:w-3/4">
+        <section class="w-full bg-base-100 p-4 rounded-lg shadow-md">
             <?= $this->renderSection('content'); ?>
         </section>
     </main>
