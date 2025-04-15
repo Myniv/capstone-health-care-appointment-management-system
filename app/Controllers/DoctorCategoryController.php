@@ -18,7 +18,6 @@ class DoctorCategoryController extends BaseController
     {
         $params = new DataParams([
             "search" => $this->request->getGet("search"),
-
             "sort" => $this->request->getGet("sort"),
             "order" => $this->request->getGet("order"),
             "perPage" => $this->request->getGet("perPage"),

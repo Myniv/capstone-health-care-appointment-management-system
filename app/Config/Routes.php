@@ -2,6 +2,7 @@
 
 use App\Controllers\AuthController;
 use App\Controllers\DoctorCategoryController;
+use App\Controllers\DoctorController;
 use App\Controllers\UserController;
 use CodeIgniter\Router\RouteCollection;
 use Config\Roles;
@@ -27,6 +28,13 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->delete('doctor-category/delete/(:num)', [DoctorCategoryController::class, 'delete/$1']);
 });
 
+
+$routes->group('doctor', [], function ($routes) {
+    $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
+    $routes->get('absent/create', [DoctorController::class, 'createDoctorAbsent']);
+});
+
+
 //Auth routes
 $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
     // Registrasi
@@ -47,4 +55,3 @@ $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
 
     $routes->get('unauthorized', [AuthController::class, 'unauthorized']);
 });
-
