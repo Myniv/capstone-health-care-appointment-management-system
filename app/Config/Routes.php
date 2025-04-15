@@ -37,7 +37,7 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
 
 $routes->group('doctor', [], function ($routes) {
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
-    $routes->get('absent/create', [DoctorController::class, 'createDoctorAbsent']);
+    $routes->match(['get', 'post'], 'absent/create', [DoctorController::class, 'createDoctorAbsent']);
 });
 
 
