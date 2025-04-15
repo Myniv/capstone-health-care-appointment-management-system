@@ -21,6 +21,11 @@ class CreateDoctorAbsentTable extends Migration
                 'type' => 'DATETIME',
                 'null' => true
             ],
+            'status' => [
+                'type' => 'VARCHAR',
+                'constraint' => '50',
+                'null' => true
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true
