@@ -12,8 +12,8 @@ class UserModel extends \Myth\Auth\Models\UserModel
         $this
             ->select("
                 users.id as user_id,
-                users.username,
-                users.email as email,
+                users.username as username,
+                COALESCE(users.email, patients.email, doctors.email) as email,
                 COALESCE(doctors.first_name, patients.first_name, 'N/A') as first_name,
                 COALESCE(doctors.last_name, patients.last_name, 'N/A') as last_name,
                 COALESCE(doctors.phone, patients.phone, 'N/A') as phone,
@@ -33,16 +33,23 @@ class UserModel extends \Myth\Auth\Models\UserModel
         // Search
         if (!empty($params->search)) {
             $this->groupStart()
-                ->like('username', $params->search)
-                ->orLike('email', $params->search)
-                ->orLike('first_name', $params->search)
-                ->orLike('last_name', $params->search)
-                ->orLike('role', $params->search)
-                ->orLike('doctor_category', $params->search)
-                ->orLike('sex', $params->search)
-                ->orWhere('CAST(phone AS TEXT) LIKE', "%$params->search%")
-                ->orWhere('CAST(users.id AS TEXT) LIKE', "%$params->search%")
+                ->like('users.username', $params->search, 'both', null, true)
+                ->orLike('users.email', $params->search, 'both', null, true)
+                ->orLike('doctors.email', $params->search, 'both', null, true)
+                ->orLike('patients.email', $params->search, 'both', null, true)
+                ->orLike('doctors.first_name', $params->search, 'both', null, true)
+                ->orLike('patients.first_name', $params->search, 'both', null, true)
+                ->orLike('doctors.last_name', $params->search, 'both', null, true)
+                ->orLike('patients.last_name', $params->search, 'both', null, true)
+                ->orLike('auth_groups.name', $params->search, 'both', null, true)
+                ->orLike('doctor_category.name', $params->search, 'both', null, true)
+                ->orLike('doctors.sex', $params->search, 'both', null, true)
+                ->orLike('patients.sex', $params->search, 'both', null, true)
+                ->orLike("CAST(doctors.phone AS TEXT)", $params->search, 'both', null, true)
+                ->orLike("CAST(patients.phone AS TEXT)", $params->search, 'both', null, true)
+                ->orLike("CAST(users.id AS TEXT)", $params->search, 'both', null, true)
                 ->groupEnd();
+
         }
 
         // Filter role

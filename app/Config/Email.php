@@ -6,7 +6,7 @@ use CodeIgniter\Config\BaseConfig;
 
 class Email extends BaseConfig
 {
-    public string $fromEmail = 'mulyanan@solecode.id';
+    public string $fromEmail;
     public string $fromName = 'Health Care Appointment';
     public string $recipients = '';
 
@@ -33,7 +33,7 @@ class Email extends BaseConfig
     /**
      * SMTP Username
      */
-    public string $SMTPUser = 'mulyanan@solecode.id';
+    public string $SMTPUser;
 
     /**
      * SMTP Password
@@ -123,6 +123,8 @@ class Email extends BaseConfig
     public function __construct()
     {
         // Load the environment variable at runtime
-        $this->SMTPPass = getenv('SMTP_PASS') ?: ''; 
+        $this->SMTPPass = getenv('SMTP_PASS') ?: '';
+        $this->SMTPUser = getenv('SMTP_USER') ?: '';
+        $this->fromEmail = getenv('SMTP_EMAIL') ?: '';
     }
 }
