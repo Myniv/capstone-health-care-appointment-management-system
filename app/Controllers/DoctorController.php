@@ -75,5 +75,7 @@ class DoctorController extends BaseController
         if (!$this->doctorAbsentModel->save($data)) {
             return redirect()->back()->withInput()->with('errors', $this->doctorAbsentModel->errors());
         }
+
+        return redirect()->to('doctor/absent')->with('success', 'Doctor Absent Requested');
     }
 }

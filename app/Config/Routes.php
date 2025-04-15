@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\AppointmentController;
 use App\Controllers\AuthController;
 use App\Controllers\DoctorCategoryController;
 use App\Controllers\DoctorController;
@@ -33,6 +34,12 @@ $routes->group('doctor', [], function ($routes) {
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
     $routes->match(['get', 'post'], 'absent/create', [DoctorController::class, 'createDoctorAbsent']);
 });
+
+$routes->group('appointment', [], function ($routes) {
+    $routes->get('', [AppointmentController::class, 'index']);
+});
+
+
 
 
 //Auth routes

@@ -37,7 +37,8 @@
 
     <!-- Submit Button -->
     <div class="text-end">
-      <button type="submit" class="btn btn-primary"><?= isset($doctor_absent) ? 'Update' : 'Request' ?> Absent</button>
+      <button type="submit" class="btn btn-primary"><?= 'Request' ?> Absent</button>
+      <a href="/doctor/absent" class="btn btn-secondary">Cancel</a>
     </div>
   </form>
 </div>
