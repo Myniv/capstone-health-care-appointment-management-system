@@ -3,6 +3,7 @@
 use App\Controllers\AuthController;
 use App\Controllers\DoctorCategoryController;
 use App\Controllers\DoctorController;
+use App\Controllers\DoctorScheduleController;
 use App\Controllers\UserController;
 use CodeIgniter\Router\RouteCollection;
 use Config\Roles;
@@ -26,6 +27,11 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->match(['get', 'post'], 'doctor-category/create', [DoctorCategoryController::class, 'create']);
     $routes->match(['get', 'put'], 'doctor-category/update/(:num)', [DoctorCategoryController::class, 'update']);
     $routes->delete('doctor-category/delete/(:num)', [DoctorCategoryController::class, 'delete/$1']);
+
+    $routes->get('doctor-schedule', [DoctorScheduleController::class, 'index']);
+    $routes->match(['get', 'post'], 'doctor-schedule/create', [DoctorScheduleController::class, 'create']);
+    $routes->match(['get', 'put'], 'doctor-schedule/update/(:num)', [DoctorScheduleController::class, 'update']);
+    $routes->delete('doctor-schedule/delete/(:num)', [DoctorScheduleController::class, 'delete/$1']);
 });
 
 
