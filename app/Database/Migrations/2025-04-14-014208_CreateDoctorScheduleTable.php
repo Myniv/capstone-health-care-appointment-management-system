@@ -17,6 +17,10 @@ class CreateDoctorScheduleTable extends Migration
                 'type' => 'INT',
                 'null' => true
             ],
+            'room_id' => [
+                'type' => 'INT',
+                'null' => true
+            ],
             'start_time' => [
                 'type' => 'TIME',
                 'null' => true
@@ -45,6 +49,7 @@ class CreateDoctorScheduleTable extends Migration
         ]);
         $this->forge->addKey('id', true);
         $this->forge->addForeignKey('doctor_id', 'doctors', 'id', 'CASCADE', 'SET NULL');
+        $this->forge->addForeignKey('room_id', 'rooms', 'id', 'CASCADE', 'SET NULL');
         $this->forge->createTable('doctor_schedules');
     }
 
