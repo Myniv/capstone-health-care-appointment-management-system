@@ -33,3 +33,25 @@ $routes->group('doctor', [], function ($routes) {
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
     $routes->match(['get', 'post'], 'absent/create', [DoctorController::class, 'createDoctorAbsent']);
 });
+
+
+//Auth routes
+$routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
+    // Registrasi
+    $routes->get('register', [AuthController::class, 'register'], ['as' => 'register']);
+    $routes->post('register', [AuthController::class, 'attemptRegister']);
+
+    // Route lain seperti login, dll
+    $routes->get('login', [AuthController::class, 'login'], ['as' => 'login']);
+    $routes->post('login', [AuthController::class, 'attemptLogin']);
+
+    // //Forgot Password
+    // $routes->get('forgot-password', 'AuthController::forgotPassword', ['as' => 'forgot']);
+    // $routes->post('forgot-password', 'AuthController::attemptForgotPassword');
+
+    // //Reset Password
+    // $routes->get('reset-password', 'AuthController::resetPassword', ['as' => 'reset-password']);
+    // $routes->post('reset-password', 'AuthController::attemptResetPassword');
+
+    $routes->get('unauthorized', [AuthController::class, 'unauthorized']);
+});

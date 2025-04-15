@@ -1,4 +1,4 @@
-<aside class="menu bg-base-100 p-4 rounded-lg shadow-md">
+<aside class="menu">
     <ul class="menu menu-compact lg:menu-normal">
         <li class="menu-title">
             <span>Navigation</span>
