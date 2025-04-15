@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Entities\DoctorAbsent;
 use App\Libraries\DataParams;
 use CodeIgniter\Model;
+use Config\Roles;
 
 class DoctorAbsentModel extends Model
 {
@@ -18,6 +19,8 @@ class DoctorAbsentModel extends Model
     protected $allowedFields    = [
         'doctor_id',
         'date',
+        'status',
+        'reason'
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -53,17 +56,25 @@ class DoctorAbsentModel extends Model
 
     public function getDoctorAbsentById($id)
     {
-        dd($this->where('doctor_id', $id)->findAll());
         return $this->where('doctor_id', $id)->findAll();
     }
 
     public function getSortedDoctorAbsent(DataParams $params)
     {
-        $this->select('doctor_absents.*');
 
+        if (!Roles::ADMIN) {
+            $this->join('doctors', 'doctors.id = doctor_absents.doctor_id')
+                ->where('doctors.user_id', user_id());
+        }
+        $this->select('doctor_absents.*');
         if (!empty($params->search)) {
-            $this->like('date', $params->search)
+            $this->where('CAST(id AS TEXT) LIKE', "%$params->search%")
                 ->orWhere('CAST(doctor_id AS TEXT) LIKE', "%$params->search%");
+        }
+
+
+        if (!empty($params->date)) {
+            $this->where("TO_CHAR(date, 'YYYY-MM-DD') LIKE", "%{$params->date}%");
         }
 
         $allowedSort = [

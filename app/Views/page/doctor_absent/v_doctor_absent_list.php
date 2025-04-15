@@ -11,9 +11,14 @@
 
   <!-- Search and Filters -->
   <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap items-center gap-4 mb-4">
-    <div class="flex flex-grow items-center">
+    <div class="flex flex-grow items-center gap-2">
       <input type="text" class="input input-bordered w-full md:w-auto flex-grow" name="search" value="<?= $params->search ?>"
         placeholder="Search...">
+      <input type="date"
+        name="date"
+        class="input input-bordered <?= session('errors.date') ? 'input-error' : '' ?>"
+        value="<?= $params->date ?>"
+        placeholder="Select Date" />
       <button type="submit" class="btn btn-primary ml-2">Search</button>
     </div>
 
@@ -25,6 +30,7 @@
         <option value="25" <?= ($params->perPage == 25) ? 'selected' : '' ?>>25 per Page</option>
       </select>
     </div>
+
 
     <div class="form-control w-full md:w-auto">
       <a href="<?= $params->getResetUrl($baseUrl) ?>" class="btn btn-primary">Reset</a>
@@ -50,7 +56,13 @@
               Doctor ID <?= $params->isSortedBy('doctor_id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
             </a>
           </th>
-          <th>Date</th>
+          <th>
+            <a href="<?= $params->getSortUrl('date', $baseUrl) ?>" class="link link-hover">
+              Date <?= $params->isSortedBy('date') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+            </a>
+          </th>
+          <th>Reason</th>
+          <th>Status</th>
           <th>Action</th>
         </tr>
       </thead>
@@ -60,7 +72,17 @@
             <td><?= $absent->id ?></td>
             <td><?= $absent->doctor_id ?></td>
             <td><?= $absent->date ?></td>
-            <td>-- ACTION --</td>
+            <td><?= $absent->reason ?></td>
+            <td><?= $absent->status ?></td>
+            <td> <a href="" class="btn btn-warning btn-sm">Button</a>
+              <form action="" method="post" class="inline">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit" class="btn btn-error btn-sm"
+                  onclick="return confirm('Are you sure want to delete this category?');">
+                  Button
+                </button>
+              </form>
+            </td>
           </tr>
         <?php endforeach; ?>
       </tbody>
