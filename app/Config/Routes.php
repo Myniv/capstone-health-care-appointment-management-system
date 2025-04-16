@@ -4,6 +4,8 @@ use App\Controllers\AuthController;
 use App\Controllers\DoctorCategoryController;
 use App\Controllers\DoctorController;
 use App\Controllers\DoctorScheduleController;
+use App\Controllers\EquipmentController;
+use App\Controllers\RoomController;
 use App\Controllers\UserController;
 use CodeIgniter\Router\RouteCollection;
 use Config\Roles;
@@ -35,6 +37,17 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->match(['get', 'put'], 'doctor-schedule/update/(:num)', [DoctorScheduleController::class, 'update']);
     $routes->post('doctor-schedule/check-availability', [DoctorScheduleController::class, 'checkAvailability']);
     $routes->delete('doctor-schedule/delete/(:num)', [DoctorScheduleController::class, 'delete/$1']);
+
+    $routes->get('equipment', [EquipmentController::class, 'index']);
+    $routes->match(['get', 'post'], 'equipment/create', [EquipmentController::class, 'create']);
+    $routes->match(['get', 'put'], 'equipment/update/(:num)', [EquipmentController::class, 'update']);
+    $routes->delete('equipment/delete/(:num)', [EquipmentController::class, 'delete/$1']);
+    
+    $routes->get('room', [RoomController::class, 'index']);
+    $routes->match(['get', 'post'], 'room/create', [RoomController::class, 'create']);
+    $routes->match(['get', 'put'], 'room/update/(:num)', [RoomController::class, 'update']);
+    $routes->delete('room/delete/(:num)', [RoomController::class, 'delete/$1']);
+    
 });
 
 

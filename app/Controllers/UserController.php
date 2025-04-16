@@ -267,7 +267,6 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
-            'profile_picture' => '',
         ];
 
         $profilePicture = $this->request->getFile('profile_picture');

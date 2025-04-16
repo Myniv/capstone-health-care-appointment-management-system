@@ -14,9 +14,10 @@
                 <?php if (in_groups(Roles::PATIENT)): ?>
                 <?php endif; ?>
                 <li><a href="<?= base_url('logout'); ?>" class="btn btn-error text-white">Logout</a></li>
+            <?php else: ?>
+                <li><a href="<?= base_url('login'); ?>" class="btn btn-primary text-white">Login</a></li>
+                <li><a href="<?= base_url('register'); ?>" class="btn btn-white text-black mr-2">Register</a></li>
             <?php endif; ?>
-            <li><a href="<?= base_url('login'); ?>" class="btn btn-primary text-white">Login</a></li>
-            <li><a href="<?= base_url('register'); ?>" class="">Register</a></li>
         </ul>
     </div>
 </header>
