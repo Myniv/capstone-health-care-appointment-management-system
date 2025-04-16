@@ -50,18 +50,15 @@
             <!-- Status -->
             <div>
                 <label for="status" class="label">
-                    <span class="label-text">Status</span>
+                    <span class="label-text">Maintenance?</span>
                 </label>
                 <select name="status"
                     class="select select-bordered w-full <?= session('errors.status') ? 'select-error' : '' ?>"
                     required>
-                    <option value="" disabled <?= old('status', $equipment->status ?? '') == '' ? 'selected' : '' ?>>--
-                        Select Status --</option>
-                    <option value="Maintenance" <?= old('status', $equipment->status ?? '') == 'Maintenance' ? 'selected' : '' ?>>Maintenance</option>
-                    <option value="Available" <?= old('status', $equipment->status ?? '') == 'Available' ? 'selected' : '' ?>>Available</option>
-                    <option value="Out of Stock" <?= old('status', $equipment->status ?? '') == 'Out of Stock' ? 'selected' : '' ?>>Out of Stock</option>
+                    <option value="" <?= old('status', $equipment->status ?? '') == '' ? 'selected' : '' ?>>No
+                    </option>
+                    <option value="Maintenance" <?= old('status', $equipment->status ?? '') == 'Maintenance' ? 'selected' : '' ?>>Yes</option>
                 </select>
-                <div class="text-error text-sm"><?= session('errors.status') ?? '' ?></div>
             </div>
         </div>
 

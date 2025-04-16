@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Entities\Equipment;
 use App\Libraries\DataParams;
 use App\Models\EquipmentModel;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -51,7 +52,9 @@ class EquipmentController extends BaseController
             'status' => $this->request->getPost('status'),
         ];
 
-        if (!$this->equipmentModel->save($data)) {
+        $dataEquipment = new Equipment($data);
+
+        if (!$this->equipmentModel->save($dataEquipment)) {
             return redirect()->back()->withInput()->with('errors', $this->equipmentModel->errors());
         }
 
@@ -78,7 +81,9 @@ class EquipmentController extends BaseController
             'status' => $this->request->getPost('status'),
         ];
 
-        if (!$this->equipmentModel->update($id, $data)) {
+        $dataEquipment = new Equipment($data);
+
+        if (!$this->equipmentModel->save($dataEquipment)) {
             return redirect()->back()->withInput()->with('errors', $this->equipmentModel->errors());
         }
 
