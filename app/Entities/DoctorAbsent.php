@@ -11,6 +11,7 @@ class DoctorAbsent extends Entity
         'id' => null,
         'doctor_id' => null,
         'date' => null,
+        'reason' => null,
         'createdAt' => null,
         'updatedAt' => null,
     ];

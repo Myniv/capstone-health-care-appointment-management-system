@@ -6,12 +6,18 @@ class DataParams
 {
     public $search = '';
 
+    //Date Filter
+    public $date = '';
+
     //Product Filter
     public $price_range = '';
     public $category_id = '';
 
     //User Filter
     public $role = '';
+
+    //DoctorCategoryFilter
+    public $doctor_category = '';
 
 
     public $sort = 'id';
@@ -22,8 +28,7 @@ class DataParams
     {
         $this->search = $params['search'] ?? '';
 
-        $this->category_id = $params['category_id'] ?? '';
-        $this->price_range = $params['price_range'] ?? '';
+        $this->date = $params['date'] ?? '';
 
         $this->role = $params['role'] ?? '';
 
@@ -38,8 +43,7 @@ class DataParams
         return [
             'search' => $this->search,
 
-            'category_id' => $this->category_id,
-            'price_range' => $this->price_range,
+            'date' => $this->date,
 
             'role' => $this->role,
 
@@ -76,5 +80,4 @@ class DataParams
     {
         return $this->order;
     }
-
 }

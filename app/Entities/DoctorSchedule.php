@@ -10,6 +10,7 @@ class DoctorSchedule extends Entity
     protected $attributes = [
         'id' => null,
         'doctor_id' => null,
+        'room_id' => null,
         'start_time' => null,
         'end_time' => null,
         'max_patient' => null,
@@ -21,5 +22,5 @@ class DoctorSchedule extends Entity
         'createdAt' => 'datetime',
         'updatedAt' => 'datetime',
     ];
-    protected $dates   = ['created_at', 'updated_at'];
+    protected $dates = ['created_at', 'updated_at'];
 }

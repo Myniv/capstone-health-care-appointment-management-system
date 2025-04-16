@@ -1,3 +1,5 @@
+<?php use Config\Roles; ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -25,10 +27,14 @@
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 flex flex-grow gap-4">
-        <!-- Sidebar -->
-        <aside class="hidden lg:block bg-base-100 p-4 rounded-lg shadow-md">
-            <?= $this->include('components/sidebar'); ?>
-        </aside>
+        <?php if (logged_in()): ?>
+            <?php if (in_groups(Roles::ADMIN) || in_groups(Roles::DOCTOR)): ?>
+                <!-- Sidebar -->
+                <aside class="hidden lg:block bg-base-100 p-4 rounded-lg shadow-md">
+                    <?= $this->include('components/sidebar'); ?>
+                </aside>
+            <?php endif; ?>
+        <?php endif; ?>
 
         <!-- Page Content -->
         <section class="w-full bg-base-100 p-4 rounded-lg shadow-md">
