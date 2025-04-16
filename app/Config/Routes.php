@@ -14,10 +14,12 @@ $routes->get('/', 'Home::index');
 
 $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes) {
     $routes->get('users', [UserController::class, 'index']);
+    $routes->get('users/patient/profile/(:num)', [UserController::class, 'profilePatient/$1']);
     $routes->match(['get', 'post'], 'users/patient/create', [UserController::class, 'createPatient']);
     $routes->match(['get', 'put'], 'users/patient/update/(:num)', [UserController::class, 'updatePatient']);
     $routes->delete('users/patient/delete/(:num)', [UserController::class, 'deletePatient/$1']);
 
+    $routes->get('users/doctor/profile/(:num)', [UserController::class, 'profileDoctor/$1']);
     $routes->match(['get', 'post'], 'users/doctor/create', [UserController::class, 'createDoctor']);
     $routes->match(['get', 'put'], 'users/doctor/update/(:num)', [UserController::class, 'updateDoctor']);
     $routes->delete('users/doctor/delete/(:num)', [UserController::class, 'deleteDoctor/$1']);
@@ -54,4 +56,6 @@ $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
     // $routes->post('reset-password', 'AuthController::attemptResetPassword');
 
     $routes->get('unauthorized', [AuthController::class, 'unauthorized']);
+
+    $routes->get('profile-picture', [UserController::class, 'profilePicture']);
 });

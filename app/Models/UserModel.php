@@ -49,7 +49,6 @@ class UserModel extends \Myth\Auth\Models\UserModel
                 ->orLike("CAST(patients.phone AS TEXT)", $params->search, 'both', null, true)
                 ->orLike("CAST(users.id AS TEXT)", $params->search, 'both', null, true)
                 ->groupEnd();
-
         }
 
         // Filter role
@@ -94,6 +93,7 @@ class UserModel extends \Myth\Auth\Models\UserModel
                 COALESCE(doctors.phone, patients.phone, 'N/A') as phone,
                 COALESCE(doctors.address, patients.address, 'N/A') as address,
                 COALESCE(doctors.sex, patients.sex, 'N/A') as sex,
+                COALESCE(doctors.profile_picture, patients.profile_picture, 'N/A') as profile_picture,
                 COALESCE(doctors.dob, patients.dob, '9999-01-01') as dob,
                 COALESCE(doctor_category.name, 'N/A') as doctor_category , 
                 COALESCE(doctor_category.id, '-1') as doctor_category_id , 

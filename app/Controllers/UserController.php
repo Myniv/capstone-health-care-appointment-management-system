@@ -62,6 +62,41 @@ class UserController extends BaseController
         return view('page/user/v_user_list', $data);
     }
 
+    public function profilePatient($id)
+    {
+        $user = $this->userModel->getUserWithFullName($id);
+
+        $data = [
+            'title' => 'Profile Patient',
+            'user' => $user
+        ];
+
+        d($user);
+        return view('page/user/v_user_patient_profile', $data);
+    }
+
+    public function profilePicture()
+    {
+        $path = $this->request->getGet('path');
+
+        // Sanitasi path untuk mencegah traversal direktori
+        $path = ltrim($path, '/');
+        $path = str_replace(['../', './'], '', $path);
+
+        // Tentukan file path lengkap
+        $filePath = WRITEPATH . $path;
+
+        // Periksa apakah path menunjuk ke file
+        if (!is_file($filePath)) {
+            return $this->response->setStatusCode(404, 'File Not Found')->setBody("File not found or not a valid file: $filePath");
+        }
+
+        // Kembalikan file dengan MIME type yang sesuai
+        return $this->response
+            ->setContentType(mime_content_type($filePath))
+            ->setBody(file_get_contents($filePath));
+    }
+
     public function createPatient()
     {
         $type = $this->request->getMethod();
