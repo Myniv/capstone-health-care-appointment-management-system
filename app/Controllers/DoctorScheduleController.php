@@ -146,6 +146,57 @@ class DoctorScheduleController extends BaseController
         return redirect()->to(base_url('admin/doctor-schedule'))->with('success', 'Data Berhasil Ditambahkan');
     }
 
+    public function checkAvailability()
+    {
+        // Enable CSRF protection for this request
+        $this->validateAjaxRequest();
+
+        // Get JSON data from request
+        $json = $this->request->getJSON(true);
+        $roomId = $json['room_id'] ?? '';
+        $startTime = $json['start_time'] ?? '';
+        $endTime = $json['end_time'] ?? '';
+        $scheduleId = $json['schedule_id'] ?? null; // For edit mode
+
+        // Format times for database comparison (adding today's date)
+        $date = date('Y-m-d');
+        $startDateTime = $date . ' ' . $startTime;
+        $endDateTime = $date . ' ' . $endTime;
+
+        // Query to check for conflicts
+        $query = $this->doctorScheduleModel->select('doctor_schedules.*')
+            ->where('room_id', $roomId)
+            ->groupStart()
+            ->where('start_time <', $endDateTime)
+            ->where('end_time >', $startDateTime)
+            ->groupEnd();
+
+        // Exclude current schedule if in edit mode
+        if ($scheduleId) {
+            $query->where('id !=', $scheduleId);
+        }
+
+        $result = $query->get();
+
+        $conflict = $result->getNumRows() > 0;
+
+        // Return JSON response
+        return $this->response->setJSON([
+            'conflict' => $conflict,
+            'message' => $conflict ? 'Room is already booked during this time.' : null
+        ]);
+    }
+
+    /**
+     * Validate AJAX request
+     */
+    private function validateAjaxRequest()
+    {
+        if (!$this->request->isAJAX()) {
+            return $this->response->setStatusCode(403)->setJSON(['error' => 'Direct access not allowed']);
+        }
+    }
+
     public function delete($id)
     {
         $this->doctorScheduleModel->delete($id);
