@@ -49,12 +49,12 @@ class CreateDoctorTable extends Migration
             ],
             'degree' => [
                 'type' => 'VARCHAR',
-                'constraint' => '20',
+                'constraint' => '150',
                 'null' => true
             ],
             'education' => [
                 'type' => 'VARCHAR',
-                'constraint' => '100',
+                'constraint' => '150',
                 'null' => true
             ],
             'profile_picture' => [

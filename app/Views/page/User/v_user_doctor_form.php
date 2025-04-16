@@ -117,6 +117,36 @@
                 <div class="text-error text-sm"><?= session('errors.dob') ?? '' ?></div>
             </div>
         </div>
+        <!-- degree and education -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+                <label for="degree" class="label">
+                    <span class="label-text">Degree</span>
+                </label>
+                <select name="degree"
+                    class="select select-bordered w-full <?= session('errors.degree') ? 'select-error' : '' ?>"
+                    required>
+                    <option value="">Select Degree</option>
+                    <option value="Bachelor" <?= old('degree', $user->degree ?? '') == 'Bachelor' ? 'selected' : '' ?>>
+                        Bachelor</option>
+                    <option value="Master" <?= old('degree', $user->degree ?? '') == 'Master' ? 'selected' : '' ?>>
+                        Master</option>
+                    <option value="Doctor" <?= old('degree', $user->degree ?? '') == 'Doctor' ? 'selected' : '' ?>>
+                        Doctor</option>
+                </select>
+                <div class="text-error text-sm"><?= session('errors.degree') ?? '' ?></div>
+            </div>
+
+            <div>
+                <label for="education" class="label">
+                    <span class="label-text">University</span>
+                </label>
+                <input type="text" name="education"
+                    class="input input-bordered w-full <?= session('errors.education') ? 'input-error' : '' ?>"
+                    value="<?= old('education', $user->education ?? '') ?>">
+                <div class="text-error text-sm"><?= session('errors.education') ?? '' ?></div>
+            </div>
+        </div>
 
         <!-- Doctor Category -->
         <div class="mb-4">

@@ -62,6 +62,41 @@ class UserController extends BaseController
         return view('page/user/v_user_list', $data);
     }
 
+    public function profilePatient($id)
+    {
+        $user = $this->userModel->getUserWithFullName($id);
+
+        $data = [
+            'title' => 'Profile Patient',
+            'user' => $user
+        ];
+
+        d($user);
+        return view('page/user/v_user_patient_profile', $data);
+    }
+
+    public function profilePicture()
+    {
+        $path = $this->request->getGet('path');
+
+        // Sanitasi path untuk mencegah traversal direktori
+        $path = ltrim($path, '/');
+        $path = str_replace(['../', './'], '', $path);
+
+        // Tentukan file path lengkap
+        $filePath = WRITEPATH . $path;
+
+        // Periksa apakah path menunjuk ke file
+        if (!is_file($filePath)) {
+            return $this->response->setStatusCode(404, 'File Not Found')->setBody("File not found or not a valid file: $filePath");
+        }
+
+        // Kembalikan file dengan MIME type yang sesuai
+        return $this->response
+            ->setContentType(mime_content_type($filePath))
+            ->setBody(file_get_contents($filePath));
+    }
+
     public function createPatient()
     {
         $type = $this->request->getMethod();
@@ -313,6 +348,8 @@ class UserController extends BaseController
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
             'dob' => 'required|valid_date',
+            'degree' => 'required|max_length[150]',
+            'education' => 'required|max_length[150]',
             'profile_picture' => [
                 'label' => 'Gambar',
                 'rules' => [
@@ -360,6 +397,8 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
+            'degree' => $this->request->getPost('degree'),
+            'education' => $this->request->getPost('education'),
             'email' => $user->email,
             'profile_picture' => '',
             'doctor_category_id' => $this->request->getPost('doctor_category_id'),
@@ -430,6 +469,8 @@ class UserController extends BaseController
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
             'dob' => 'required|valid_date',
+            'degree' => 'required|max_length[150]',
+            'education' => 'required|max_length[150]',
             'doctor_category_id' => 'required',
             'profile_picture' => [
                 'label' => 'Gambar',
@@ -486,8 +527,9 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
+            'degree' => $this->request->getPost('degree'),
+            'education' => $this->request->getPost('education'),
             'doctor_category_id' => $this->request->getPost('doctor_category_id'),
-            'profile_picture' => '',
         ];
 
         $profilePicture = $this->request->getFile('profile_picture');

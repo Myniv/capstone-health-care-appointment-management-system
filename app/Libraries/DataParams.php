@@ -16,6 +16,9 @@ class DataParams
     //User Filter
     public $role = '';
 
+    //DoctorCategoryFilter
+    public $doctor_category = '';
+
 
     public $sort = 'id';
     public $order = 'asc';
