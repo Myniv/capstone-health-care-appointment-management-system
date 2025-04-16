@@ -5,15 +5,18 @@ namespace App\Controllers;
 use App\Controllers\BaseController;
 use App\Libraries\DataParams;
 use App\Models\AppointmentModel;
+use App\Models\DoctorModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class AppointmentController extends BaseController
 {
     protected $appointmentModel;
+    protected $doctorModel;
 
     public function __construct()
     {
         $this->appointmentModel = new AppointmentModel();
+        $this->doctorModel = new DoctorModel();
     }
 
     public function index()
@@ -42,5 +45,23 @@ class AppointmentController extends BaseController
             'baseUrl' => base_url('appointment'),
         ];
         return view('page/appointment/v_appointment_list', $data);
+    }
+
+    public function createAppointment()
+    {
+        $type = $this->request->getMethod();
+        if ($type == "GET") {
+            $data['doctors'] = $this->doctorModel->findAll();
+            return view('page/appointment/v_appointment_doctor_list', $data);
+        }
+
+
+        return redirect()->to('doctor/absent')->with('success', 'Doctor Absent Requested');
+    }
+
+    public function createAppointmentForm($id)
+    {
+        $data['id'] = $id;
+        return view('page/appointment/v_appointment_form', $data);
     }
 }

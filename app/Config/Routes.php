@@ -37,6 +37,8 @@ $routes->group('doctor', [], function ($routes) {
 
 $routes->group('appointment', [], function ($routes) {
     $routes->get('', [AppointmentController::class, 'index']);
+    $routes->get('create', [AppointmentController::class, 'createAppointment']);
+    $routes->get('create/(:num)', [AppointmentController::class, 'createAppointmentForm']);
 });
 
 
