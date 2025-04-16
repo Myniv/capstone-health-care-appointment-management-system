@@ -31,6 +31,7 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->get('doctor-schedule', [DoctorScheduleController::class, 'index']);
     $routes->match(['get', 'post'], 'doctor-schedule/create', [DoctorScheduleController::class, 'create']);
     $routes->match(['get', 'put'], 'doctor-schedule/update/(:num)', [DoctorScheduleController::class, 'update']);
+    $routes->post('doctor-schedule/check-availability', [DoctorScheduleController::class, 'checkAvailability']);
     $routes->delete('doctor-schedule/delete/(:num)', [DoctorScheduleController::class, 'delete/$1']);
 });
 
