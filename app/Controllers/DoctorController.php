@@ -71,11 +71,13 @@ class DoctorController extends BaseController
             'reason' => $this->request->getPost('reason'),
         ];
 
+        $result = $this->doctorAbsentModel->addAbsent($data);
 
-        if (!$this->doctorAbsentModel->save($data)) {
-            return redirect()->back()->withInput()->with('errors', $this->doctorAbsentModel->errors());
+        if (isset($result['error'])) {
+            // Pass error message and old input back to the form
+            return redirect()->back()->withInput()->with('error', $result['error']);
         }
 
-        return redirect()->to('doctor/absent')->with('success', 'Doctor Absent Requested');
+        return redirect()->to(base_url('doctor/absent'))->with('success', 'Doctor absent requested.');
     }
 }

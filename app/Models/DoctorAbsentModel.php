@@ -94,4 +94,18 @@ class DoctorAbsentModel extends Model
             'pager' => $this->pager
         ];
     }
+
+    public function addAbsent($data)
+    {
+        if (!$data['date']) {
+            return ['error' => 'Date must be filled.'];
+        }
+
+        if (!$data['reason']) {
+            return ['error' => 'Reason must be filled.'];
+        }
+
+        $this->save($data);
+        return ['success' => 'Absent successfully requested.'];
+    }
 }

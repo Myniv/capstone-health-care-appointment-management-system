@@ -6,17 +6,22 @@ use App\Controllers\BaseController;
 use App\Libraries\DataParams;
 use App\Models\AppointmentModel;
 use App\Models\DoctorModel;
+use App\Models\DoctorScheduleModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use DateTime;
 
 class AppointmentController extends BaseController
 {
     protected $appointmentModel;
     protected $doctorModel;
+    protected $doctorScheduleModel;
+
 
     public function __construct()
     {
         $this->appointmentModel = new AppointmentModel();
         $this->doctorModel = new DoctorModel();
+        $this->doctorScheduleModel = new DoctorScheduleModel();
     }
 
     public function index()
@@ -59,9 +64,13 @@ class AppointmentController extends BaseController
         return redirect()->to('doctor/absent')->with('success', 'Doctor Absent Requested');
     }
 
-    public function createAppointmentForm($id)
+    public function createAppointmentForm()
     {
-        $data['id'] = $id;
+        $doctor = $this->doctorModel->find($this->request->getVar('id'));
+        $data['doctor'] = $doctor;
+        $data['schedule'] = $this->request->getVar('schedule') ?? 0;
+        $data['date'] = $this->request->getVar('date') ?? (new DateTime())->format('Y-m-d');
+        $data['doctor_schedule'] = $this->doctorScheduleModel->where('doctor_id', $this->request->getVar('id'))->where('status', 'active')->findAll();
         return view('page/appointment/v_appointment_form', $data);
     }
 }
