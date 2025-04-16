@@ -45,6 +45,16 @@
                     Doctor Schedule
                 </a>
             </li>
+            <li>
+                <a href="/admin/equipment" class="active:bg-primary active:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4m0 4h.01M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M12 2a10 10 0 100 20 10 10 0 000-20z" />
+                    </svg>
+                    Equipments
+                </a>
+            </li>
         <?php endif; ?>
 
         <?php if (in_groups(Roles::DOCTOR)): ?>
