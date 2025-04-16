@@ -60,9 +60,17 @@ class AppointmentController extends BaseController
             return view('page/appointment/v_appointment_doctor_list', $data);
         }
 
+        dd($this->request->getVar());
+
 
         return redirect()->to('doctor/absent')->with('success', 'Doctor Absent Requested');
     }
+
+    public function createAppointmentSubmit()
+    {
+        dd($this->request->getVar());
+    }
+
 
     public function createAppointmentForm()
     {
@@ -70,7 +78,12 @@ class AppointmentController extends BaseController
         $data['doctor'] = $doctor;
         $data['schedule'] = $this->request->getVar('schedule') ?? 0;
         $data['date'] = $this->request->getVar('date') ?? (new DateTime())->format('Y-m-d');
-        $data['doctor_schedule'] = $this->doctorScheduleModel->where('doctor_id', $this->request->getVar('id'))->where('status', 'active')->findAll();
+        $data['doctor_schedule'] = $this->doctorScheduleModel
+            ->where('doctor_id', $this->request->getVar('id'))
+            ->where('status', 'active')
+            ->findAll();
+        $data['reason'] = $this->request->getVar('reason') ?? '';
+
         return view('page/appointment/v_appointment_form', $data);
     }
 }
