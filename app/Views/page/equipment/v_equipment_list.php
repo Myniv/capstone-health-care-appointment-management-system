@@ -99,7 +99,7 @@
 
     <!-- Pagination -->
     <div class="mt-8 text-center">
-        <?= $pager->links('doctor_absent', 'custom_pager') ?>
+        <?= $pager->links('equipments', 'custom_pager') ?>
         <div class="mt-2">
             <small>Show <?= count($equipments) ?> of <?= $total ?> total data (Page <?= $params->page ?>)</small>
         </div>
