@@ -34,6 +34,7 @@ class UserController extends BaseController
             return redirect()->to('/');
         }
     }
+
     public function index()
     {
         $params = new DataParams([
@@ -48,7 +49,6 @@ class UserController extends BaseController
         ]);
 
         $result = $this->userModel->getFilteredUser($params);
-        // dd($result);
 
         $data = [
             'users' => $result['users'],
@@ -62,6 +62,23 @@ class UserController extends BaseController
         return view('page/user/v_user_list', $data);
     }
 
+    public function dashboard()
+    {
+        d($this->userModel);
+        $users = $this->userModel->countAllResults();
+        $doctors = $this->doctorModel->countAllResults();
+        $patients = $this->patientModel->countAllResults();
+
+        $data = [
+            'title' => 'Dashboard Admin',
+            'users' => $users,
+            'doctors' => $doctors,
+            'patients' => $patients
+        ];
+
+        return view('page/user/v_user_dashboard_admin', $data);
+    }
+
     public function profile($id)
     {
         $user = $this->userModel->getUserWithFullName($id);
@@ -71,7 +88,6 @@ class UserController extends BaseController
             'user' => $user
         ];
 
-        d($user);
         return view('page/user/v_user_profile', $data);
     }
 

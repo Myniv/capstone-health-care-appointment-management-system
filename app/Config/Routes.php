@@ -16,6 +16,8 @@ use Config\Roles;
 $routes->get('/', 'Home::index');
 
 $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes) {
+    $routes->get('dashboard', [UserController::class, 'dashboard']);
+
     $routes->get('users', [UserController::class, 'index']);
     $routes->get('users/patient/profile/(:num)', [UserController::class, 'profile/$1']);
     $routes->match(['get', 'post'], 'users/patient/create', [UserController::class, 'createPatient']);
@@ -49,12 +51,11 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->delete('room/delete/(:num)', [RoomController::class, 'delete/$1']);
 });
 
-
 $routes->group('doctor', [], function ($routes) {
+    $routes->get('dashboard', [DoctorController::class, 'dashboard']);
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
     $routes->match(['get', 'post'], 'absent/create', [DoctorController::class, 'createDoctorAbsent']);
 });
-
 
 //Auth routes
 $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
