@@ -7,6 +7,7 @@ use App\Libraries\DataParams;
 use App\Models\DoctorCategoryModel;
 use App\Models\DoctorModel;
 use App\Models\DoctorScheduleModel;
+use App\Models\RoomModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class DoctorScheduleController extends BaseController
@@ -20,7 +21,7 @@ class DoctorScheduleController extends BaseController
         $this->doctorCategoryModel = new DoctorCategoryModel();
         $this->doctorScheduleModel = new DoctorScheduleModel();
         $this->doctorModel = new DoctorModel();
-        // $this->roomModel = new RoomModel();
+        $this->roomModel = new RoomModel();
     }
 
     public function index()
@@ -56,20 +57,7 @@ class DoctorScheduleController extends BaseController
         $type = $this->request->getMethod();
         if ($type == "GET") {
             $doctor = $this->doctorModel->findAll();
-            $rooms = [
-                [
-                    'id' => 1,
-                    'name' => 'Room 1'
-                ],
-                [
-                    'id' => 2,
-                    'name' => 'Room 2'
-                ],
-                [
-                    'id' => 3,
-                    'name' => 'Room 3'
-                ],
-            ];
+            $rooms = $this->roomModel->findAll();
 
             $data = [
                 'doctors' => $doctor,
@@ -104,20 +92,7 @@ class DoctorScheduleController extends BaseController
         if ($type == "GET") {
             $doctor_schedule = $this->doctorScheduleModel->find($id);
             $doctor = $this->doctorModel->findAll();
-            $rooms = [
-                [
-                    'id' => 1,
-                    'name' => 'Room 1'
-                ],
-                [
-                    'id' => 2,
-                    'name' => 'Room 2'
-                ],
-                [
-                    'id' => 3,
-                    'name' => 'Room 3'
-                ],
-            ];
+            $rooms = $this->roomModel->findAll();
 
             $data = [
                 'schedule' => $doctor_schedule,
@@ -194,6 +169,46 @@ class DoctorScheduleController extends BaseController
     {
         if (!$this->request->isAJAX()) {
             return $this->response->setStatusCode(403)->setJSON(['error' => 'Direct access not allowed']);
+        }
+    }
+
+    public function getRoomSchedules($roomId)
+    {
+        try {
+            // Simplify the query first to see if it works
+            $schedules = $this->doctorScheduleModel
+                ->where('room_id', $roomId)
+                ->findAll();
+
+            // Then add doctor names if needed
+            $doctorIds = array_column($schedules, 'doctor_id');
+            $doctors = [];
+
+            if (!empty($doctorIds)) {
+                $doctorResults = $this->doctorModel->whereIn('id', $doctorIds)->findAll();
+                foreach ($doctorResults as $doctor) {
+                    $doctors[$doctor->id] = $doctor->first_name . ' ' . $doctor->last_name;
+                }
+            }
+
+            // Format the schedules with doctor names
+            foreach ($schedules as &$schedule) {
+                $schedule->doctor_name = $doctors[$schedule->doctor_id] ?? 'Unknown Doctor';
+                $schedule->start_time = date('H:i', strtotime($schedule->start_time));
+                $schedule->end_time = date('H:i', strtotime($schedule->end_time));
+            }
+
+            return $this->response->setJSON([
+                'success' => true,
+                'schedules' => $schedules
+            ]);
+        } catch (\Exception $e) {
+            log_message('error', 'Error in getRoomSchedules: ' . $e->getMessage());
+
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'error' => 'Failed to fetch room schedules: ' . $e->getMessage()
+            ]);
         }
     }
 
