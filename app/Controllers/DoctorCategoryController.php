@@ -71,6 +71,8 @@ class DoctorCategoryController extends BaseController
             'description' => $this->request->getPost('description'),
         ];
 
+        $this->doctorCategoryModel->setValidationRule('name', "required|is_unique[doctor_category.name,id,{$id}]");
+
         if (!$this->doctorCategoryModel->update($id, $data)) {
             return redirect()->back()->withInput()->with('errors', $this->doctorCategoryModel->errors());
         }
