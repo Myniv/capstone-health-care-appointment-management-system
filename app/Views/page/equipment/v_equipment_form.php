@@ -25,17 +25,6 @@
                 <div class="text-error text-sm"><?= session('errors.name') ?? '' ?></div>
             </div>
 
-            <!-- Function -->
-            <div>
-                <label for="function" class="label">
-                    <span class="label-text">Function</span>
-                </label>
-                <input type="text" name="function"
-                    class="input input-bordered w-full <?= session('errors.function') ? 'input-error' : '' ?>"
-                    value="<?= old('function', $equipment->function ?? '') ?>" maxlength="100" required />
-                <div class="text-error text-sm"><?= session('errors.function') ?? '' ?></div>
-            </div>
-
             <!-- Stock -->
             <div>
                 <label for="stock" class="label">
@@ -46,24 +35,21 @@
                     value="<?= old('stock', $equipment->stock ?? '') ?>" maxlength="11" min="0" required />
                 <div class="text-error text-sm"><?= session('errors.stock') ?? '' ?></div>
             </div>
-
-            <!-- Status -->
-            <div>
-                <label for="status" class="label">
-                    <span class="label-text">Maintenance?</span>
-                </label>
-                <select name="status"
-                    class="select select-bordered w-full <?= session('errors.status') ? 'select-error' : '' ?>"
-                    required>
-                    <option value="" <?= old('status', $equipment->status ?? '') == '' ? 'selected' : '' ?>>No
-                    </option>
-                    <option value="Maintenance" <?= old('status', $equipment->status ?? '') == 'Maintenance' ? 'selected' : '' ?>>Yes</option>
-                </select>
-            </div>
+        </div>
+        
+        <!-- Function -->
+        <div>
+            <label for="function" class="label">
+                <span class="label-text">Function</span>
+            </label>
+            <input type="text" name="function"
+                class="input input-bordered w-full <?= session('errors.function') ? 'input-error' : '' ?>"
+                value="<?= old('function', $equipment->function ?? '') ?>" maxlength="100" required />
+            <div class="text-error text-sm"><?= session('errors.function') ?? '' ?></div>
         </div>
 
         <!-- Submit Button -->
-        <div class="text-end">
+        <div class="text-end mt-4">
             <button type="submit" class="btn btn-primary">
                 <?= isset($equipment) ? 'Update' : 'Add' ?> Equipment
             </button>

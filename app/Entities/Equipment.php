@@ -25,9 +25,7 @@ class Equipment extends Entity
 
     public function setStatus($value)
     {
-        if ($value === 'Maintenance') {
-            $this->attributes['status'] = 'Maintenance';
-        } else if ($value === '' || $value === null) {
+        if ($value === '' || $value === null) {
             if ((int) $this->attributes['stock'] === 0) {
                 $this->attributes['status'] = 'Out Of Stock';
             } else {
@@ -36,7 +34,6 @@ class Equipment extends Entity
         } else {
             $this->attributes['status'] = $value; // fallback
         }
-
         return $this;
     }
 

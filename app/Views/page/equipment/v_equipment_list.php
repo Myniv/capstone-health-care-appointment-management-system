@@ -18,6 +18,15 @@
         </div>
 
         <div class="form-control w-full md:w-1/6">
+            <select class="select select-bordered" name="status" id="role" required onchange="this.form.submit()">
+                <option value="">Status</option>
+                <option value="Available" <?= ($params->status == 'Available') ? 'selected' : '' ?>>Available</option>
+                <option value="Out Of Stock" <?= ($params->status == 'Out Of Stock') ? 'selected' : '' ?>>Out Of Stock
+                </option>
+            </select>
+        </div>
+
+        <div class="form-control w-full md:w-1/6">
             <select name="perPage" class="select select-bordered" onchange="this.form.submit()">
                 <option value="2" <?= ($params->perPage == 2) ? 'selected' : '' ?>>2 per Page</option>
                 <option value="5" <?= ($params->perPage == 5) ? 'selected' : '' ?>>5 per Page</option>

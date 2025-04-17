@@ -9,15 +9,14 @@ class DataParams
     //Date Filter
     public $date = '';
 
-    //Product Filter
-    public $price_range = '';
-    public $category_id = '';
-
     //User Filter
     public $role = '';
 
     //DoctorCategoryFilter
     public $doctor_category = '';
+
+    //Status Filter
+    public $status = '';
 
 
     public $sort = 'id';
@@ -31,6 +30,8 @@ class DataParams
         $this->date = $params['date'] ?? '';
 
         $this->role = $params['role'] ?? '';
+
+        $this->status = $params['status'] ?? '';
 
         $this->sort = $params['sort'] ?? 'id';
         $this->order = $params['order'] ?? 'asc';
@@ -46,6 +47,8 @@ class DataParams
             'date' => $this->date,
 
             'role' => $this->role,
+
+            'status' => $this->status,
 
             'sort' => $this->sort,
             'order' => $this->order,

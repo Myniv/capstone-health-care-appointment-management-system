@@ -42,7 +42,7 @@ class EquipmentModel extends Model
         'name' => 'required|max_length[100]',
         'function' => 'required|max_length[100]',
         'stock' => 'required|is_natural|max_length[11]',
-        'status' => 'required|max_length[20]',
+        'status' => 'required|in_list[Available,Out Of Stock]',
     ];
     protected $validationMessages = [
         'name' => [
@@ -60,7 +60,7 @@ class EquipmentModel extends Model
         ],
         'status' => [
             'required' => 'The status field is required.',
-            'max_length' => 'The status must not exceed 20 characters.',
+            'in_list' => 'The status must be either "Available" or "Out Of Stock".',
         ],
     ];
 
@@ -90,6 +90,10 @@ class EquipmentModel extends Model
                 ->orWhere('CAST(equipments.id AS TEXT) LIKE', "%$params->search%")
                 ->orWhere('CAST(equipments.stock AS TEXT) LIKE', "%$params->search%")
                 ->groupEnd();
+        }
+
+        if (!empty($params->status)) {
+            $this->where('equipments.status', $params->status);
         }
 
         $allowedSort = [

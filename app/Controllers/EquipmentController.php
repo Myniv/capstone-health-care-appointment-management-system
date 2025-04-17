@@ -18,6 +18,8 @@ class EquipmentController extends BaseController
     public function index()
     {
         $params = new DataParams([
+            'status' => $this->request->getGet("status"),
+
             "search" => $this->request->getGet("search"),
             "sort" => $this->request->getGet("sort"),
             "order" => $this->request->getGet("order"),
@@ -49,7 +51,7 @@ class EquipmentController extends BaseController
             'name' => $this->request->getPost('name'),
             'function' => $this->request->getPost('function'),
             'stock' => $this->request->getPost('stock'),
-            'status' => $this->request->getPost('status'),
+            'status' => ''
         ];
 
         $dataEquipment = new Equipment($data);
@@ -78,7 +80,7 @@ class EquipmentController extends BaseController
             'name' => $this->request->getPost('name'),
             'function' => $this->request->getPost('function'),
             'stock' => $this->request->getPost('stock'),
-            'status' => $this->request->getPost('status'),
+            'status' => ''
         ];
 
         $dataEquipment = new Equipment($data);
