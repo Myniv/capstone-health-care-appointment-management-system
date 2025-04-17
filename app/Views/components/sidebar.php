@@ -45,35 +45,36 @@
                     Doctor Schedule
                 </a>
             </li>
-            <li>
-                <a href="/admin/equipment" class="active:bg-primary active:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4m0 4h.01M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M12 2a10 10 0 100 20 10 10 0 000-20z" />
-                    </svg>
-                    Equipments
-                </a>
-            </li>
-            <li>
-                <a href="/admin/inventory" class="active:bg-primary active:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4m0 4h.01M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M12 2a10 10 0 100 20 10 10 0 000-20z" />
-                    </svg>
-                    Inventories
-                </a>
-            </li>
-            <li>
-                <a href="/admin/room" class="active:bg-primary active:text-white">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 8v4m0 4h.01M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M12 2a10 10 0 100 20 10 10 0 000-20z" />
-                    </svg>
-                    Rooms
-                </a>
+            <?php
+            $uri = uri_string();
+            $isResourcesActive = str_contains($uri, 'admin/equipment') || str_contains($uri, 'admin/inventory') || str_contains($uri, 'admin/room');
+            ?>
+            <li class="hoverable">
+                <details class="group" <?= $isResourcesActive ? 'open' : '' ?>>
+                    <summary
+                        class="flex items-center cursor-pointer px-4 py-2 rounded-lg <?= $isResourcesActive ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5h6M9 12h6m-6 7h6" />
+                        </svg>
+                        Resources
+                    </summary>
+                    <ul class="pl-6">
+                        <li>
+                            <a href="/admin/equipment"
+                                class="<?= current_url() === base_url('/admin/equipment') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Equipments</a>
+                        </li>
+                        <li>
+                            <a href="/admin/inventory"
+                                class="<?= current_url() === base_url('/admin/inventory') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Inventories</a>
+                        </li>
+                        <li>
+                            <a href="/admin/room"
+                                class="<?= current_url() === base_url('/admin/room') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Rooms</a>
+                        </li>
+                    </ul>
+                </details>
             </li>
         <?php endif; ?>
 
