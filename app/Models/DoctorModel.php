@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Entities\Doctor;
+use App\Libraries\DataParams;
 use CodeIgniter\Model;
+use Config\Roles;
 
 class DoctorModel extends Model
 {
@@ -116,5 +118,30 @@ class DoctorModel extends Model
     public function getDoctorByUserId($userId)
     {
         return $this->where('user_id', $userId)->first();
+    }
+
+    public function getFilteredDoctors(DataParams $params)
+    {
+        $this->select('doctors.*');
+        if (!empty($params->search)) {
+            $this->where("first_name ILIKE '%" . $params->search . "%'")
+                ->orWhere("last_name ILIKE '%" . $params->search . "%'");
+        }
+
+        $allowedSort = [
+            'id',
+            'first_name',
+        ];
+
+        $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'id';
+        $order = ($params->order === 'desc') ? 'DESC' : 'ASC';
+
+        $this->orderBy($sort, $order);
+
+        return [
+            'doctors' => $this->paginate($params->perPage, 'doctors', $params->page),
+            'total' => $this->countAllResults(),
+            'pager' => $this->pager
+        ];
     }
 }

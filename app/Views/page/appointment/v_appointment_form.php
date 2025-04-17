@@ -5,6 +5,17 @@
   <!-- <h2 class="text-2xl font-bold mb-4"></h2> -->
   <h2 class="text-2xl font-bold mb-4">Create Appointment</h2>
 
+  <?php if (session('errors')) : ?>
+    <div class="alert alert-error mb-4">
+      <ul>
+        <?php foreach (session('errors') as $error) : ?>
+          <li>! <?= $error ?></li>
+        <?php endforeach ?>
+      </ul>
+    </div>
+
+  <?php endif ?>
+
   <p class="text-gray-500/75 font-semibold mb-2">Doctor Information</p>
   <div class="card card-border bg-base-100 mb-4">
     <div class="card-body">
@@ -20,14 +31,12 @@
   </div>
 
   <form
-    action="<?= base_url('appointment/create/submit') ?>"
-    method="post"
+    action="<?= base_url('appointment/create/form') ?>"
+    method="get"
     enctype="multipart/form-data"
     id="appointmentForm"
     novalidate>
-    <?= csrf_field() ?>
 
-    <input type="hidden" name="_method" value="POST">
     <input type="hidden" name="id" value="<?= $doctor->id; ?>">
     <input type="hidden" name="schedule" id="scheduleInput" value="<?= old('schedule', $schedule ?? '') ?>">
     <input type="hidden" name="date" id="dateInput" value="<?= old('date', $date ?? '') ?>">
@@ -41,24 +50,28 @@
         <input
           type="date"
           id="dateDisplay"
+          name="date"
           class="input input-bordered w-full"
           value="<?= old('date', $date ?? '') ?>"
-          onchange="document.getElementById('dateInput').value = this.value"
-          required />
+          min="<?= date('Y-m-d'); ?>"
+          onchange="this.form.submit()" />
       </div>
 
       <div class="grid gap-2">
         <label class="label">
-          <span class="label-text">Time</span>
+          <span class="label-text">Available Time</span>
         </label>
         <div class="flex gap-2 flex-wrap w-1/2">
+
           <?php if ($doctor_schedule): ?>
             <?php foreach ($doctor_schedule as $row): ?>
               <?php $isSelected = old('schedule', $schedule ?? '') == $row->id; ?>
+              <?php $isFull = $row->full == 1; ?>
               <button
                 type="button"
                 class="btn <?= $isSelected ? 'btn-primary text-white' : 'btn-outline' ?> time-btn"
                 data-id="<?= $row->id ?>"
+                <?= $isFull ? 'disabled' : '' ?>
                 onclick="selectSchedule(this)">
                 <?= date('g:i A', strtotime($row->start_time)) ?> -
                 <?= date('g:i A', strtotime($row->end_time)) ?>
@@ -83,7 +96,7 @@
 
     <!-- Submit Button -->
     <div class="text-end mt-4">
-      <button type="submit" class="btn btn-primary">Create</button>
+      <button type="submit" formaction="<?= base_url('appointment/create/submit') ?>" formmethod="post" class="btn btn-primary">Create</button>
       <a href="/appointment/create" class="btn btn-secondary">Cancel</a>
     </div>
   </form>
@@ -99,8 +112,9 @@
 
     // Update hidden inputs
     const scheduleId = button.getAttribute('data-id');
+
     document.getElementById('scheduleInput').value = scheduleId;
-    document.getElementById('dateInput').value = date;
+    //document.getElementById('dateInput').value = date;
 
     // Visually update buttons
     const allButtons = document.querySelectorAll('.time-btn');

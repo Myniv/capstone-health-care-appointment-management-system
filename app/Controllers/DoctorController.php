@@ -41,10 +41,6 @@ class DoctorController extends BaseController
         $result = $this->doctorAbsentModel->getSortedDoctorAbsent($params);
 
         $data = [
-            'doctor_absent' => $result,
-        ];
-
-        $data = [
             'doctor_absent' => $result['doctor_absent'],
             'pager' => $result['pager'],
             'total' => $result['total'],

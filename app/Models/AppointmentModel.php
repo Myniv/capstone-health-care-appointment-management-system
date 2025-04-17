@@ -40,8 +40,31 @@ class AppointmentModel extends Model
     //protected $deletedField  = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [];
-    protected $validationMessages   = [];
+    protected $validationRules      = [
+        'doctor_schedule_id' => 'required',
+        'doctor_id' => 'required',
+        'room_id' => 'required',
+        'date' => 'required',
+        'reason_for_visit' => 'required|max_length[100]',
+    ];
+    protected $validationMessages   = [
+        'doctor_schedule_id' => [
+            'required' => 'Time must be choosen.',
+        ],
+        'doctor_id' => [
+            'required' => 'Doctor is required.',
+        ],
+        'room_id' => [
+            'required' => 'Room is required.',
+        ],
+        'date' => [
+            'required' => 'Date is required.',
+        ],
+        'reason_for_visit' => [
+            'required' => 'Needs must be filled.',
+            'max_length' => 'Needs must be less than 100 characters.',
+        ],
+    ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
@@ -97,5 +120,10 @@ class AppointmentModel extends Model
             'total' => $this->countAllResults(),
             'pager' => $this->pager
         ];
+    }
+
+    public function addAppointment($data)
+    {
+        $this->save($data);
     }
 }
