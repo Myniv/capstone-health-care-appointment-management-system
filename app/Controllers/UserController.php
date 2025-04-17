@@ -62,17 +62,17 @@ class UserController extends BaseController
         return view('page/user/v_user_list', $data);
     }
 
-    public function profilePatient($id)
+    public function profile($id)
     {
         $user = $this->userModel->getUserWithFullName($id);
 
         $data = [
-            'title' => 'Profile Patient',
+            'title' => 'Profile',
             'user' => $user
         ];
 
         d($user);
-        return view('page/user/v_user_patient_profile', $data);
+        return view('page/user/v_user_profile', $data);
     }
 
     public function profilePicture()
@@ -406,7 +406,7 @@ class UserController extends BaseController
         $profilePicture = $this->request->getFile('profile_picture');
         if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {
 
-            $uploadPath = WRITEPATH . 'uploads/' . 'patients/' . $userId . '/' . 'profile_picture' . '/';
+            $uploadPath = WRITEPATH . 'uploads/' . 'doctors/' . $userId . '/' . 'profile_picture' . '/';
 
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
