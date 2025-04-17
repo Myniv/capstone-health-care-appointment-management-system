@@ -34,6 +34,7 @@ class UserController extends BaseController
             return redirect()->to('/');
         }
     }
+
     public function index()
     {
         $params = new DataParams([
@@ -48,7 +49,6 @@ class UserController extends BaseController
         ]);
 
         $result = $this->userModel->getFilteredUser($params);
-        // dd($result);
 
         $data = [
             'users' => $result['users'],
@@ -60,6 +60,57 @@ class UserController extends BaseController
         ];
 
         return view('page/user/v_user_list', $data);
+    }
+
+    public function dashboard()
+    {
+        d($this->userModel);
+        $users = $this->userModel->countAllResults();
+        $doctors = $this->doctorModel->countAllResults();
+        $patients = $this->patientModel->countAllResults();
+
+        $data = [
+            'title' => 'Dashboard Admin',
+            'users' => $users,
+            'doctors' => $doctors,
+            'patients' => $patients
+        ];
+
+        return view('page/user/v_user_dashboard_admin', $data);
+    }
+
+    public function profile($id)
+    {
+        $user = $this->userModel->getUserWithFullName($id);
+
+        $data = [
+            'title' => 'Profile',
+            'user' => $user
+        ];
+
+        return view('page/user/v_user_profile', $data);
+    }
+
+    public function profilePicture()
+    {
+        $path = $this->request->getGet('path');
+
+        // Sanitasi path untuk mencegah traversal direktori
+        $path = ltrim($path, '/');
+        $path = str_replace(['../', './'], '', $path);
+
+        // Tentukan file path lengkap
+        $filePath = WRITEPATH . $path;
+
+        // Periksa apakah path menunjuk ke file
+        if (!is_file($filePath)) {
+            return $this->response->setStatusCode(404, 'File Not Found')->setBody("File not found or not a valid file: $filePath");
+        }
+
+        // Kembalikan file dengan MIME type yang sesuai
+        return $this->response
+            ->setContentType(mime_content_type($filePath))
+            ->setBody(file_get_contents($filePath));
     }
 
     public function createPatient()
@@ -371,7 +422,7 @@ class UserController extends BaseController
         $profilePicture = $this->request->getFile('profile_picture');
         if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {
 
-            $uploadPath = WRITEPATH . 'uploads/' . 'patients/' . $userId . '/' . 'profile_picture' . '/';
+            $uploadPath = WRITEPATH . 'uploads/' . 'doctors/' . $userId . '/' . 'profile_picture' . '/';
 
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0777, true);

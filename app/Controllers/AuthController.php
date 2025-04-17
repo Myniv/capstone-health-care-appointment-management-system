@@ -159,10 +159,10 @@ class AuthController extends MythController
         foreach ($userGroups as $group) {
             if ($group['name'] === Roles::ADMIN) {
                 //dashboard admin
-                return redirect()->to('/dashboard');
+                return redirect()->to('/admin/dashboard');
             } else if ($group['name'] === Roles::DOCTOR) {
                 //dashboard doctor
-                return redirect()->to('/dashboard');
+                return redirect()->to('/doctor/dashboard');
             } else if ($group['name'] === Roles::PATIENT) {
                 //dashboard patient
                 return redirect()->to('/');
