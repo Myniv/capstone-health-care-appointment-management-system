@@ -36,14 +36,10 @@ class AppointmentController extends BaseController
             "sort" => $this->request->getGet("sort"),
             "order" => $this->request->getGet("order"),
             "perPage" => $this->request->getGet("perPage"),
-            "page" => $this->request->getGet("page_users"),
+            "page" => $this->request->getGet("page_appointment"),
         ]);
 
         $result = $this->appointmentModel->getSortedAppointment($params);
-
-        $data = [
-            'appointment' => $result,
-        ];
 
         $data = [
             'appointment' => $result['appointment'],

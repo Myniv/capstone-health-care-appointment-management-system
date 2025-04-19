@@ -81,18 +81,28 @@ class AppointmentModel extends Model
 
     public function getSortedAppointment(DataParams $params)
     {
+        $this->select('appointments.id, 
+            patients.first_name as patientFirstName, 
+            patients.last_name as patientLastName,
+            doctor_schedules.start_time as startTime,
+            doctor_schedules.end_time as endTime,
+            doctors.first_name as doctorFirstName,
+            doctors.last_name as doctorLastName,
+            rooms.name as roomName,
+            appointments.date as date,
+            appointments.status as status');
+
+        $this->join('doctor_schedules', 'doctor_schedules.id = appointments.doctor_schedule_id');
+        $this->join('rooms', 'rooms.id = doctor_schedules.room_id');
 
         if (Roles::PATIENT) {
-            $this->join('patients', 'patients.id = appointments.patient_id')
-                ->where('patients.user_id', user_id());
+            $this->join('patients', 'patients.id = appointments.patient_id');
         }
 
         if (Roles::DOCTOR) {
-            $this->join('doctors', 'doctors.id = appointments.doctor_id')
-                ->where('doctors.user_id', user_id());
+            $this->join('doctors', 'doctors.id = appointments.doctor_id');
         }
 
-        $this->select('appointments.*');
 
         if (!empty($params->search)) {
             $this->where('CAST(id AS TEXT) LIKE', "%$params->search%");

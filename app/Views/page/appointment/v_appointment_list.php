@@ -41,27 +41,72 @@
   </form>
 
   <!-- Table -->
-  <div class="overflow-x-auto">
-    <table class="table table-zebra w-full">
-      <thead>
-        <tr>
-          <th>
-            <a href="<?= $params->getSortUrl('id', $baseUrl) ?>" class="link link-hover">
-              ID <?= $params->isSortedBy('id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
-            </a>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php foreach ($appointment as $row): ?>
-          <tr>
-            <td><?= $row->id ?></td>
 
+  <?php
+
+  use Config\Roles;
+
+  if (!in_groups(Roles::PATIENT)):
+  ?>
+    <div class="overflow-x-auto">
+      <table class="table table-zebra w-full">
+        <thead>
+          <tr>
+            <th>
+              <a href="<?= $params->getSortUrl('id', $baseUrl) ?>" class="link link-hover">
+                ID <?= $params->isSortedBy('id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+              </a>
+            </th>
+            <th>
+              Doctor
+            </th>
+            <th>
+              Patient
+            </th>
+            <th>
+              Room
+            </th>
+            <th>
+              Time
+            </th>
           </tr>
-        <?php endforeach; ?>
-      </tbody>
-    </table>
-  </div>
+        </thead>
+        <tbody>
+          <?php foreach ($appointment as $row): ?>
+            <tr>
+              <td><?= $row->id ?></td>
+              <td><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></td>
+              <td><?= $row->patientFirstName ?> <?= $row->patientLastName ?></td>
+              <td><?= $row->roomName ?></td>
+              <td><?= date('g:i A', strtotime($row->startTime)) ?> -
+                <?= date('g:i A', strtotime($row->endTime)) ?></td>
+            </tr>
+          <?php endforeach; ?>
+        </tbody>
+      </table>
+    </div>
+  <?php else: ?>
+    <div class="grid grid-cols-3 gap-4">
+      <?php foreach ($appointment as $row): ?>
+        <div class="card card-border bg-base-100 w-full">
+          <div class="card-body">
+            <h2 class="card-title">
+              <p><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></p>
+            </h2>
+            <p><?= date('g:i A', strtotime($row->startTime)) ?> -
+              <?= date('g:i A', strtotime($row->endTime)) ?></p>
+            <p><?= date('F j, Y', strtotime($row->date)) ?></p>
+            <div class="badge badge-warning"><?= $row->status; ?></div>
+
+            <div class="card-actions justify-end">
+              <button class="btn btn-primary" disabled>Details</button>
+            </div>
+          </div>
+        </div>
+      <?php endforeach; ?>
+    </div>
+
+  <?php endif; ?>
 
   <!-- Pagination -->
   <div class="mt-8 text-center">
