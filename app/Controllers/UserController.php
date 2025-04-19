@@ -34,6 +34,7 @@ class UserController extends BaseController
             return redirect()->to('/');
         }
     }
+
     public function index()
     {
         $params = new DataParams([
@@ -48,7 +49,6 @@ class UserController extends BaseController
         ]);
 
         $result = $this->userModel->getFilteredUser($params);
-        // dd($result);
 
         $data = [
             'users' => $result['users'],
@@ -62,17 +62,33 @@ class UserController extends BaseController
         return view('page/user/v_user_list', $data);
     }
 
-    public function profilePatient($id)
+    public function dashboard()
+    {
+        d($this->userModel);
+        $users = $this->userModel->countAllResults();
+        $doctors = $this->doctorModel->countAllResults();
+        $patients = $this->patientModel->countAllResults();
+
+        $data = [
+            'title' => 'Dashboard Admin',
+            'users' => $users,
+            'doctors' => $doctors,
+            'patients' => $patients
+        ];
+
+        return view('page/user/v_user_dashboard_admin', $data);
+    }
+
+    public function profile($id)
     {
         $user = $this->userModel->getUserWithFullName($id);
 
         $data = [
-            'title' => 'Profile Patient',
+            'title' => 'Profile',
             'user' => $user
         ];
 
-        d($user);
-        return view('page/user/v_user_patient_profile', $data);
+        return view('page/user/v_user_profile', $data);
     }
 
     public function profilePicture()
@@ -267,7 +283,6 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
-            'profile_picture' => '',
         ];
 
         $profilePicture = $this->request->getFile('profile_picture');
@@ -407,7 +422,7 @@ class UserController extends BaseController
         $profilePicture = $this->request->getFile('profile_picture');
         if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {
 
-            $uploadPath = WRITEPATH . 'uploads/' . 'patients/' . $userId . '/' . 'profile_picture' . '/';
+            $uploadPath = WRITEPATH . 'uploads/' . 'doctors/' . $userId . '/' . 'profile_picture' . '/';
 
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
