@@ -68,9 +68,13 @@ class EquipmentRoomModel extends Model
 
     public function getEquipmentRoom($room_id)
     {
-        return $this->select('equipment_rooms.total as quantity, equipments.name as equipment_name, equipments.function as equipment_function')
+        return $this->select('equipment_rooms.total as quantity, equipments.name as name, equipments.function as equipment_function')
             ->join('equipments', 'equipments.id = equipment_rooms.equipment_id', 'left')
             ->where('equipment_rooms.room_id', $room_id)
             ->findAll();
+    }
+
+    public function getEquipmentRoomById($room_id, $equipment_id){
+        return $this->where('room_id', $room_id)->where('equipment_id', $equipment_id)->first();
     }
 }

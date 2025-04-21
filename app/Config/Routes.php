@@ -55,6 +55,7 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->get('room', [RoomController::class, 'index']);
     $routes->get('room/detail/(:num)', [RoomController::class, 'detail/$1']);
     $routes->match(['get', 'post'], 'room/create', [RoomController::class, 'create']);
+    $routes->match(['get', 'post'], 'room/create/equipment/(:num)', [RoomController::class, 'createRoomEquipment']);
     $routes->match(['get', 'put'], 'room/update/(:num)', [RoomController::class, 'update']);
     $routes->delete('room/delete/(:num)', [RoomController::class, 'delete/$1']);
 

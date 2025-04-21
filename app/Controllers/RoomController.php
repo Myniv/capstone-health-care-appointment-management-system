@@ -71,6 +71,69 @@ class RoomController extends BaseController
         return redirect()->to(base_url('admin/room'))->with('success', 'Data berhasil disimpan.');
     }
 
+    public function createRoomEquipment($id)
+    {
+        $type = $this->request->getMethod();
+        if ($type == "GET") {
+            $room = $this->roomModel->find($id);
+            $equipments = $this->equipmentModel->findAll();
+            $roomEquipments = $this->equipmentRoomModel->getEquipmentRoom($id);
+            $data = [
+                'room' => $room,
+                'equipments' => $equipments,
+                'room_equipment' => $roomEquipments
+            ];
+            return view('page/room/v_room_equipment_form', $data);
+        }
+
+        if ($type == "POST") {
+            $equipmentIds = $this->request->getPost('equipmentIds');
+
+            if (!empty($equipmentIds)) {
+                $equipmentPairs = explode(',', $equipmentIds);
+
+                foreach ($equipmentPairs as $pair) {
+                    list($equipmentId, $quantity) = explode(':', $pair);
+                    $existtingRoomEquipments = $this->equipmentRoomModel->getEquipmentRoomById($id, $equipmentId);
+
+                    if ($existtingRoomEquipments) {
+                        $currentQuantity = $existtingRoomEquipments->total;
+                        $this->equipmentRoomModel->save([
+                            'id' => $existtingRoomEquipments->id,
+                            'total' => $quantity
+                        ]);
+                        if ($currentQuantity >= $quantity) {
+                            $stockDecrement = $currentQuantity - $quantity;
+                            $stock = $this->equipmentModel->find($equipmentId)->stock;
+                            $this->equipmentModel->save([
+                                'id' => $equipmentId,
+                                'stock' => $stock - $stockDecrement
+                            ]);
+                        } else if($quantity > $currentQuantity) {
+                            $stockIncrement = $quantity - $currentQuantity;
+                            $stock = $this->equipmentModel->find($equipmentId)->stock;
+                            $this->equipmentModel->save([
+                                'id' => $equipmentId,
+                                'stock' => $stock + $stockIncrement
+                            ]);
+                        }
+                    }
+
+                    $this->equipmentRoomModel->save([
+                        'room_id' => $id,
+                        'equipment_id' => $equipmentId,
+                        'total' => $quantity
+                    ]);
+                    $stock = $this->equipmentModel->find($equipmentId)->stock;
+                    $this->equipmentModel->save([
+                        'id' => $equipmentId,
+                        'stock' => $stock - $quantity
+                    ]);
+                }
+            }
+        }
+    }
+
     public function update($id)
     {
         $type = $this->request->getMethod();
