@@ -3,7 +3,9 @@
 namespace App\Models;
 
 use App\Entities\Doctor;
+use App\Libraries\DataParams;
 use CodeIgniter\Model;
+use Config\Roles;
 
 class DoctorModel extends Model
 {
@@ -21,8 +23,6 @@ class DoctorModel extends Model
         'sex',
         'dob',
         'email',
-        'degree',
-        'education',
         'profile_picture',
         'doctor_category_id',
         'user_id',
@@ -52,8 +52,6 @@ class DoctorModel extends Model
         'sex' => 'required|in_list[male,female,other]',
         'dob' => 'required|valid_date[Y-m-d]',
         'email' => 'required|valid_email|max_length[150]',
-        'degree' => 'required|max_length[150]',
-        'education' => 'required|max_length[150]',
         'profile_picture' => 'permit_empty|max_length[255]',
         'doctor_category_id' => 'permit_empty|integer',
         'user_id' => 'permit_empty|integer',
@@ -89,15 +87,7 @@ class DoctorModel extends Model
             'required' => 'Email is required.',
             'valid_email' => 'Email format is invalid.',
             'max_length' => 'Email must not exceed 150 characters.',
-        ],
-        'degree' => [
-            'required' => 'Degree is required.',
-            'max_length' => 'Degree must not exceed 150 characters.',
-        ],
-        'education' => [
-            'required' => 'Education is required.',
-            'max_length' => 'Education must not exceed 150 characters.',
-        ],
+        ]
     ];
     protected $skipValidation = false;
     protected $cleanValidationRules = true;
@@ -116,5 +106,30 @@ class DoctorModel extends Model
     public function getDoctorByUserId($userId)
     {
         return $this->where('user_id', $userId)->first();
+    }
+
+    public function getFilteredDoctors(DataParams $params)
+    {
+        $this->select('doctors.*');
+        if (!empty($params->search)) {
+            $this->where("first_name ILIKE '%" . $params->search . "%'")
+                ->orWhere("last_name ILIKE '%" . $params->search . "%'");
+        }
+
+        $allowedSort = [
+            'id',
+            'first_name',
+        ];
+
+        $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'id';
+        $order = ($params->order === 'desc') ? 'DESC' : 'ASC';
+
+        $this->orderBy($sort, $order);
+
+        return [
+            'doctors' => $this->paginate($params->perPage, 'doctors', $params->page),
+            'total' => $this->countAllResults(),
+            'pager' => $this->pager
+        ];
     }
 }

@@ -43,15 +43,11 @@ class DoctorController extends BaseController
             "sort" => $this->request->getGet("sort"),
             "order" => $this->request->getGet("order"),
             "perPage" => $this->request->getGet("perPage"),
-            "page" => $this->request->getGet("page_users"),
+            "page" => $this->request->getGet("page_doctor_absent"),
         ]);
 
         //$result = $this->doctorAbsentModel->getDoctorAbsentById(user_id());
         $result = $this->doctorAbsentModel->getSortedDoctorAbsent($params);
-
-        $data = [
-            'doctor_absent' => $result,
-        ];
 
         $data = [
             'doctor_absent' => $result['doctor_absent'],
@@ -80,9 +76,13 @@ class DoctorController extends BaseController
             'reason' => $this->request->getPost('reason'),
         ];
 
+        $result = $this->doctorAbsentModel->addAbsent($data);
 
-        if (!$this->doctorAbsentModel->save($data)) {
-            return redirect()->back()->withInput()->with('errors', $this->doctorAbsentModel->errors());
+        if (isset($result['error'])) {
+            // Pass error message and old input back to the form
+            return redirect()->back()->withInput()->with('error', $result['error']);
         }
+
+        return redirect()->to(base_url('doctor/absent'))->with('success', 'Doctor absent requested.');
     }
 }

@@ -64,7 +64,6 @@ class UserController extends BaseController
 
     public function dashboard()
     {
-        d($this->userModel);
         $users = $this->userModel->countAllResults();
         $doctors = $this->doctorModel->countAllResults();
         $patients = $this->patientModel->countAllResults();
@@ -363,8 +362,6 @@ class UserController extends BaseController
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
             'dob' => 'required|valid_date',
-            'degree' => 'required|max_length[150]',
-            'education' => 'required|max_length[150]',
             'profile_picture' => [
                 'label' => 'Gambar',
                 'rules' => [
@@ -412,8 +409,6 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
-            'degree' => $this->request->getPost('degree'),
-            'education' => $this->request->getPost('education'),
             'email' => $user->email,
             'profile_picture' => '',
             'doctor_category_id' => $this->request->getPost('doctor_category_id'),
@@ -484,8 +479,6 @@ class UserController extends BaseController
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
             'dob' => 'required|valid_date',
-            'degree' => 'required|max_length[150]',
-            'education' => 'required|max_length[150]',
             'doctor_category_id' => 'required',
             'profile_picture' => [
                 'label' => 'Gambar',
@@ -542,8 +535,6 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
-            'degree' => $this->request->getPost('degree'),
-            'education' => $this->request->getPost('education'),
             'doctor_category_id' => $this->request->getPost('doctor_category_id'),
         ];
 

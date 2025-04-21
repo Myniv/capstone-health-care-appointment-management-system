@@ -1,5 +1,6 @@
 <?php
 
+use App\Controllers\AppointmentController;
 use App\Controllers\AuthController;
 use App\Controllers\DoctorCategoryController;
 use App\Controllers\DoctorController;
@@ -67,6 +68,16 @@ $routes->group('doctor', [], function ($routes) {
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
     $routes->match(['get', 'post'], 'absent/create', [DoctorController::class, 'createDoctorAbsent']);
 });
+
+$routes->group('appointment', [], function ($routes) {
+    $routes->get('', [AppointmentController::class, 'index']);
+    $routes->get('create', [AppointmentController::class, 'createAppointment']);
+    $routes->post('create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
+    $routes->get('create/form', [AppointmentController::class, 'createAppointmentForm']);
+});
+
+
+
 
 //Auth routes
 $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {

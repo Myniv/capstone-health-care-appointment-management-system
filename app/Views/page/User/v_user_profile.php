@@ -18,7 +18,7 @@
                     <?php if ($user->role == 'patient'): ?>
                         <?= $user->first_name . ' ' . $user->last_name ?>
                     <?php elseif ($user->role == 'doctor'): ?>
-                        <?= $user->first_name . ' ' . $user->last_name . ', ' . $user->degree ?>
+                        <?= $user->first_name . ' ' . $user->last_name ?>
                     <?php endif; ?>
                 </p>
                 <?php if ($user->role == 'doctor'): ?>

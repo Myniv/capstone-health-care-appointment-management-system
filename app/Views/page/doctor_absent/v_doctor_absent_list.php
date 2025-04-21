@@ -63,7 +63,7 @@
           </th>
           <th>Reason</th>
           <th>Status</th>
-          <th>Action</th>
+          <!-- <th>Action</th> -->
         </tr>
       </thead>
       <tbody>
@@ -74,7 +74,7 @@
             <td><?= $absent->date ?></td>
             <td><?= $absent->reason ?></td>
             <td><?= $absent->status ?></td>
-            <td> <a href="" class="btn btn-warning btn-sm">Button</a>
+            <!-- <td> <a href="" class="btn btn-warning btn-sm">Button</a>
               <form action="" method="post" class="inline">
                 <input type="hidden" name="_method" value="DELETE">
                 <button type="submit" class="btn btn-error btn-sm"
@@ -82,7 +82,7 @@
                   Button
                 </button>
               </form>
-            </td>
+            </td> -->
           </tr>
         <?php endforeach; ?>
       </tbody>
