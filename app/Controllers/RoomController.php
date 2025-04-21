@@ -155,6 +155,72 @@ class RoomController extends BaseController
         }
     }
 
+    public function createRoomInventory($id)
+    {
+        $type = $this->request->getMethod();
+        if ($type == "GET") {
+            $room = $this->roomModel->find($id);
+
+            // Fetch all available inventory
+            $inventories = $this->inventoryModel->findAll();
+
+            // Fetch existing room inventory with names
+            $room_inventory = $this->inventoryRoomModel->getInventoryRoom($id);
+
+            return view('page/room/v_room_inventory_form', [
+                'room' => $room,
+                'inventories' => $inventories,
+                'room_inventory' => $room_inventory
+            ]);
+        }
+
+        if ($type == "POST") {
+            // Validate and save room inventory
+            $inventoryIds = $this->request->getPost('inventoryIds');
+            $deletedInventoryIds = $this->request->getPost('deletedInventoryIds');
+
+            // Delete removed inventory
+            if (!empty($deletedInventoryIds)) {
+                $deletedIds = explode(',', $deletedInventoryIds);
+                $this->inventoryModel->save([
+                    'id' => $deletedIds,
+                    'status' => "Available"
+                ]);
+                $this->inventoryRoomModel->where('room_id', $id)
+                    ->whereIn('inventory_id', $deletedIds)
+                    ->delete();
+            }
+
+            if (!empty($inventoryIds)) {
+                $inventoryList = explode(',', $inventoryIds);
+
+                foreach ($inventoryList as $inventoryId) {
+                    // Check if this inventory is already associated with the room
+                    $existing = $this->inventoryRoomModel
+                        ->where('room_id', $id)
+                        ->where('inventory_id', $inventoryId)
+                        ->first();
+
+                    if (!$existing) {
+                        // Create new association
+                        $this->inventoryRoomModel->insert([
+                            'room_id' => $id,
+                            'inventory_id' => $inventoryId,
+                            'created_at' => date('Y-m-d H:i:s')
+                        ]);
+
+                        $this->inventoryModel->save([
+                            'id' => $inventoryId,
+                            'status' => "In Use"
+                        ]);
+                    }
+                }
+            }
+
+            return redirect()->to(base_url('admin/room/detail/' . $id))->with('success', 'Data berhasil disimpan.');
+        }
+    }
+
     public function update($id)
     {
         $type = $this->request->getMethod();

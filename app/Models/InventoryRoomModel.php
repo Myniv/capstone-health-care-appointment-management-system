@@ -62,7 +62,7 @@ class InventoryRoomModel extends Model
 
     public function getInventoryRoom($room_id)
     {
-        return $this->select('inventories.name as inventory_name, inventories.function as inventory_function, inventories.serial_number as inventory_serial_number')
+        return $this->select('inventory_rooms.inventory_id as inventory_id,inventories.name as inventory_name, inventories.function as inventory_function, inventories.serial_number as inventory_serial_number')
             ->join('inventories', 'inventories.id = inventory_rooms.inventory_id', 'left')
             ->where('inventory_rooms.room_id', $room_id)
             ->findAll();

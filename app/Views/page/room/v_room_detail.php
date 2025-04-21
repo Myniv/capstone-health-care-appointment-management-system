@@ -19,7 +19,7 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Inventories</h5>
-        <a href="<?= site_url('room/edit-inventories/' . $room->id) ?>" class="btn btn-sm btn-outline-primary">Edit
+        <a href="<?= site_url('admin/room/create-inventory/' . $room->id) ?>" class="btn btn-sm btn-outline-primary">Edit
             Inventories</a>
     </div>
     <div class="card-body">
