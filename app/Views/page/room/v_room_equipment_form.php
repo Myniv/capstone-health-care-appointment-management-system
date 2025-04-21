@@ -5,9 +5,8 @@
     <h2 class="text-2xl font-bold mb-4"><?= isset($room_equipment) ? 'Edit Room Equipment' : 'Add Room Equipment'; ?>
     </h2>
 
-    <form
-        action=" <?= isset($room_equipment) ? base_url('admin/room/update/equipment/' . $room->id) : base_url('admin/room/create/equipment/' . $room->id) ?>"
-        method="post" enctype="multipart/form-data" id="formData" novalidate>
+    <form action="<?= base_url('admin/room/create/equipment/' . $room->id) ?>" method="post"
+        enctype="multipart/form-data" id="formData" novalidate>
         <?= csrf_field() ?>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -33,6 +32,8 @@
         <input type="hidden" name="equipmentIds" id="equipmentIds"
             value="<?= isset($room_equipment) ? implode(',', array_map(fn($equipment) => "{$equipment->equipment_id}:{$equipment->quantity}", $room_equipment)) : '' ?>">
 
+        <input type="hidden" name="deletedEquipmentIds" id="deletedEquipmentIds" value="">
+
         <h5 class="text-2xl font-bold mb-4">Equipment List:</h5>
         <ul id="equipmentList" class="list-group mb-3">
             <!-- Equipment items will be rendered here by JavaScript -->
@@ -51,9 +52,9 @@
     // Initialize equipment list from existing data
     let selectedEquipment = <?= isset($room_equipment) ? json_encode(array_map(fn($equipment) => [
         'id' => $equipment->equipment_id,
-        'total' => $equipment->quantity,
+        'total' => intval($equipment->quantity), // Ensure it's a number
         'name' => $equipment->name,
-        'stock' => $equipment->stock
+        'stock' => intval($equipment->stock) // Ensure it's a number
     ], $room_equipment)) : '[]' ?>;
 
     // Keep track of available stock for each equipment
@@ -62,18 +63,19 @@
     document.addEventListener('DOMContentLoaded', function () {
         // Initialize available stock
         <?php foreach ($equipments as $equipment): ?>
-            availableStock['<?= $equipment->id ?>'] = <?= $equipment->stock ?>;
+            availableStock['<?= $equipment->id ?>'] = <?= intval($equipment->stock) ?>; // Ensure it's a number
         <?php endforeach; ?>
 
         // Update available stock based on currently selected equipment
-        selectedEquipment.forEach(item => {
-            if (availableStock[item.id] !== undefined) {
-                availableStock[item.id] -= item.total;
-            }
-        });
+        // selectedEquipment.forEach(item => {
+        //     if (availableStock[item.id] !== undefined) {
+        //         availableStock[item.id] -= parseInt(item.total);
+        //     }
+        // });
 
         // Initialize the equipment list when the page loads
         renderEquipmentList();
+        updateSelectOptions();
 
         // Add event listener for the "Add Equipment" button
         document.getElementById('addEquipment').addEventListener('click', addEquipment);
@@ -99,8 +101,8 @@
 
         if (existingEquipment) {
             // Check if adding one more would exceed the stock
-            if (existingEquipment.total < optionStock && availableStock[optionId] > 0) {
-                existingEquipment.total++;
+            if (availableStock[optionId] > 0) {
+                existingEquipment.total = parseInt(existingEquipment.total) + 1; // Ensure numeric addition
                 availableStock[optionId]--;
                 renderEquipmentList(); // Re-render the list
             } else {
@@ -128,14 +130,23 @@
         const equipment = selectedEquipment.find(equipment => equipment.id === equipmentId);
 
         if (equipment) {
-            // Check if adding would exceed stock
-            if (change > 0 && availableStock[equipmentId] <= 0) {
-                alert('Maximum available stock reached for this equipment.');
-                return;
-            }
+            // Convert to numbers and then perform arithmetic
+            change = parseInt(change);
 
-            equipment.total += change;
-            availableStock[equipmentId] -= change; // Adjust available stock
+            // Handle quantity changes differently based on whether we're increasing or decreasing
+            if (change > 0) { // Increasing quantity
+                // Check if adding would exceed stock
+                if (availableStock[equipmentId] <= 0) {
+                    alert('Maximum available stock reached for this equipment.');
+                    return;
+                }
+
+                equipment.total = parseInt(equipment.total) + change; // Ensure numeric addition
+                availableStock[equipmentId] -= change; // Decrease available stock
+            } else { // Decreasing quantity
+                equipment.total = parseInt(equipment.total) + change; // Decrease the total (since change is negative)
+                availableStock[equipmentId] -= change; // Add back to available stock (negative of negative is positive)
+            }
 
             if (equipment.total <= 0) {
                 removeEquipment(equipmentId);
@@ -153,11 +164,12 @@
 
         if (equipment) {
             // Return the stock to available pool
-            availableStock[equipmentId] += equipment.total;
+            availableStock[equipmentId] = parseInt(availableStock[equipmentId]) + parseInt(equipment.total);
         }
 
         selectedEquipment = selectedEquipment.filter(eq => eq.id !== equipmentId);
         renderEquipmentList(); // Re-render the list
+        updateDeletedHiddenInput();
         updateHiddenInput();
         updateSelectOptions(); // Update select options
     }
@@ -175,7 +187,7 @@
             const canAddMore = availableStock[equipment.id] > 0;
 
             listItem.innerHTML = `
-                <span>${equipment.name} (Quantity: <span class="font-bold">${equipment.total}</span>)</span>
+                <span>${equipment.name} (Quantity: <span class="font-bold">${parseInt(equipment.total)}</span>)</span>
                 <div>
                     <button type="button" onclick="updateQuantity('${equipment.id}', -1)" class="btn btn-sm btn-error">-</button>
                     <button type="button" onclick="updateQuantity('${equipment.id}', 1)" class="btn btn-sm btn-success" ${canAddMore ? '' : 'disabled'}>+</button>
@@ -196,7 +208,7 @@
 
             if (equipmentId) {
                 const originalStock = parseInt(option.getAttribute('data-stock'), 10);
-                const currentAvailable = availableStock[equipmentId] || 0;
+                const currentAvailable = parseInt(availableStock[equipmentId] || 0);
 
                 const equipmentName = option.getAttribute('data-name');
                 option.text = `${equipmentName} (Available: ${currentAvailable})`;
@@ -208,7 +220,15 @@
     }
 
     function updateHiddenInput() {
-        document.getElementById('equipmentIds').value = selectedEquipment.map(equipment => `${equipment.id}:${equipment.total}`).join(',');
+        document.getElementById('equipmentIds').value = selectedEquipment.map(equipment =>
+            `${equipment.id}:${parseInt(equipment.total)}`
+        ).join(',');
+    }
+
+    function updateDeletedHiddenInput() {
+        document.getElementById('deletedEquipmentIds').value = selectedEquipment.map(equipment =>
+            `${equipment.id}:${parseInt(equipment.total)}:${equipment.name}`
+        ).join(',');
     }
 </script>
 <?= $this->endSection(); ?>

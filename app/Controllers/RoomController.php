@@ -88,47 +88,66 @@ class RoomController extends BaseController
 
         if ($type == "POST") {
             $equipmentIds = $this->request->getPost('equipmentIds');
+            $deletedEquipmentIds = $this->request->getPost('deletedEquipmentIds');
+            if (!empty($deletedEquipmentIds || $deletedEquipmentIds != null)) {
+                $checkDeletedEquipments = $this->equipmentRoomModel->where('room_id', $id)->where('equipment_id', $deletedEquipmentIds)->first();
+                if ($checkDeletedEquipments != "" || $checkDeletedEquipments != null) {
+                    $this->equipmentRoomModel->delete($checkDeletedEquipments->id);
+                }
+            }
 
             if (!empty($equipmentIds)) {
                 $equipmentPairs = explode(',', $equipmentIds);
 
                 foreach ($equipmentPairs as $pair) {
                     list($equipmentId, $quantity) = explode(':', $pair);
+
+                    $equipmentId = (int) $equipmentId;
+                    $quantity = (int) $quantity;
+
                     $existtingRoomEquipments = $this->equipmentRoomModel->getEquipmentRoomById($id, $equipmentId);
 
                     if ($existtingRoomEquipments) {
                         $currentQuantity = $existtingRoomEquipments->total;
+
                         $this->equipmentRoomModel->save([
                             'id' => $existtingRoomEquipments->id,
                             'total' => $quantity
                         ]);
-                        if ($currentQuantity >= $quantity) {
-                            $stockDecrement = $currentQuantity - $quantity;
-                            $stock = $this->equipmentModel->find($equipmentId)->stock;
+
+                        $stock = $this->equipmentModel->find($equipmentId)->stock;
+
+                        if ($quantity > $currentQuantity) {
+                            // Quantity increased → reduce stock
+                            $stockDecrement = $quantity - $currentQuantity;
                             $this->equipmentModel->save([
                                 'id' => $equipmentId,
                                 'stock' => $stock - $stockDecrement
                             ]);
-                        } else if($quantity > $currentQuantity) {
-                            $stockIncrement = $quantity - $currentQuantity;
-                            $stock = $this->equipmentModel->find($equipmentId)->stock;
+                        } else if ($quantity < $currentQuantity) {
+                            // Quantity decreased → increase stock
+                            $stockIncrement = $currentQuantity - $quantity;
                             $this->equipmentModel->save([
                                 'id' => $equipmentId,
                                 'stock' => $stock + $stockIncrement
                             ]);
                         }
+                    } else {
+                        // New assignment
+                        $this->equipmentRoomModel->save([
+                            'room_id' => $id,
+                            'equipment_id' => $equipmentId,
+                            'total' => $quantity
+                        ]);
+
+                        $stock = $this->equipmentModel->find($equipmentId)->stock;
+
+                        $this->equipmentModel->save([
+                            'id' => $equipmentId,
+                            'stock' => $stock - $quantity
+                        ]);
                     }
 
-                    $this->equipmentRoomModel->save([
-                        'room_id' => $id,
-                        'equipment_id' => $equipmentId,
-                        'total' => $quantity
-                    ]);
-                    $stock = $this->equipmentModel->find($equipmentId)->stock;
-                    $this->equipmentModel->save([
-                        'id' => $equipmentId,
-                        'stock' => $stock - $quantity
-                    ]);
                 }
             }
         }
