@@ -5,7 +5,7 @@
     <h2 class="text-2xl font-bold mb-4"><?= isset($room_equipment) ? 'Edit Room Equipment' : 'Add Room Equipment'; ?>
     </h2>
 
-    <form action="<?= base_url('admin/room/create/equipment/' . $room->id) ?>" method="post"
+    <form action="<?= base_url('admin/room/create-equipment/' . $room->id) ?>" method="post"
         enctype="multipart/form-data" id="formData" novalidate>
         <?= csrf_field() ?>
 
@@ -32,6 +32,7 @@
         <input type="hidden" name="equipmentIds" id="equipmentIds"
             value="<?= isset($room_equipment) ? implode(',', array_map(fn($equipment) => "{$equipment->equipment_id}:{$equipment->quantity}", $room_equipment)) : '' ?>">
 
+        <!-- Hidden input for tracking deleted equipment IDs -->
         <input type="hidden" name="deletedEquipmentIds" id="deletedEquipmentIds" value="">
 
         <h5 class="text-2xl font-bold mb-4">Equipment List:</h5>
@@ -59,6 +60,12 @@
 
     // Keep track of available stock for each equipment
     let availableStock = {};
+
+    // Keep track of deleted equipment IDs
+    let deletedEquipmentIds = [];
+
+    // Store original equipment IDs for tracking what's been deleted
+    let originalEquipmentIds = <?= isset($room_equipment) ? json_encode(array_map(fn($equipment) => $equipment->equipment_id, $room_equipment)) : '[]' ?>;
 
     document.addEventListener('DOMContentLoaded', function () {
         // Initialize available stock
@@ -118,6 +125,14 @@
             };
             selectedEquipment.push(newEquipment);
             availableStock[optionId]--;
+
+            // If this was previously deleted, remove it from deletedEquipmentIds
+            const deletedIndex = deletedEquipmentIds.indexOf(optionId);
+            if (deletedIndex > -1) {
+                deletedEquipmentIds.splice(deletedIndex, 1);
+                updateDeletedEquipmentIds();
+            }
+
             renderEquipmentList(); // Re-render the list
         }
 
@@ -148,8 +163,9 @@
                 availableStock[equipmentId] -= change; // Add back to available stock (negative of negative is positive)
             }
 
-            if (equipment.total <= 0) {
-                removeEquipment(equipmentId);
+            if (equipment.total < 0) {
+                // removeEquipment(equipmentId);
+                equipment.total = 0;
             } else {
                 renderEquipmentList(); // Re-render the list
                 updateHiddenInput();
@@ -165,11 +181,18 @@
         if (equipment) {
             // Return the stock to available pool
             availableStock[equipmentId] = parseInt(availableStock[equipmentId]) + parseInt(equipment.total);
+
+            // If this was in the original equipment list, add to deletedEquipmentIds
+            if (originalEquipmentIds.includes(equipmentId)) {
+                if (!deletedEquipmentIds.includes(equipmentId)) {
+                    deletedEquipmentIds.push(equipmentId);
+                    updateDeletedEquipmentIds();
+                }
+            }
         }
 
         selectedEquipment = selectedEquipment.filter(eq => eq.id !== equipmentId);
         renderEquipmentList(); // Re-render the list
-        updateDeletedHiddenInput();
         updateHiddenInput();
         updateSelectOptions(); // Update select options
     }
@@ -225,10 +248,8 @@
         ).join(',');
     }
 
-    function updateDeletedHiddenInput() {
-        document.getElementById('deletedEquipmentIds').value = selectedEquipment.map(equipment =>
-            `${equipment.id}:${parseInt(equipment.total)}:${equipment.name}`
-        ).join(',');
+    function updateDeletedEquipmentIds() {
+        document.getElementById('deletedEquipmentIds').value = deletedEquipmentIds.join(',');
     }
 </script>
 <?= $this->endSection(); ?>

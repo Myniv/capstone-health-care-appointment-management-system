@@ -150,6 +150,8 @@ class RoomController extends BaseController
 
                 }
             }
+
+            return redirect()->to(base_url('admin/room/detail/' . $id))->with('success', 'Data berhasil disimpan.');
         }
     }
 

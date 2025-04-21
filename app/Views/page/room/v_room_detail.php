@@ -43,7 +43,7 @@
 <div class="card mb-4">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5>Equipments</h5>
-        <a href="<?= site_url('room/edit-equipments/' . $room->id) ?>" class="btn btn-sm btn-outline-primary">Edit
+        <a href="<?= site_url('admin/room/create-equipment/' . $room->id) ?>" class="btn btn-sm btn-outline-primary">Edit
             Equipments</a>
     </div>
     <div class="card-body">
@@ -51,7 +51,7 @@
             <ul class="list-group">
                 <?php foreach ($equipments as $eq): ?>
                     <li class="list-group-item">
-                        <strong><?= esc($eq->equipment_name) ?></strong> (Quantity: <?= esc($eq->quantity) ?>)<br>
+                        <strong><?= esc($eq->name) ?></strong> (Quantity: <?= esc($eq->quantity) ?>)<br>
                         Function: <?= esc($eq->equipment_function) ?>
                     </li>
                 <?php endforeach; ?>
