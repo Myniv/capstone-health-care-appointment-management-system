@@ -4,16 +4,29 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Libraries\DataParams;
+use App\Models\EquipmentModel;
+use App\Models\EquipmentRoomModel;
+use App\Models\InventoryModel;
+use App\Models\InventoryRoomModel;
 use App\Models\RoomModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class RoomController extends BaseController
 {
     protected $roomModel;
+    protected $equipmentModel;
+    protected $inventoryModel;
+    protected $equipmentRoomModel;
+    protected $inventoryRoomModel;
 
     public function __construct()
     {
         $this->roomModel = new RoomModel();
+        $this->equipmentModel = new EquipmentModel();
+        $this->inventoryModel = new InventoryModel();
+        $this->equipmentRoomModel = new EquipmentRoomModel();
+        $this->inventoryRoomModel = new InventoryRoomModel();
+
     }
     public function index()
     {
@@ -87,5 +100,19 @@ class RoomController extends BaseController
     {
         $this->roomModel->delete($id);
         return redirect()->to(base_url('admin/room'))->with('success', 'Data berhasil dihapus.');
+    }
+
+    public function detail($id)
+    {
+        $room = $this->roomModel->find($id);
+        $inventories = $this->inventoryRoomModel->getInventoryRoom($id);
+        $equipments = $this->equipmentRoomModel->getEquipmentRoom($id);
+
+        $data = [
+            'room' => $room,
+            'inventories' => $inventories,
+            'equipments' => $equipments
+        ];
+        return view('page/room/v_room_detail', $data);
     }
 }

@@ -65,4 +65,12 @@ class EquipmentRoomModel extends Model
     protected $afterFind = [];
     protected $beforeDelete = [];
     protected $afterDelete = [];
+
+    public function getEquipmentRoom($room_id)
+    {
+        return $this->select('equipment_rooms.total as quantity, equipments.name as equipment_name, equipments.function as equipment_function')
+            ->join('equipments', 'equipments.id = equipment_rooms.equipment_id', 'left')
+            ->where('equipment_rooms.room_id', $room_id)
+            ->findAll();
+    }
 }

@@ -75,6 +75,7 @@
                         <td><?= $room->function ?></td>
                         <td><?= $room->status ?></td>
                         <td>
+                            <a href="/admin/room/detail/<?= $room->id ?>" class="btn btn-primary btn-sm">Detail</a>
                             <a href="/admin/room/update/<?= $room->id ?>" class="btn btn-warning btn-sm">Edit</a>
                             <form action="/admin/room/delete/<?= $room->id ?>" method="post" class="inline">
                                 <input type="hidden" name="_method" value="DELETE">
