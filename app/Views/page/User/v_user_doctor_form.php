@@ -4,6 +4,12 @@
 <div class="container mx-auto mt-4">
     <h2 class="text-2xl font-bold mb-4"><?= isset($user) ? 'Edit Doctor' : 'Add Doctor'; ?></h2>
 
+    <?php if (session()->getFlashdata('error')): ?>
+        <div class="alert alert-error mb-4">
+            <?= esc(session()->getFlashdata('error')) ?>
+        </div>
+    <?php endif; ?>
+
     <form
         action="<?= isset($user) ? base_url('admin/users/doctor/update/' . $user->user_id) : base_url('admin/users/doctor/create') ?>"
         method="post" enctype="multipart/form-data" id="formData" novalidate>
@@ -11,6 +17,8 @@
         <?php if (isset($user)): ?>
             <input type="hidden" name="_method" value="PUT">
         <?php endif; ?>
+
+        <p class="text-lg font-bold my-2">Account Information</p>
 
         <!-- Username and Email -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -117,64 +125,86 @@
                 <div class="text-error text-sm"><?= session('errors.dob') ?? '' ?></div>
             </div>
         </div>
-        <!-- degree and education -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-                <label for="degree" class="label">
-                    <span class="label-text">Degree</span>
-                </label>
-                <select name="degree"
-                    class="select select-bordered w-full <?= session('errors.degree') ? 'select-error' : '' ?>"
-                    required>
-                    <option value="">Select Degree</option>
-                    <option value="Bachelor" <?= old('degree', $user->degree ?? '') == 'Bachelor' ? 'selected' : '' ?>>
-                        Bachelor</option>
-                    <option value="Master" <?= old('degree', $user->degree ?? '') == 'Master' ? 'selected' : '' ?>>
-                        Master</option>
-                    <option value="Doctor" <?= old('degree', $user->degree ?? '') == 'Doctor' ? 'selected' : '' ?>>
-                        Doctor</option>
-                </select>
-                <div class="text-error text-sm"><?= session('errors.degree') ?? '' ?></div>
-            </div>
 
-            <div>
-                <label for="education" class="label">
-                    <span class="label-text">University</span>
-                </label>
-                <input type="text" name="education"
-                    class="input input-bordered w-full <?= session('errors.education') ? 'input-error' : '' ?>"
-                    value="<?= old('education', $user->education ?? '') ?>">
-                <div class="text-error text-sm"><?= session('errors.education') ?? '' ?></div>
-            </div>
-        </div>
 
         <!-- Doctor Category -->
-        <div class="mb-4">
-            <label for="doctor_category_id" class="label">
-                <span class="label-text">Doctor Category</span>
-            </label>
-            <select name="doctor_category_id"
-                class="select select-bordered w-full <?= session('errors.doctor_category_id') ? 'select-error' : '' ?>"
-                required>
-                <option value="">Select Category</option>
-                <?php foreach ($doctor_category as $category): ?>
-                    <option value="<?= $category->id ?>" <?= old('doctor_category_id', $user->doctor_category_id ?? '') == $category->id ? 'selected' : '' ?>>
-                        <?= esc($category->name) ?>
-                    </option>
-                <?php endforeach; ?>
-            </select>
-            <div class="text-error text-sm"><?= session('errors.doctor_category_id') ?? '' ?></div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="">
+                <label for="doctor_category_id" class="label">
+                    <span class="label-text">Doctor Category</span>
+                </label>
+                <select name="doctor_category_id"
+                    class="select select-bordered w-full <?= session('errors.doctor_category_id') ? 'select-error' : '' ?>"
+                    required>
+                    <option value="">Select Category</option>
+                    <?php foreach ($doctor_category as $category): ?>
+                        <option value="<?= $category->id ?>" <?= old('doctor_category_id', $user->doctor_category_id ?? '') == $category->id ? 'selected' : '' ?>>
+                            <?= esc($category->name) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <div class="text-error text-sm"><?= session('errors.doctor_category_id') ?? '' ?></div>
+            </div>
+            <div class="">
+                <label for="profile_picture" class="label">
+                    <span class="label-text">Profile Picture</span>
+                </label>
+                <input type="file" name="profile_picture"
+                    class="file-input file-input-bordered w-full <?= session('errors.profile_picture') ? 'file-input-error' : '' ?>">
+                <div class="text-error text-sm mt-1"><?= session('errors.profile_picture') ?></div>
+            </div>
         </div>
 
+
         <!-- Profile Picture Upload Field -->
-        <div class="mb-4">
-            <label for="profile_picture" class="label">
-                <span class="label-text">Profile Picture</span>
-            </label>
-            <input type="file" name="profile_picture"
-                class="file-input file-input-bordered w-full <?= session('errors.profile_picture') ? 'file-input-error' : '' ?>">
-            <div class="text-error text-sm mt-1"><?= session('errors.profile_picture') ?></div>
+
+
+        <p class="text-lg font-bold my-2">Education Information</p>
+
+        <!-- degree and education -->
+        <div id="education-container">
+            <div class="education-group grid grid-cols-1 gap-4 mb-4">
+                <div class="card card-border bg-base-100 w-full">
+                    <div class="card-body">
+                        <h2 class="card-title">Education 1</h2>
+                        <div class="education-group grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div>
+                                <label class="label"><span class="label-text">Degree</span></label>
+                                <select name="education[0][degree]"
+                                    class="select select-bordered w-full <?= session('errors.degree') ? 'select-error' : '' ?>"
+                                    required>
+                                    <option value="">Select Degree</option>
+                                    <option value="Bachelor" <?= old('degree', $user->degree ?? '') == 'Bachelor' ? 'selected' : '' ?>>
+                                        Bachelor</option>
+                                    <option value="Master" <?= old('degree', $user->degree ?? '') == 'Master' ? 'selected' : '' ?>>
+                                        Master</option>
+                                    <option value="Doctor" <?= old('degree', $user->degree ?? '') == 'Doctor' ? 'selected' : '' ?>>
+                                        Doctor</option>
+                                </select>
+                                <div class="text-error text-sm"><?= session('errors.degree') ?? '' ?></div>
+                            </div>
+                            <div>
+                                <label class="label"><span class="label-text">Major</span></label>
+                                <input type="text" name="education[0][study_program]" class="input input-bordered w-full" required>
+                            </div>
+                            <div>
+                                <label class="label"><span class="label-text">City</span></label>
+                                <input type="text" name="education[0][city]" class="input input-bordered w-full" required>
+                            </div>
+                            <div>
+                                <label class="label"><span class="label-text">University</span></label>
+                                <input type="text" name="education[0][university]" class="input input-bordered w-full" required>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
         </div>
+
+        <!-- Add Button -->
+        <button type="button" id="add-education" class="btn btn-secondary btn-sm mb-4">+ Add More Education</button>
 
         <!-- Submit Button -->
         <div class="text-end">
@@ -182,4 +212,60 @@
         </div>
     </form>
 </div>
+
+<script>
+    let eduIndex = 1;
+
+    document.getElementById('add-education').addEventListener('click', () => {
+        const container = document.getElementById('education-container');
+
+        const group = document.createElement('div');
+        group.className = 'education-group grid grid-cols-1 gap-4 mb-4';
+        group.setAttribute('data-index', eduIndex);
+
+        group.innerHTML = `
+        <div class="card card-border bg-base-100 w-full">
+            <div class="card-body relative">
+                <h2 class="card-title">Education ${eduIndex + 1}</h2>
+                <button type="button" class="btn btn-error btn-xs absolute top-2 right-2 remove-education">Remove</button>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="label"><span class="label-text">Degree</span></label>
+                        <select name="education[${eduIndex}][degree]" class="select select-bordered w-full" required>
+                            <option value="">Select Degree</option>
+                            <option value="Bachelor">Bachelor</option>
+                            <option value="Master">Master</option>
+                            <option value="Doctor">Doctor</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="label"><span class="label-text">Major</span></label>
+                        <input type="text" name="education[${eduIndex}][study_program]" class="input input-bordered w-full" required>
+                    </div>
+                    <div>
+                        <label class="label"><span class="label-text">City</span></label>
+                        <input type="text" name="education[${eduIndex}][city]" class="input input-bordered w-full" required>
+                    </div>
+                    <div>
+                        <label class="label"><span class="label-text">University</span></label>
+                        <input type="text" name="education[${eduIndex}][university]" class="input input-bordered w-full" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+        container.appendChild(group);
+        eduIndex++;
+    });
+
+    document.getElementById('education-container').addEventListener('click', function(e) {
+        if (e.target.classList.contains('remove-education')) {
+            const group = e.target.closest('.education-group');
+            group.remove();
+            eduIndex--;
+        }
+    });
+</script>
 <?= $this->endSection(); ?>

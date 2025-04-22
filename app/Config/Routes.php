@@ -46,6 +46,7 @@ $routes->group('doctor', [], function ($routes) {
 
 $routes->group('appointment', [], function ($routes) {
     $routes->get('', [AppointmentController::class, 'index']);
+    $routes->post('detail', [AppointmentController::class, 'detail']);
     $routes->get('create', [AppointmentController::class, 'createAppointment']);
     $routes->post('create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
     $routes->get('create/form', [AppointmentController::class, 'createAppointmentForm']);

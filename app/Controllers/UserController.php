@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Libraries\DataParams;
 use App\Models\DoctorCategoryModel;
 use App\Models\DoctorModel;
+use App\Models\EducationModel;
 use App\Models\PatientModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -18,7 +19,10 @@ class UserController extends BaseController
     protected $patientModel;
     protected $doctorModel;
     protected $doctorCategoryModel;
+    protected $educationModel;
     protected $config;
+
+
     public function __construct()
     {
         $this->userModel = new UserModel();
@@ -26,6 +30,7 @@ class UserController extends BaseController
         $this->patientModel = new PatientModel();
         $this->doctorModel = new DoctorModel();
         $this->doctorCategoryModel = new DoctorCategoryModel();
+        $this->educationModel = new EducationModel();
 
         $this->config = config('Auth');
         helper('auth');
@@ -336,6 +341,9 @@ class UserController extends BaseController
             $data['doctor_category'] = $this->doctorCategoryModel->findAll();
             return view('page/user/v_user_doctor_form', $data);
         }
+        $educationData = $this->request->getPost('education');
+
+
         $validation = \Config\Services::validation();
         $validation->setRules([
             'username' => 'required|min_length[3]|max_length[255]|is_unique[users.username]',
@@ -348,8 +356,8 @@ class UserController extends BaseController
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
             'dob' => 'required|valid_date',
-            'degree' => 'required|max_length[150]',
-            'education' => 'required|max_length[150]',
+            // 'degree' => 'required|max_length[150]',
+            // 'education' => 'required|max_length[150]',
             'profile_picture' => [
                 'label' => 'Gambar',
                 'rules' => [
@@ -397,13 +405,14 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
-            'degree' => $this->request->getPost('degree'),
-            'education' => $this->request->getPost('education'),
+            // 'degree' => $this->request->getPost('degree'),
+            // 'education' => $this->request->getPost('education'),
             'email' => $user->email,
             'profile_picture' => '',
             'doctor_category_id' => $this->request->getPost('doctor_category_id'),
             'user_id' => $userId,
         ];
+
         $profilePicture = $this->request->getFile('profile_picture');
         if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {
 
@@ -421,7 +430,28 @@ class UserController extends BaseController
             $doctorData['profile_picture'] = $relativePath;
         }
         // dd($patientData);
-        $this->doctorModel->save($doctorData);
+        //$this->doctorModel->save($doctorData);
+
+        if (empty($doctorData['id'])) {
+            // New record
+            $this->doctorModel->save($doctorData);
+            $doctorId = $this->doctorModel->getInsertID();
+
+            $educationDataDoctor = [];
+            foreach ($educationData as $edu) {
+                $edu['doctor_id'] = $doctorId;
+                $educationDataDoctor[] = $edu;
+            }
+
+            $result = $this->educationModel->insertBatchValidated($educationDataDoctor);
+
+            if ($result['status'] == false) {
+                $this->doctorModel->delete($doctorId);
+                $this->userModel->delete($userId);
+
+                return redirect()->back()->withInput()->with('error', $result['error']);
+            }
+        }
 
         return redirect()->to('admin/users')->with('message', 'User Created Successfully');
     }
@@ -531,6 +561,7 @@ class UserController extends BaseController
             'education' => $this->request->getPost('education'),
             'doctor_category_id' => $this->request->getPost('doctor_category_id'),
         ];
+
 
         $profilePicture = $this->request->getFile('profile_picture');
         if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {

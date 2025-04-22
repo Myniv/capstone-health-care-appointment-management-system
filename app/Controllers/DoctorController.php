@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Libraries\DataParams;
 use App\Models\DoctorAbsentModel;
 use App\Models\DoctorModel;
+use App\Models\EducationModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use CodeIgniter\I18n\Time;
 use Config\Roles;
@@ -14,11 +15,13 @@ class DoctorController extends BaseController
 {
     protected $doctorAbsentModel;
     protected $doctorModel;
+    protected $educationModel;
 
     public function __construct()
     {
         $this->doctorAbsentModel = new DoctorAbsentModel();
         $this->doctorModel = new DoctorModel();
+        $this->educationModel = new EducationModel();
     }
 
     public function index()

@@ -51,6 +51,33 @@ class AppointmentController extends BaseController
         return view('page/appointment/v_appointment_list', $data);
     }
 
+    public function detail()
+    {
+        //
+        $appointmentId = $this->request->getVar('appointmentId');
+        $appointment = $this->appointmentModel
+            ->select('doctors.first_name as doctorFirstName,
+                doctors.last_name as doctorLastName,
+                patients.first_name as patientFirstName,
+                patients.last_name as patientLastName,
+                doctor_schedules.start_time,
+                doctor_schedules.end_time,
+                appointments.date,
+                rooms.name as roomName')
+            ->join('doctors', 'appointments.doctor_id = doctors.id')
+            ->join('doctor_schedules', 'appointments.doctor_schedule_id = doctor_schedules.id')
+            ->join('patients', 'patients.id = appointments.patient_id')
+            ->join('rooms', 'rooms.id = doctor_schedules.room_id')
+            ->where('appointments.id', $appointmentId)
+            ->first();
+
+
+        $data = [
+            'appointment' => $appointment,
+        ];
+        return view('page/appointment/v_appointment_detail', $data);
+    }
+
     public function createAppointment()
     {
         $type = $this->request->getMethod();
