@@ -8,6 +8,7 @@ use App\Controllers\DoctorScheduleController;
 use App\Controllers\EquipmentController;
 use App\Controllers\InventoryController;
 use App\Controllers\RoomController;
+use App\Controllers\SettingController;
 use App\Controllers\UserController;
 use CodeIgniter\Router\RouteCollection;
 use Config\Roles;
@@ -61,6 +62,10 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->match(['get', 'put'], 'room/update/(:num)', [RoomController::class, 'update']);
     $routes->delete('room/delete/(:num)', [RoomController::class, 'delete/$1']);
 
+    $routes->get('setting', [SettingController::class, 'index']);
+    $routes->match(['get', 'post'], 'setting/create', [SettingController::class, 'create']);
+    $routes->match(['get', 'put'], 'setting/update/(:num)', [SettingController::class, 'update']);
+    $routes->delete('setting/delete/(:num)', [SettingController::class, 'delete/$1']);
 });
 
 $routes->group('doctor', [], function ($routes) {
