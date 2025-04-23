@@ -8,12 +8,23 @@ use Config\Roles; ?>
     <div class="flex-none">
         <ul class="menu menu-horizontal px-1 gap-2">
             <?php if (logged_in()): ?>
-                <li><a href="<?= base_url('admin/dashboard'); ?>" class="btn btn-white text-black mr-2">Dashboard</a></li>
                 <?php if (in_groups(Roles::ADMIN)): ?>
+                    <li>
+                        <a href="<?= base_url('admin/dashboard'); ?>" class="">Dashboard</a>
+                    </li>
                 <?php endif; ?>
                 <?php if (in_groups(Roles::DOCTOR)): ?>
+                    <li>
+                        <a href="<?= base_url('doctor/dashboard'); ?>" class="">Dashboard</a>
+                    </li>
                 <?php endif; ?>
                 <?php if (in_groups(Roles::PATIENT)): ?>
+                    <li>
+                        <a href="<?= base_url('dashboard'); ?>" class="">Dashboard</a>
+                    </li>
+                    <li>
+                        <a href="<?= base_url('appointment'); ?>" class="">Appointment</a>
+                    </li>
                 <?php endif; ?>
                 <li><a href="<?= base_url('logout'); ?>" class="btn btn-error text-white">Logout</a></li>
             <?php else: ?>

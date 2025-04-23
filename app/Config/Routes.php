@@ -7,6 +7,7 @@ use App\Controllers\DoctorController;
 use App\Controllers\DoctorScheduleController;
 use App\Controllers\EquipmentController;
 use App\Controllers\InventoryController;
+use App\Controllers\PatientController;
 use App\Controllers\RoomController;
 use App\Controllers\UserController;
 use CodeIgniter\Router\RouteCollection;
@@ -60,24 +61,24 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->match(['get', 'post'], 'room/create-inventory/(:num)', [RoomController::class, 'createRoomInventory']);
     $routes->match(['get', 'put'], 'room/update/(:num)', [RoomController::class, 'update']);
     $routes->delete('room/delete/(:num)', [RoomController::class, 'delete/$1']);
-
 });
 
+// Doctor Routes
 $routes->group('doctor', [], function ($routes) {
     $routes->get('dashboard', [DoctorController::class, 'dashboard']);
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
     $routes->match(['get', 'post'], 'absent/create', [DoctorController::class, 'createDoctorAbsent']);
 });
 
-$routes->group('appointment', [], function ($routes) {
-    $routes->get('', [AppointmentController::class, 'index']);
-    $routes->get('create', [AppointmentController::class, 'createAppointment']);
-    $routes->post('create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
-    $routes->get('create/form', [AppointmentController::class, 'createAppointmentForm']);
+// Patient Routes
+$routes->group('', ['filter' => 'role:' . Roles::PATIENT], function ($routes) {
+    $routes->get('/dashboard', [PatientController::class, 'dashboard']);
+
+    $routes->get('appointment', [AppointmentController::class, 'index']);
+    $routes->get('appointment/create', [AppointmentController::class, 'createAppointment']);
+    $routes->post('appointment/create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
+    $routes->get('appointment/create/form', [AppointmentController::class, 'createAppointmentForm']);
 });
-
-
-
 
 //Auth routes
 $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
