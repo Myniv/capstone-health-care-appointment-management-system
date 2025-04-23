@@ -136,4 +136,27 @@ class AppointmentModel extends Model
     {
         $this->save($data);
     }
+
+    public function getUpcomingAppointment($patientId)
+    {
+        return $this->select('appointments.id, 
+        patients.first_name as patientFirstName, 
+        patients.last_name as patientLastName,
+        doctor_schedules.start_time as startTime,
+        doctor_schedules.end_time as endTime,
+        doctors.first_name as doctorFirstName,
+        doctors.last_name as doctorLastName,
+        doctors.profile_picture as profilePicture,
+        rooms.name as roomName,
+        appointments.date as date,
+        appointments.status as status,
+        appointments.reason_for_visit')
+            ->join('doctor_schedules', 'doctor_schedules.id = appointments.doctor_schedule_id', 'left')
+            ->join('rooms', 'rooms.id = doctor_schedules.room_id', 'left')
+            ->join('patients', 'patients.id = appointments.patient_id', 'left')
+            ->join('doctors', 'doctors.id = appointments.doctor_id', 'left')
+            ->where('appointments.status', 'on going')
+            ->where('appointments.patient_id', $patientId)
+            ->orderBy('appointments.date', 'ASC');
+    }
 }
