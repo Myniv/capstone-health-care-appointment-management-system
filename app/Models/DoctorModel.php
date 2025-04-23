@@ -23,8 +23,6 @@ class DoctorModel extends Model
         'sex',
         'dob',
         'email',
-        // 'degree',
-        // 'education',
         'profile_picture',
         'doctor_category_id',
         'user_id',
@@ -54,8 +52,6 @@ class DoctorModel extends Model
         'sex' => 'required|in_list[male,female,other]',
         'dob' => 'required|valid_date[Y-m-d]',
         'email' => 'required|valid_email|max_length[150]',
-        //'degree' => 'required|max_length[150]',
-        //'education' => 'required|max_length[150]',
         'profile_picture' => 'permit_empty|max_length[255]',
         'doctor_category_id' => 'permit_empty|integer',
         'user_id' => 'permit_empty|integer',
@@ -91,15 +87,7 @@ class DoctorModel extends Model
             'required' => 'Email is required.',
             'valid_email' => 'Email format is invalid.',
             'max_length' => 'Email must not exceed 150 characters.',
-        ],
-        // 'degree' => [
-        //     'required' => 'Degree is required.',
-        //     'max_length' => 'Degree must not exceed 150 characters.',
-        // ],
-        // 'education' => [
-        //     'required' => 'Education is required.',
-        //     'max_length' => 'Education must not exceed 150 characters.',
-        // ],
+        ]
     ];
     protected $skipValidation = false;
     protected $cleanValidationRules = true;

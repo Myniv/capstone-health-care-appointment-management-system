@@ -5,7 +5,7 @@
             <span>Navigation</span>
         </li>
         <li>
-            <a href="/dashboard" class="active:bg-primary active:text-white">
+            <a href="/admin/dashboard" class="active:bg-primary active:text-white">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -44,6 +44,37 @@
                     </svg>
                     Doctor Schedule
                 </a>
+            </li>
+            <?php
+            $uri = uri_string();
+            $isResourcesActive = str_contains($uri, 'admin/equipment') || str_contains($uri, 'admin/inventory') || str_contains($uri, 'admin/room');
+            ?>
+            <li class="hoverable">
+                <details class="group" <?= $isResourcesActive ? 'open' : '' ?>>
+                    <summary
+                        class="flex items-center cursor-pointer px-4 py-2 rounded-lg <?= $isResourcesActive ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5h6M9 12h6m-6 7h6" />
+                        </svg>
+                        Resources
+                    </summary>
+                    <ul class="pl-6">
+                        <li>
+                            <a href="/admin/equipment"
+                                class="<?= current_url() === base_url('/admin/equipment') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Equipments</a>
+                        </li>
+                        <li>
+                            <a href="/admin/inventory"
+                                class="<?= current_url() === base_url('/admin/inventory') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Inventories</a>
+                        </li>
+                        <li>
+                            <a href="/admin/room"
+                                class="<?= current_url() === base_url('/admin/room') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Rooms</a>
+                        </li>
+                    </ul>
+                </details>
             </li>
         <?php endif; ?>
 

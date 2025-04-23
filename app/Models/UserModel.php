@@ -101,7 +101,6 @@ class UserModel extends \Myth\Auth\Models\UserModel
                 COALESCE(doctor_category.id, '-1') as doctor_category_id, 
                 auth_groups.name as role,
                 auth_groups.id as group_id, 
-
             ")
             ->join('doctors', 'doctors.user_id = users.id', 'left')
             ->join('patients', 'patients.user_id = users.id', 'left')

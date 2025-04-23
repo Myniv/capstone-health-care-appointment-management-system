@@ -39,6 +39,7 @@ class UserController extends BaseController
             return redirect()->to('/');
         }
     }
+
     public function index()
     {
         $params = new DataParams([
@@ -53,7 +54,6 @@ class UserController extends BaseController
         ]);
 
         $result = $this->userModel->getFilteredUser($params);
-        // dd($result);
 
         $data = [
             'users' => $result['users'],
@@ -67,17 +67,32 @@ class UserController extends BaseController
         return view('page/user/v_user_list', $data);
     }
 
-    public function profilePatient($id)
+    public function dashboard()
+    {
+        $users = $this->userModel->countAllResults();
+        $doctors = $this->doctorModel->countAllResults();
+        $patients = $this->patientModel->countAllResults();
+
+        $data = [
+            'title' => 'Dashboard Admin',
+            'users' => $users,
+            'doctors' => $doctors,
+            'patients' => $patients
+        ];
+
+        return view('page/user/v_user_dashboard_admin', $data);
+    }
+
+    public function profile($id)
     {
         $user = $this->userModel->getUserWithFullName($id);
 
         $data = [
-            'title' => 'Profile Patient',
+            'title' => 'Profile',
             'user' => $user
         ];
 
-        d($user);
-        return view('page/user/v_user_patient_profile', $data);
+        return view('page/user/v_user_profile', $data);
     }
 
     public function profilePicture()
@@ -272,7 +287,6 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
-            'profile_picture' => '',
         ];
 
         $profilePicture = $this->request->getFile('profile_picture');
@@ -356,8 +370,6 @@ class UserController extends BaseController
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
             'dob' => 'required|valid_date',
-            // 'degree' => 'required|max_length[150]',
-            // 'education' => 'required|max_length[150]',
             'profile_picture' => [
                 'label' => 'Gambar',
                 'rules' => [
@@ -405,8 +417,6 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
-            // 'degree' => $this->request->getPost('degree'),
-            // 'education' => $this->request->getPost('education'),
             'email' => $user->email,
             'profile_picture' => '',
             'doctor_category_id' => $this->request->getPost('doctor_category_id'),
@@ -416,7 +426,7 @@ class UserController extends BaseController
         $profilePicture = $this->request->getFile('profile_picture');
         if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {
 
-            $uploadPath = WRITEPATH . 'uploads/' . 'patients/' . $userId . '/' . 'profile_picture' . '/';
+            $uploadPath = WRITEPATH . 'uploads/' . 'doctors/' . $userId . '/' . 'profile_picture' . '/';
 
             if (!is_dir($uploadPath)) {
                 mkdir($uploadPath, 0777, true);
@@ -502,8 +512,6 @@ class UserController extends BaseController
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
             'dob' => 'required|valid_date',
-            // 'degree' => 'required|max_length[150]',
-            // 'education' => 'required|max_length[150]',
             'doctor_category_id' => 'required',
             'profile_picture' => [
                 'label' => 'Gambar',
@@ -560,8 +568,6 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
-            // 'degree' => $this->request->getPost('degree'),
-            // 'education' => $this->request->getPost('education'),
             'doctor_category_id' => $this->request->getPost('doctor_category_id'),
         ];
 

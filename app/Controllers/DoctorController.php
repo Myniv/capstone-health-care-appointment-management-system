@@ -29,6 +29,15 @@ class DoctorController extends BaseController
         //
     }
 
+    public function dashboard()
+    {
+        $data = [
+            'title' => 'Dashboard Doctor'
+        ];
+
+        return view('page/user/v_user_dashboard_doctor');
+    }
+
     public function getDoctorAbsent()
     {
         $params = new DataParams([

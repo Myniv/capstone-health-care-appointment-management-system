@@ -71,26 +71,6 @@
                         </a>
                     </th>
                     <th>
-                        <a href="<?= $params->getSortUrl('phone', $baseUrl) ?>" class="link link-hover">
-                            Phone <?= $params->isSortedBy('phone') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
-                        </a>
-                    </th>
-                    <th>
-                        <a href="<?= $params->getSortUrl('address', $baseUrl) ?>" class="link link-hover">
-                            Address <?= $params->isSortedBy('address') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
-                        </a>
-                    </th>
-                    <th>
-                        <a href="<?= $params->getSortUrl('sex', $baseUrl) ?>" class="link link-hover">
-                            Sex <?= $params->isSortedBy('sex') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
-                        </a>
-                    </th>
-                    <th>
-                        <a href="<?= $params->getSortUrl('dob', $baseUrl) ?>" class="link link-hover">
-                            Dob <?= $params->isSortedBy('dob') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
-                        </a>
-                    </th>
-                    <th>
                         <a href="<?= $params->getSortUrl('doctor_category', $baseUrl) ?>" class="link link-hover">
                             Doctor Category <?= $params->isSortedBy('doctor_category') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
@@ -110,12 +90,8 @@
                         <td><?= $user->username ?></td>
                         <td><?= $user->email ?></td>
                         <td><?= $user->first_name . ' ' . $user->last_name ?></td>
-                        <td><?= $user->phone ?></td>
-                        <td><?= $user->address ?></td>
-                        <td><?= $user->sex ?></td>
-                        <td><?= $user->dob ?></td>
-                        <td><?= $user->doctor_category ?></td>
-                        <td><?= $user->role ?></td>
+                        <td><?= ucfirst($user->doctor_category) ?></td>
+                        <td><?= ucfirst($user->role) ?></td>
                         <td>
                             <?php if ($user->role == 'patient'): ?>
                                 <a href="/admin/users/patient/profile/<?= $user->user_id ?>" class="btn btn-info btn-sm">Detail</a>
