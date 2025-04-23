@@ -10,19 +10,9 @@ class SettingSeeder extends Seeder
     {
         $data = [
             [
-                'key' => 'reminder_appointment_h-7',
-                'value' => '7',
-                'description' => 'Reminder Appointment H-7',
-            ],
-            [
-                'key' => 'reminder_appointment_h-3',
-                'value' => '3',
-                'description' => 'Reminder Appointment H-3',
-            ],
-            [
-                'key' => 'reminder_appointment_h-1',
-                'value' => '1',
-                'description' => 'Reminder Appointment H-1',
+                'key' => 'reminder_days',
+                'value' => '7,3,1',
+                'description' => 'Reminder For Appointment',
             ],
         ];
 
