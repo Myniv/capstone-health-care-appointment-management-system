@@ -53,8 +53,6 @@ $routes->group('appointment', [], function ($routes) {
 });
 
 
-
-
 //Auth routes
 $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
     // Registrasi

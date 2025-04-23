@@ -71,7 +71,7 @@ class EducationModel extends Model
             }
         }
 
-        $this->educationModel->insertBatch($educations);
-        return ['success' => 'Absent successfully requested.', 'status' => true];
+        $this->insertBatch($educations);
+        return ['success' => 'Education successfully added.', 'status' => true];
     }
 }

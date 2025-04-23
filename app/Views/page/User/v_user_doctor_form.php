@@ -145,6 +145,7 @@
                 </select>
                 <div class="text-error text-sm"><?= session('errors.doctor_category_id') ?? '' ?></div>
             </div>
+            <!-- Profile Picture Upload Field -->
             <div class="">
                 <label for="profile_picture" class="label">
                     <span class="label-text">Profile Picture</span>
@@ -156,55 +157,58 @@
         </div>
 
 
-        <!-- Profile Picture Upload Field -->
+        <?php
+        $educationOld = old('education', isset($education) ? $education : []);
+        ?>
+        <?php if (!isset($user)): ?>
+            <!-- degree and education -->
 
+            <p class="text-lg font-bold my-2">Education Information</p>
 
-        <p class="text-lg font-bold my-2">Education Information</p>
+            <div id="education-container">
+                <div class="education-group grid grid-cols-1 gap-4 mb-4">
+                    <div class="card card-border bg-base-100 w-full">
+                        <div class="card-body">
+                            <h2 class="card-title">Education 1</h2>
+                            <div class="education-group grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div>
+                                    <label class="label"><span class="label-text">Degree</span></label>
+                                    <select name="education[0][degree]"
+                                        class="select select-bordered w-full <?= session('errors.degree') ? 'select-error' : '' ?>"
+                                        required>
+                                        <option value="">Select Degree</option>
+                                        <option value="Bachelor" <?= old('degree', $user->degree ?? '') == 'Bachelor' ? 'selected' : '' ?>>
+                                            Bachelor</option>
+                                        <option value="Master" <?= old('degree', $user->degree ?? '') == 'Master' ? 'selected' : '' ?>>
+                                            Master</option>
+                                        <option value="Doctor" <?= old('degree', $user->degree ?? '') == 'Doctor' ? 'selected' : '' ?>>
+                                            Doctor</option>
+                                    </select>
+                                    <div class="text-error text-sm"><?= session('errors.degree') ?? '' ?></div>
+                                </div>
+                                <div>
+                                    <label class="label"><span class="label-text">Major</span></label>
+                                    <input type="text" name="education[0][study_program]" class="input input-bordered w-full" required>
+                                </div>
+                                <div>
+                                    <label class="label"><span class="label-text">City</span></label>
+                                    <input type="text" name="education[0][city]" class="input input-bordered w-full" required>
+                                </div>
+                                <div>
+                                    <label class="label"><span class="label-text">University</span></label>
+                                    <input type="text" name="education[0][university]" class="input input-bordered w-full" required>
+                                </div>
+                            </div>
 
-        <!-- degree and education -->
-        <div id="education-container">
-            <div class="education-group grid grid-cols-1 gap-4 mb-4">
-                <div class="card card-border bg-base-100 w-full">
-                    <div class="card-body">
-                        <h2 class="card-title">Education 1</h2>
-                        <div class="education-group grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
-                                <label class="label"><span class="label-text">Degree</span></label>
-                                <select name="education[0][degree]"
-                                    class="select select-bordered w-full <?= session('errors.degree') ? 'select-error' : '' ?>"
-                                    required>
-                                    <option value="">Select Degree</option>
-                                    <option value="Bachelor" <?= old('degree', $user->degree ?? '') == 'Bachelor' ? 'selected' : '' ?>>
-                                        Bachelor</option>
-                                    <option value="Master" <?= old('degree', $user->degree ?? '') == 'Master' ? 'selected' : '' ?>>
-                                        Master</option>
-                                    <option value="Doctor" <?= old('degree', $user->degree ?? '') == 'Doctor' ? 'selected' : '' ?>>
-                                        Doctor</option>
-                                </select>
-                                <div class="text-error text-sm"><?= session('errors.degree') ?? '' ?></div>
-                            </div>
-                            <div>
-                                <label class="label"><span class="label-text">Major</span></label>
-                                <input type="text" name="education[0][study_program]" class="input input-bordered w-full" required>
-                            </div>
-                            <div>
-                                <label class="label"><span class="label-text">City</span></label>
-                                <input type="text" name="education[0][city]" class="input input-bordered w-full" required>
-                            </div>
-                            <div>
-                                <label class="label"><span class="label-text">University</span></label>
-                                <input type="text" name="education[0][university]" class="input input-bordered w-full" required>
-                            </div>
                         </div>
-
                     </div>
                 </div>
+
             </div>
 
-        </div>
-
-        <!-- Add Button -->
-        <button type="button" id="add-education" class="btn btn-secondary btn-sm mb-4">+ Add More Education</button>
+            <!-- Add Button -->
+            <button type="button" id="add-education" class="btn btn-secondary btn-sm mb-4">+ Add More Education</button>
+        <?php endif; ?>
 
         <!-- Submit Button -->
         <div class="text-end">
@@ -214,8 +218,8 @@
 </div>
 
 <script>
-    let eduIndex = 1;
-
+    //let eduIndex = 1;
+    let eduIndex = <?= count($educationOld) ?>;
     document.getElementById('add-education').addEventListener('click', () => {
         const container = document.getElementById('education-container');
 

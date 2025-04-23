@@ -83,6 +83,8 @@ class UserModel extends \Myth\Auth\Models\UserModel
 
     public function getUserWithFullName($userId)
     {
+        // COALESCE(doctors.degree, 'N/A') as degree, 
+        // COALESCE(doctors.education, 'N/A') as education, 
         return $this
             ->select("
                 users.id as user_id,
@@ -95,8 +97,6 @@ class UserModel extends \Myth\Auth\Models\UserModel
                 COALESCE(doctors.sex, patients.sex, 'N/A') as sex,
                 COALESCE(doctors.profile_picture, patients.profile_picture, 'N/A') as profile_picture,
                 COALESCE(doctors.dob, patients.dob, '9999-01-01') as dob,
-                COALESCE(doctors.degree, 'N/A') as degree, 
-                COALESCE(doctors.education, 'N/A') as education, 
                 COALESCE(doctor_category.name, 'N/A') as doctor_category, 
                 COALESCE(doctor_category.id, '-1') as doctor_category_id, 
                 auth_groups.name as role,

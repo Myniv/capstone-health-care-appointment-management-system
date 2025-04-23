@@ -429,27 +429,29 @@ class UserController extends BaseController
             $relativePath = 'uploads/' . 'doctors/' . $userId . '/' . 'profile_picture' . '/' . $pictureName;
             $doctorData['profile_picture'] = $relativePath;
         }
-        // dd($patientData);
-        //$this->doctorModel->save($doctorData);
+
 
         if (empty($doctorData['id'])) {
             // New record
-            $this->doctorModel->save($doctorData);
-            $doctorId = $this->doctorModel->getInsertID();
 
-            $educationDataDoctor = [];
-            foreach ($educationData as $edu) {
-                $edu['doctor_id'] = $doctorId;
-                $educationDataDoctor[] = $edu;
-            }
+            if ($this->doctorModel->save($doctorData)) {
+                $doctorId = $this->doctorModel->getInsertID();
 
-            $result = $this->educationModel->insertBatchValidated($educationDataDoctor);
+                $educationDataDoctor = [];
+                foreach ($educationData as $edu) {
+                    $edu['doctor_id'] = $doctorId;
+                    $educationDataDoctor[] = $edu;
+                }
 
-            if ($result['status'] == false) {
-                $this->doctorModel->delete($doctorId);
-                $this->userModel->delete($userId);
+                $result = $this->educationModel->insertBatchValidated($educationDataDoctor);
 
-                return redirect()->back()->withInput()->with('error', $result['error']);
+                if ($result['status'] == false) {
+                    $del = $this->deleteDoctorHard($userId);
+
+                    if ($del) {
+                        return redirect()->back()->withInput()->with('error', $result['error']);
+                    }
+                }
             }
         }
 
@@ -464,6 +466,7 @@ class UserController extends BaseController
                 'doctor_category' => $this->doctorCategoryModel->findAll(),
                 'user' => $this->userModel->getUserWithFullName($id),
             ];
+
 
             if (empty($data['user'])) {
                 return redirect()->to('/users')->with('error', 'User Not Found');
@@ -499,8 +502,8 @@ class UserController extends BaseController
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
             'dob' => 'required|valid_date',
-            'degree' => 'required|max_length[150]',
-            'education' => 'required|max_length[150]',
+            // 'degree' => 'required|max_length[150]',
+            // 'education' => 'required|max_length[150]',
             'doctor_category_id' => 'required',
             'profile_picture' => [
                 'label' => 'Gambar',
@@ -557,8 +560,8 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
-            'degree' => $this->request->getPost('degree'),
-            'education' => $this->request->getPost('education'),
+            // 'degree' => $this->request->getPost('degree'),
+            // 'education' => $this->request->getPost('education'),
             'doctor_category_id' => $this->request->getPost('doctor_category_id'),
         ];
 
@@ -597,8 +600,33 @@ class UserController extends BaseController
         return redirect()->to('admin/users')->with('message', 'User Updated Successfully');
     }
 
+    public function deleteDoctorHard($id)
+    {
+        $user = $this->userModel->find($id);
+
+        if (empty($user)) {
+            return false;
+        }
+
+        $doctor = $this->doctorModel->getDoctorByUserId($user->id);
+        if (!empty($doctor)) {
+            if (!empty($doctor->profile_picture) || $doctor->profile_picture !== null) {
+                $oldPicturePath = WRITEPATH . $doctor->profile_picture;
+                if (is_file($oldPicturePath)) {
+                    unlink($oldPicturePath);
+                }
+                // $this->deleteFolder(dirname(WRITEPATH . $doctor->profile_picture));
+            }
+            $this->doctorModel->where('user_id', $id)->delete(null, true);
+        }
+
+        $this->userModel->where('id', $id)->delete(null, true);
+        return true;
+    }
+
     public function deleteDoctor($id)
     {
+
         $user = $this->userModel->find($id);
 
         if (empty($user)) {
@@ -618,7 +646,6 @@ class UserController extends BaseController
         }
 
         $this->userModel->delete($user->id);
-
         return redirect()->to('admin/users')->with('message', 'User Deleted Successfully');
     }
 
