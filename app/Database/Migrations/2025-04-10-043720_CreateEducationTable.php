@@ -38,6 +38,11 @@ class CreateEducationTable extends Migration
                 'constraint' => '50',
                 'null' => true
             ],
+            'year' => [
+                'type' => 'VARCHAR',
+                'constraint' => '50',
+                'null' => true
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true

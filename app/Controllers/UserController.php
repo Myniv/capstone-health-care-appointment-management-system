@@ -86,10 +86,12 @@ class UserController extends BaseController
     public function profile($id)
     {
         $user = $this->userModel->getUserWithFullName($id);
+        $educations = $this->educationModel->where('doctor_id', $user->doctor_id)->findAll();
 
         $data = [
             'title' => 'Profile',
-            'user' => $user
+            'user' => $user,
+            'educations' => $educations
         ];
 
         return view('page/user/v_user_profile', $data);

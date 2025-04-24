@@ -34,7 +34,11 @@ class CreateAppointmentTable extends Migration
                 'type' => 'DATETIME',
                 'null' => true
             ],
-            //documents
+            'documents' => [
+                'type' => 'VARCHAR',
+                'constraint' => '255',
+                'null' => true
+            ],
             'status' => [
                 'type' => 'VARCHAR',
                 'constraint' => '50',

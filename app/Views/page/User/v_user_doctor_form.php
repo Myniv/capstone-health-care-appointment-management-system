@@ -190,12 +190,16 @@
                                     <input type="text" name="education[0][study_program]" class="input input-bordered w-full" required>
                                 </div>
                                 <div>
+                                    <label class="label"><span class="label-text">University</span></label>
+                                    <input type="text" name="education[0][university]" class="input input-bordered w-full" required>
+                                </div>
+                                <div>
                                     <label class="label"><span class="label-text">City</span></label>
                                     <input type="text" name="education[0][city]" class="input input-bordered w-full" required>
                                 </div>
                                 <div>
-                                    <label class="label"><span class="label-text">University</span></label>
-                                    <input type="text" name="education[0][university]" class="input input-bordered w-full" required>
+                                    <label class="label"><span class="label-text">Year</span></label>
+                                    <input placeholder="<?= date("Y"); ?>" type="text" name="education[0][year]" class="input input-bordered w-full" required>
                                 </div>
                             </div>
 
@@ -217,8 +221,8 @@
 </div>
 
 <script>
-    //let eduIndex = 1;
-    let eduIndex = <?= count($educationOld) ?>;
+    let eduIndex = 1;
+
     document.getElementById('add-education').addEventListener('click', () => {
         const container = document.getElementById('education-container');
 
@@ -247,12 +251,16 @@
                         <input type="text" name="education[${eduIndex}][study_program]" class="input input-bordered w-full" required>
                     </div>
                     <div>
+                        <label class="label"><span class="label-text">University</span></label>
+                        <input type="text" name="education[${eduIndex}][university]" class="input input-bordered w-full" required>
+                    </div>
+                    <div>
                         <label class="label"><span class="label-text">City</span></label>
                         <input type="text" name="education[${eduIndex}][city]" class="input input-bordered w-full" required>
                     </div>
                     <div>
-                        <label class="label"><span class="label-text">University</span></label>
-                        <input type="text" name="education[${eduIndex}][university]" class="input input-bordered w-full" required>
+                        <label class="label"><span class="label-text">Year</span></label>
+                        <input placeholder="<?= date("Y"); ?>" type="text" name="education[${eduIndex}][year]" class="input input-bordered w-full" required>
                     </div>
                 </div>
             </div>

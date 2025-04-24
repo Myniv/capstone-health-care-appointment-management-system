@@ -23,7 +23,8 @@ class AppointmentModel extends Model
         'room_id',
         'date',
         'status',
-        'reason_for_visit'
+        'reason_for_visit',
+        'documents'
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -46,6 +47,7 @@ class AppointmentModel extends Model
         'room_id' => 'required',
         'date' => 'required',
         'reason_for_visit' => 'required|max_length[100]',
+        'documents' => 'required',
     ];
     protected $validationMessages   = [
         'doctor_schedule_id' => [
@@ -63,6 +65,9 @@ class AppointmentModel extends Model
         'reason_for_visit' => [
             'required' => 'Needs must be filled.',
             'max_length' => 'Needs must be less than 100 characters.',
+        ],
+        'documents' => [
+            'required' => 'Documents is required.',
         ],
     ];
     protected $skipValidation       = false;

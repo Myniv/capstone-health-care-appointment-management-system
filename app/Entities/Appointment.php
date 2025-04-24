@@ -14,7 +14,7 @@ class Appointment extends Entity
         'doctor_id' => null,
         'room_id' => null,
         'date' => null,
-        //'documents' => null,
+        'documents' => null,
         'status' => null,
         'reason_for_visit' => null,
         'createdAt' => null,

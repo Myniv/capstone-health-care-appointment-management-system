@@ -121,7 +121,7 @@ class AppointmentController extends BaseController
             'doctor_id' => $this->request->getVar('id'),
             'date' => $this->request->getVar('date'),
             'room_id' =>  $room_id,
-            'status' => 'on going',
+            'status' => 'booking',
             'reason_for_visit' => $this->request->getVar('reason')
         ];
 

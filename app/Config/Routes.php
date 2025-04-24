@@ -5,6 +5,7 @@ use App\Controllers\AuthController;
 use App\Controllers\DoctorCategoryController;
 use App\Controllers\DoctorController;
 use App\Controllers\DoctorScheduleController;
+use App\Controllers\EducationController;
 use App\Controllers\EquipmentController;
 use App\Controllers\InventoryController;
 use App\Controllers\RoomController;
@@ -60,13 +61,18 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->match(['get', 'post'], 'room/create-inventory/(:num)', [RoomController::class, 'createRoomInventory']);
     $routes->match(['get', 'put'], 'room/update/(:num)', [RoomController::class, 'update']);
     $routes->delete('room/delete/(:num)', [RoomController::class, 'delete/$1']);
-
 });
 
 $routes->group('doctor', [], function ($routes) {
     $routes->get('dashboard', [DoctorController::class, 'dashboard']);
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
     $routes->match(['get', 'post'], 'absent/create', [DoctorController::class, 'createDoctorAbsent']);
+
+    $routes->group('education', [], function ($routes) {
+        $routes->match(['get', 'post'], 'create', [EducationController::class, 'create']);
+        $routes->match(['get', 'put'], 'update/(:num)', [EducationController::class, 'update']);
+        $routes->delete('delete/(:num)/(:num)', [EducationController::class, 'delete/$1/$2']);
+    });
 });
 
 $routes->group('appointment', [], function ($routes) {
@@ -76,6 +82,8 @@ $routes->group('appointment', [], function ($routes) {
     $routes->post('create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
     $routes->get('create/form', [AppointmentController::class, 'createAppointmentForm']);
 });
+
+
 
 
 //Auth routes

@@ -38,6 +38,11 @@ class CreatePatientTable extends Migration
                 'constraint' => '100',
                 'null' => true
             ],
+            'patient_type' => [
+                'type' => 'VARCHAR',
+                'constraint' => '100',
+                'null' => true
+            ],
             'dob' => [
                 'type' => 'DATE',
                 'null' => true

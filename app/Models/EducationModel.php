@@ -19,7 +19,8 @@ class EducationModel extends Model
         'university',
         'city',
         'study_program',
-        'degree'
+        'degree',
+        'year'
     ];
 
     protected bool $allowEmptyInserts = false;
@@ -36,8 +37,34 @@ class EducationModel extends Model
     protected $deletedField  = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [];
-    protected $validationMessages   = [];
+    protected $validationRules      = [
+        'doctor_id' => 'required',
+        'university'  => 'required',
+        'city' => 'required',
+        'study_program' => 'required',
+        'degree' => 'required',
+        'year' => 'required'
+    ];
+    protected $validationMessages   = [
+        'doctor_id' => [
+            'required' => 'Doctor ID is required.',
+        ],
+        'university' => [
+            'required' => 'University must be filled.',
+        ],
+        'city' => [
+            'required' => 'City must be filled.',
+        ],
+        'study_program' => [
+            'required' => 'Major must be filled.',
+        ],
+        'degree' => [
+            'required' => 'Degree must be filled.',
+        ],
+        'year' => [
+            'required' => 'Year must be filled.',
+        ],
+    ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
 
@@ -63,9 +90,9 @@ class EducationModel extends Model
         }
 
         foreach ($educations as $edu) {
-            if (empty($edu['degree']) || empty($edu['university'])) {
+            if (empty($edu['degree']) || empty($edu['university']) || empty($edu['year'])) {
                 return [
-                    'error' => 'Each education record must have a degree and university.',
+                    'error' => 'Each education record must have a degree, university and year.',
                     'status' => false
                 ];
             }
@@ -73,5 +100,15 @@ class EducationModel extends Model
 
         $this->insertBatch($educations);
         return ['success' => 'Education successfully added.', 'status' => true];
+    }
+
+    public function addEducation($data)
+    {
+        return $this->save($data);
+    }
+
+    public function updateEducation($id, $data)
+    {
+        return $this->update($id, $data);
     }
 }
