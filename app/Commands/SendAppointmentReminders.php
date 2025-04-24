@@ -23,6 +23,9 @@ class SendAppointmentReminders extends BaseCommand
         $doctorModel = new DoctorModel();
 
         $setting = $settingModel->where('key', 'reminder_days')->first();
+        if ($setting == null || $setting->value == "" || $setting->value == null || $setting == "") {
+            $setting = "7,3,1";
+        }
 
         if (!$setting) {
             CLI::error('Reminder settings not found.');
@@ -30,15 +33,20 @@ class SendAppointmentReminders extends BaseCommand
         }
 
         $days = explode(',', $setting->value);
-        $today = date('Y-m-d');
 
         foreach ($days as $day) {
+            $day = trim($day);
+            if (!ctype_digit($day)) {
+                CLI::error("Invalid day value in reminder settings: '{$day}'. Must be an integer.");
+                return; // or exit if this is in CLI context
+            }
+
             $targetDate = date('Y-m-d', strtotime("+$day days"));
 
             $appointments = $appointmentModel
                 ->where('date', $targetDate)
-                ->where('status', 'on going') // Optional
-                ->orWhere('status', 'On Going') // Optional
+                ->where('status', 'booking') // Optional
+                ->orWhere('status', 'Booking') // Optional
                 ->findAll();
             CLI::error("Appointments for $targetDate (H-$day): " . count($appointments));
 
@@ -84,7 +92,7 @@ class SendAppointmentReminders extends BaseCommand
     {
         $email = service('email');
         $email->setTo($patient->email);
-        $email->setCC($doctor->email);
+        // $email->setCC($doctor->email);
         $email->setSubject("Reminder: Your Appointment in $day Day(s)");
 
         $appointment_datetime = strtotime($appointment->date);
