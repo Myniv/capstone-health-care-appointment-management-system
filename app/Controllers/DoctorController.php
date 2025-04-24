@@ -32,7 +32,7 @@ class DoctorController extends BaseController
             'title' => 'Dashboard Doctor'
         ];
 
-        return view('page/user/v_user_dashboard_doctor');
+        return view('page/user/v_user_dashboard_doctor', $data);
     }
 
     public function getDoctorAbsent()
