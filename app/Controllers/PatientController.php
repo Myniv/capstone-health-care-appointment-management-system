@@ -26,7 +26,7 @@ class PatientController extends BaseController
     {
         $patientId = $this->patientModel->where('user_id', user_id())->first()->id;
 
-        $result = $this->appointmentModel->getUpcomingAppointment($patientId)->first();
+        $result = $this->appointmentModel->getUpcomingAppointmentPatient($patientId);
 
         $data = [
             'title' => 'Dashboard',
