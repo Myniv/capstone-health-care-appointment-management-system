@@ -72,6 +72,7 @@ class AuthController extends MythController
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
             'dob' => 'required|valid_date',
+            'patient_type'=>'required',
             'profile_picture' => [
                 'label' => 'Gambar',
                 'rules' => [
@@ -119,10 +120,12 @@ class AuthController extends MythController
                 'address' => $this->request->getPost('address'),
                 'sex' => $this->request->getPost('sex'),
                 'dob' => $this->request->getPost('dob'),
+                'patient_type' => $this->request->getPost('patient_type'),
                 'email' => $user->email,
                 'profile_picture' => '',
                 'user_id' => $user->id,
             ];
+            // dd($patientData);
 
             $profilePicture = $this->request->getFile('profile_picture');
             if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {

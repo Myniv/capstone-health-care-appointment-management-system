@@ -131,6 +131,24 @@
             </div>
         </div>
 
+        <div class="mb-4">
+            <label for="patient_type" class="label">
+                <span class="label-text">Patient Type</span>
+            </label>
+            <select name="patient_type"
+                class="select select-bordered w-full <?= session('errors.patient_type') ? 'select-error' : '' ?>"
+                required>
+                <option value="">Select Patient Type</option>
+                <option value="BPJS" <?= old('patient_type', $user->patient_type ?? '') == 'BPJS' ? 'selected' : '' ?>>
+                    BPJS</option>
+                <option value="non-BPJS(Swasta)" <?= old('patient_type', $user->patient_type ?? '') == 'non-BPJS(Swasta)' ? 'selected' : '' ?>>
+                    Non-BPJS(Swasta)</option>
+                <option value="Regular" <?= old('patient_type', $user->patient_type ?? '') == 'Regular' ? 'selected' : '' ?>>
+                    Regular</option>
+            </select>
+            <div class="text-error text-sm"><?= session('errors.patient_type') ?? '' ?></div>
+        </div>
+
         <!-- Profile Picture Upload Field -->
         <div class="mb-4">
             <label for="profile_picture" class="label">
