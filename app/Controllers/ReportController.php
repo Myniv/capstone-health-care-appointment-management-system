@@ -233,82 +233,87 @@ class ReportController extends BaseController
         $pdf->writeHTML($html, true, false, true, false, '');
     }
 
+    public function getReportResourceExcel(){
+        return view('page/report/v_report_resources_excel');
+    }
+
     public function reportResourceExcel()
     {
         $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
+        $roomSheet = $spreadsheet->createSheet();
+        $roomSheet->setTitle('Rooms');
 
+        $rooms = $this->roomModel->findAll();
 
-        $inventories = $this->roomModel->getAssignedInventories();
+        $inventoriesSheet = $spreadsheet->createSheet();
+        $inventoriesSheet->setTitle('Inventories');
+        $inventories = $this->inventoryModel->getAssignedInventories();
 
-        $equipment = $this->roomModel->getAssignedEquipment();
-
-        $unassignedInventory = $this->inventoryModel->getUnassignedInventories();
-
-        $unassignedEquipment = $this->equipmentModel->getUnassignedEquipment();
-
+        $equipmentSheet = $spreadsheet->createSheet();
+        $equipmentSheet->setTitle('Equipments');
+        $equipment = $this->equipmentModel->getAssignedEquipment();
 
         $row = 1;
-        $sheet->setCellValue("A$row", "Room Name")
-            ->setCellValue("B$row", "Inventory Name")
-            ->setCellValue("C$row", "Serial Number")
-            ->setCellValue("D$row", "Status");
+        $roomSheet->setCellValue("A$row", "Rooms");
+        $row++;
+
+        $roomSheet->setCellValue("A$row", "Name")
+            ->setCellValue("B$row", "Function")
+            ->setCellValue("C$row", "Status");
+        $row++;
+
+        foreach ($rooms as $item) {
+            $roomSheet->setCellValue("A$row", $item->name)
+                ->setCellValue("B$row", $item->function)
+                ->setCellValue("C$row", $item->status);
+            $row++;
+        }
+
+        $row = 1;
+        $inventoriesSheet->setCellValue("A$row", "Inventories");
+        $row++;
+
+        $inventoriesSheet->setCellValue("A$row", "Name")
+            ->setCellValue("B$row", "Serial Number")
+            ->setCellValue("C$row", "Function")
+            ->setCellValue("D$row", "Status")
+            ->setCellValue("E$row", "Assigned Room");
         $row++;
 
         foreach ($inventories as $item) {
-            $sheet->setCellValue("A$row", $item['roomName'])
-                ->setCellValue("B$row", $item['inventoryName'])
-                ->setCellValue("C$row", $item['serial_number'])
-                ->setCellValue("D$row", $item['inventoryStatus']);
+            $inventoriesSheet
+                ->setCellValue("A$row", $item->name)
+                ->setCellValue("B$row", $item->serial_number)
+                ->setCellValue("C$row", $item->function)
+                ->setCellValue("D$row", $item->status)
+                ->setCellValue("E$row", $item->room_name);
             $row++;
         }
 
+        $row = 1;
+        $equipmentSheet->setCellValue("A$row", "Equipments");
         $row++;
-        $sheet->setCellValue("A$row", "Room Name")
-            ->setCellValue("B$row", "Equipment Name")
-            ->setCellValue("C$row", "Total")
-            ->setCellValue("D$row", "Status");
+
+        $equipmentSheet->setCellValue("A$row", "Name")
+            ->setCellValue("B$row", "Stock")
+            ->setCellValue("C$row", "Function")
+            ->setCellValue("D$row", "Status")
+            ->setCellValue("E$row", "Assigned Room")
+            ->setCellValue("F$row", "Stock in Room");
         $row++;
 
         foreach ($equipment as $item) {
-            $sheet->setCellValue("A$row", $item['roomName'])
-                ->setCellValue("B$row", $item['equipmentName'])
-                ->setCellValue("C$row", $item['total'])
-                ->setCellValue("D$row", $item['equipmentStatus']);
+            $equipmentSheet->setCellValue("A$row", $item->name)
+                ->setCellValue("B$row", $item->stock)
+                ->setCellValue("C$row", $item->function)
+                ->setCellValue("D$row", $item->status)
+                ->setCellValue("E$row", $item->room_name)
+                ->setCellValue("F$row", $item->total);
             $row++;
         }
 
-        $row++;
-        $sheet->setCellValue("A$row", "Unassigned Inventory");
-        $row++;
-        $sheet->setCellValue("A$row", "Name")
-            ->setCellValue("B$row", "Serial Number")
-            ->setCellValue("C$row", "Status");
-        $row++;
+        $spreadsheet->setActiveSheetIndex(1);
 
-        foreach ($unassignedInventory as $item) {
-            $sheet->setCellValue("A$row", $item['name'])
-                ->setCellValue("B$row", $item['serial_number'])
-                ->setCellValue("C$row", $item['status']);
-            $row++;
-        }
-
-        $row++;
-        $sheet->setCellValue("A$row", "Unassigned Equipment");
-        $row++;
-        $sheet->setCellValue("A$row", "Name")
-            ->setCellValue("B$row", "Stock")
-            ->setCellValue("C$row", "Status");
-        $row++;
-
-        foreach ($unassignedEquipment as $item) {
-            $sheet->setCellValue("A$row", $item['name'])
-                ->setCellValue("B$row", $item['stock'])
-                ->setCellValue("C$row", $item['status']);
-            $row++;
-        }
-
-        // Output file
         $filename = 'Room_Resources_Report.xlsx';
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header("Content-Disposition: attachment; filename=\"$filename\"");

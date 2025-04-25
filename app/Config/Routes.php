@@ -85,6 +85,7 @@ $routes->group('appointment', [], function ($routes) {
 $routes->group('report', [], function ($routes) {
     $routes->get('user', [ReportController::class, 'getReportUserPdf'], ['filter' => 'role:' . Roles::ADMIN]);
     $routes->get('user/pdf', [ReportController::class, 'reportUserPdf'], ['filter' => 'role:' . Roles::ADMIN]);
+    $routes->get('resources', [ReportController::class, 'getReportResourceExcel'], ['filter' => 'role:' . Roles::ADMIN]);
     $routes->get('resources/excel', [ReportController::class, 'reportResourceExcel'], ['filter' => 'role:' . Roles::ADMIN]);
 });
 

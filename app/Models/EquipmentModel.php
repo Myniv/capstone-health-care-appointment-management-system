@@ -126,4 +126,20 @@ class EquipmentModel extends Model
             ->get()
             ->getResultArray();
     }
+
+    public function getAssignedEquipment()
+    {
+        return $this
+            ->select("
+                COALESCE(rooms.name, 'N/A') AS room_name,
+                COALESCE(equipment_rooms.total, '-1') AS total,
+                equipments.name AS name,
+                equipments.function AS function,
+                equipments.status AS status,
+                equipments.stock AS stock
+            ")
+            ->join('equipment_rooms', 'equipments.id = equipment_rooms.equipment_id', 'left')
+            ->join('rooms', 'equipment_rooms.room_id = rooms.id', 'left')
+            ->findAll();
+    }
 }

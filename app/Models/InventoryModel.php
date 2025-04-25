@@ -141,4 +141,21 @@ class InventoryModel extends Model
             ->getResultArray();
     }
 
+    public function getAssignedInventories()
+    {
+        return $this
+            ->select("
+            rooms.id, 
+            COALESCE(rooms.name, 'N/A') AS room_name,
+            inventories.id, 
+            inventories.name AS name, 
+            inventories.serial_number AS serial_number, 
+            inventories.function AS function, 
+            inventories.status AS status
+        ")
+            ->join('inventory_rooms', 'inventories.id = inventory_rooms.inventory_id', 'left')
+            ->join('rooms', 'rooms.id = inventory_rooms.room_id', 'left')
+            ->findAll();
+    }
+
 }
