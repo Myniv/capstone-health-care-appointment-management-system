@@ -168,7 +168,7 @@ class AuthController extends MythController
                 return redirect()->to('/doctor/dashboard');
             } else if ($group['name'] === Roles::PATIENT) {
                 //dashboard patient
-                return redirect()->to('/');
+                return redirect()->to('/dashboard');
             }
         }
         return redirect()->to('/');

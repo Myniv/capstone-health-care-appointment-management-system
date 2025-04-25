@@ -9,6 +9,7 @@ use App\Controllers\EducationController;
 use App\Controllers\EquipmentController;
 use App\Controllers\InventoryController;
 use App\Controllers\ReportController;
+use App\Controllers\PatientController;
 use App\Controllers\RoomController;
 use App\Controllers\SettingController;
 use App\Controllers\UserController;
@@ -70,6 +71,7 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->delete('setting/delete/(:num)', [SettingController::class, 'delete/$1']);
 });
 
+// Doctor Routes
 $routes->group('doctor', [], function ($routes) {
     $routes->get('dashboard', [DoctorController::class, 'dashboard']);
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
@@ -82,14 +84,6 @@ $routes->group('doctor', [], function ($routes) {
     });
 });
 
-$routes->group('appointment', [], function ($routes) {
-    $routes->get('', [AppointmentController::class, 'index']);
-    $routes->post('detail', [AppointmentController::class, 'detail']);
-    $routes->get('create', [AppointmentController::class, 'createAppointment']);
-    $routes->post('create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
-    $routes->get('create/form', [AppointmentController::class, 'createAppointmentForm']);
-});
-
 $routes->group('report', [], function ($routes) {
     $routes->get('user', [ReportController::class, 'getReportUserPdf'], ['filter' => 'role:' . Roles::ADMIN]);
     $routes->get('user/pdf', [ReportController::class, 'reportUserPdf'], ['filter' => 'role:' . Roles::ADMIN]);
@@ -97,7 +91,15 @@ $routes->group('report', [], function ($routes) {
     $routes->get('resources/excel', [ReportController::class, 'reportResourceExcel'], ['filter' => 'role:' . Roles::ADMIN]);
 });
 
-
+// Patient Routes
+$routes->group('', ['filter' => 'role:' . Roles::PATIENT], function ($routes) {
+    $routes->get('/dashboard', [PatientController::class, 'dashboard']);
+    $routes->post('appointment/detail', [AppointmentController::class, 'detail']);
+    $routes->get('appointment', [AppointmentController::class, 'index']);
+    $routes->get('appointment/create', [AppointmentController::class, 'createAppointment']);
+    $routes->post('appointment/create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
+    $routes->get('appointment/create/form', [AppointmentController::class, 'createAppointmentForm']);
+});
 
 //Auth routes
 $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
