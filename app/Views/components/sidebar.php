@@ -86,6 +86,38 @@
                     </ul>
                 </details>
             </li>
+            
+            <?php
+            $uri = uri_string();
+            $isReportsActive = str_contains($uri, 'report/user') || str_contains($uri, 'report/resources') || str_contains($uri, 'report/appointment');
+            ?>
+            <li class="hoverable">
+                <details class="group" <?= $isReportsActive ? 'open' : '' ?>>
+                    <summary
+                        class="flex items-center cursor-pointer px-4 py-2 rounded-lg <?= $isReportsActive ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 5h6M9 12h6m-6 7h6" />
+                        </svg>
+                        Reports
+                    </summary>
+                    <ul class="pl-6">
+                        <li>
+                            <a href="/report/user"
+                                class="<?= current_url() === base_url('/admin/equipment') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">User</a>
+                        </li>
+                        <li>
+                            <a href="/report/resources"
+                                class="<?= current_url() === base_url('/admin/inventory') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Resources</a>
+                        </li>
+                        <li>
+                            <a href="/report/appointment"
+                                class="<?= current_url() === base_url('/admin/room') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Appointment</a>
+                        </li>
+                    </ul>
+                </details>
+            </li>
         <?php endif; ?>
 
         <?php if (in_groups(Roles::DOCTOR)): ?>
