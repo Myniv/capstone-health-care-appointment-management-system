@@ -9,14 +9,14 @@ use Config\Roles;
 
 class AppointmentModel extends Model
 {
-    protected $table            = 'appointments';
-    protected $primaryKey       = 'id';
+    protected $table = 'appointments';
+    protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = Appointment::class;
+    protected $returnType = Appointment::class;
     //protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
-    protected $allowedFields    = [
+    protected $useSoftDeletes = false;
+    protected $protectFields = true;
+    protected $allowedFields = [
         'patient_id',
         'doctor_schedule_id',
         'doctor_id',
@@ -35,13 +35,13 @@ class AppointmentModel extends Model
 
     // Dates
     protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    protected $dateFormat = 'datetime';
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
     //protected $deletedField  = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [
+    protected $validationRules = [
         'doctor_schedule_id' => 'required',
         'doctor_id' => 'required',
         'room_id' => 'required',
@@ -49,7 +49,7 @@ class AppointmentModel extends Model
         'reason_for_visit' => 'required|max_length[100]',
         'documents' => 'required',
     ];
-    protected $validationMessages   = [
+    protected $validationMessages = [
         'doctor_schedule_id' => [
             'required' => 'Time must be choosen.',
         ],
@@ -70,19 +70,19 @@ class AppointmentModel extends Model
             'required' => 'Documents is required.',
         ],
     ];
-    protected $skipValidation       = false;
+    protected $skipValidation = false;
     protected $cleanValidationRules = true;
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
+    protected $beforeInsert = [];
+    protected $afterInsert = [];
+    protected $beforeUpdate = [];
+    protected $afterUpdate = [];
+    protected $beforeFind = [];
+    protected $afterFind = [];
+    protected $beforeDelete = [];
+    protected $afterDelete = [];
 
     public function getSortedAppointment(DataParams $params)
     {
@@ -140,5 +140,33 @@ class AppointmentModel extends Model
     public function addAppointment($data)
     {
         $this->save($data);
+    }
+
+    public function getAllAppointmentsDoctor($doctorId, $date)
+    {
+        $this->select('appointments.id, 
+            patients.first_name as patientFirstName, 
+            patients.last_name as patientLastName,
+            doctor_schedules.start_time as startTime,
+            doctor_schedules.end_time as endTime,
+            doctors.first_name as doctorFirstName,
+            doctors.last_name as doctorLastName,
+            rooms.name as roomName,
+            appointments.date as date,
+            appointments.status as status')
+            ->join('doctor_schedules', 'doctor_schedules.id = appointments.doctor_schedule_id')
+            ->join('rooms', 'rooms.id = doctor_schedules.room_id')
+            ->join('patients', 'patients.id = appointments.patient_id')
+            ->join('doctors', 'doctors.id = appointments.doctor_id');
+
+        if (!empty($date)) {
+            $this->where("TO_CHAR(date, 'YYYY-MM-DD') LIKE", "%{$date}%");
+        }
+
+        if (!empty($doctorId)) {
+            $this->where('doctors.id', $doctorId);
+        }
+
+        return $this->findAll();
     }
 }

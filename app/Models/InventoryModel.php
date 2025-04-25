@@ -130,4 +130,32 @@ class InventoryModel extends Model
         return $data;
     }
 
+    public function getUnassignedInventories()
+    {
+        return $this
+            ->select('id, name, serial_number, status')
+            ->whereNotIn('id', function ($builder) {
+                return $builder->select('id')->from('inventory_rooms');
+            })
+            ->get()
+            ->getResultArray();
+    }
+
+    public function getAssignedInventories()
+    {
+        return $this
+            ->select("
+            rooms.id, 
+            COALESCE(rooms.name, 'N/A') AS room_name,
+            inventories.id, 
+            inventories.name AS name, 
+            inventories.serial_number AS serial_number, 
+            inventories.function AS function, 
+            inventories.status AS status
+        ")
+            ->join('inventory_rooms', 'inventories.id = inventory_rooms.inventory_id', 'left')
+            ->join('rooms', 'rooms.id = inventory_rooms.room_id', 'left')
+            ->findAll();
+    }
+
 }
