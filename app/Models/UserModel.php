@@ -108,4 +108,35 @@ class UserModel extends \Myth\Auth\Models\UserModel
             ->where('users.id', $userId)
             ->first();
     }
+
+    public function getUserByRole($roleId)
+    {
+        $this
+            ->select("
+                users.id as user_id,
+                users.username,
+                users.email as email,
+                COALESCE(doctors.first_name, patients.first_name, 'N/A') as first_name,
+                COALESCE(doctors.last_name, patients.last_name, 'N/A') as last_name,
+                COALESCE(doctors.phone, patients.phone, 'N/A') as phone,
+                COALESCE(doctors.address, patients.address, 'N/A') as address,
+                COALESCE(doctors.sex, patients.sex, 'N/A') as sex,
+                COALESCE(doctors.profile_picture, patients.profile_picture, 'N/A') as profile_picture,
+                COALESCE(doctors.dob, patients.dob, '9999-01-01') as dob,
+                COALESCE(doctor_category.name, 'N/A') as doctor_category, 
+                COALESCE(doctor_category.id, '-1') as doctor_category_id, 
+                auth_groups.name as role,
+                auth_groups.id as group_id, 
+            ")
+            ->join('doctors', 'doctors.user_id = users.id', 'left')
+            ->join('patients', 'patients.user_id = users.id', 'left')
+            ->join('doctor_category', 'doctor_category.id = doctors.doctor_category_id', 'left')
+            ->join('auth_groups_users', 'auth_groups_users.user_id = users.id', 'left')
+            ->join('auth_groups', 'auth_groups.id = auth_groups_users.group_id', 'left');
+
+        if (!empty($roleId)) {
+            $this->where('auth_groups.id', (int) $roleId);
+        }
+        return $this->findAll();
+    }
 }

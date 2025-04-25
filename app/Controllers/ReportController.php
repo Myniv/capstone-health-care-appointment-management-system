@@ -1,0 +1,125 @@
+<?php
+
+namespace App\Controllers;
+
+use App\Controllers\BaseController;
+use App\Libraries\DataParams;
+use App\Models\AppointmentModel;
+use App\Models\DoctorModel;
+use App\Models\UserModel;
+use CodeIgniter\HTTP\ResponseInterface;
+use Config\Roles;
+use Myth\Auth\Models\GroupModel;
+use TCPDF;
+
+class ReportController extends BaseController
+{
+    protected $userModel;
+    protected $groupModel;
+    protected $appointmentModel;
+    protected $doctorModel;
+    public function __construct()
+    {
+        $this->userModel = new UserModel();
+        $this->groupModel = new GroupModel();
+        $this->appointmentModel = new AppointmentModel();
+        $this->doctorModel = new DoctorModel();
+    }
+    public function index()
+    {
+        //
+    }
+
+    public function getReportUserPdf()
+    {
+        $params = new DataParams([
+            "role" => $this->request->getGet("role"),
+            "page" => $this->request->getGet("page_users"),
+        ]);
+
+        $result = $this->userModel->getFilteredUser($params);
+
+        $data = [
+            'users' => $result['users'],
+            'pager' => $result['pager'],
+            'total' => $result['total'],
+            'groups' => $this->groupModel->findAll(),
+            'params' => $params,
+            'baseUrl' => base_url('report/user'),
+        ];
+
+        return view('page/report/v_report_user_pdf', $data);
+    }
+
+    public function reportUserPdf()
+    {
+        helper('tcpdf');
+        $role = $this->request->getGet("role");
+
+        $pdf = initTcpdf(user()->username, user()->username, "User Reports", "User Reports", );
+
+        $datas = $this->userModel->getUserByRole($role);
+        // dd($datas);
+        $roleName = 'All';
+        if (!empty($role)) {
+            $roleName = $this->groupModel->find($role)->name;
+        }
+        $this->generateUserPdfHtmlContent($pdf, $datas, "User Reports", $roleName);
+
+        // Output PDF
+        $filename = 'User_Reports_' . $roleName . '_' . date('Y-m-d') . '.pdf';
+        $pdf->Output($filename, 'I');
+        exit;
+    }
+
+    private function generateUserPdfHtmlContent($pdf, $datas, $title, $subject)
+    {
+        $titleReports = $title ?? 'User Reports';
+        $subjectReports = $subject ?? '';
+
+        $html = '<h2 style="text-align:center;">' . $titleReports . '</h2>
+        <h4 style="text-align:center;">' . $subjectReports . '</h2>
+      <table border="1" cellpadding="5" cellspacing="0" style="width:100%;">
+        <thead>
+          <tr style="background-color:#CCCCCC; font-weight:bold; text-align:center;">
+            <th>No</th>
+            <th>Username</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Type</th>
+          </tr>
+         </thead>
+         <tbody>';
+
+        $no = 1;
+        foreach ($datas as $data) {
+            $html .= '
+           <tr>
+            <td style="text-align:center;">' . $no . '</td>
+            <td>' . $data->username . '</td>
+            <td>' . $data->first_name . ' ' . $data->last_name . '</td>
+            <td>' . $data->email . '</td>
+            <td>' . $data->role . '</td>
+            <td>' . ($data->doctor_category ?? 'N/A') . '</td>
+            <td>' . ($data->last_login ?? 'N/A') . '</td>
+           </tr>';
+            $no++;
+        }
+
+        $html .= '
+               </tbody>
+           </table>
+           
+           <p style="margin-top:30px; text-align:left;">      
+               Total Users: ' . count($datas) . ' 
+           </p>
+   
+           <p style="margin-top:30px; text-align:right;">    
+               Print Date: ' . date('d-m-Y H:i:s') . '<br> 
+           </p>';
+        $pdf->writeHTML($html, true, false, true, false, '');
+    }
+
+    
+}

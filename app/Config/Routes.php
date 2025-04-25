@@ -7,6 +7,7 @@ use App\Controllers\DoctorController;
 use App\Controllers\DoctorScheduleController;
 use App\Controllers\EquipmentController;
 use App\Controllers\InventoryController;
+use App\Controllers\ReportController;
 use App\Controllers\RoomController;
 use App\Controllers\SettingController;
 use App\Controllers\UserController;
@@ -81,6 +82,10 @@ $routes->group('appointment', [], function ($routes) {
     $routes->get('create/form', [AppointmentController::class, 'createAppointmentForm']);
 });
 
+$routes->group('report', [], function ($routes) {
+    $routes->get('user', [ReportController::class, 'getReportUserPdf'], ['filter' => 'role:' . Roles::ADMIN]);
+    $routes->get('user/pdf', [ReportController::class, 'reportUserPdf'], ['filter' => 'role:' . Roles::ADMIN]);
+});
 
 
 
