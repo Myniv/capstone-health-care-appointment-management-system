@@ -43,7 +43,7 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-base-300 text-base-content mt-4">
+    <footer class="text-base-content mt-4">
         <?= $this->include('components/footer'); ?>
     </footer>
 
