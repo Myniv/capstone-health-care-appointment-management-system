@@ -6,6 +6,7 @@ use App\Controllers\BaseController;
 use App\Libraries\DataParams;
 use App\Models\DoctorCategoryModel;
 use App\Models\DoctorModel;
+use App\Models\EducationModel;
 use App\Models\PatientModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
@@ -18,7 +19,10 @@ class UserController extends BaseController
     protected $patientModel;
     protected $doctorModel;
     protected $doctorCategoryModel;
+    protected $educationModel;
     protected $config;
+
+
     public function __construct()
     {
         $this->userModel = new UserModel();
@@ -26,6 +30,7 @@ class UserController extends BaseController
         $this->patientModel = new PatientModel();
         $this->doctorModel = new DoctorModel();
         $this->doctorCategoryModel = new DoctorCategoryModel();
+        $this->educationModel = new EducationModel();
 
         $this->config = config('Auth');
         helper('auth');
@@ -81,10 +86,12 @@ class UserController extends BaseController
     public function profile($id)
     {
         $user = $this->userModel->getUserWithFullName($id);
+        $educations = $this->educationModel->where('doctor_id', $user->doctor_id)->findAll();
 
         $data = [
             'title' => 'Profile',
-            'user' => $user
+            'user' => $user,
+            'educations' => $educations
         ];
 
         return view('page/user/v_user_profile', $data);
@@ -350,6 +357,9 @@ class UserController extends BaseController
             $data['doctor_category'] = $this->doctorCategoryModel->findAll();
             return view('page/user/v_user_doctor_form', $data);
         }
+        $educationData = $this->request->getPost('education');
+
+
         $validation = \Config\Services::validation();
         $validation->setRules([
             'username' => 'required|min_length[3]|max_length[255]|is_unique[users.username]',
@@ -414,6 +424,7 @@ class UserController extends BaseController
             'doctor_category_id' => $this->request->getPost('doctor_category_id'),
             'user_id' => $userId,
         ];
+
         $profilePicture = $this->request->getFile('profile_picture');
         if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {
 
@@ -430,8 +441,31 @@ class UserController extends BaseController
             $relativePath = 'uploads/' . 'doctors/' . $userId . '/' . 'profile_picture' . '/' . $pictureName;
             $doctorData['profile_picture'] = $relativePath;
         }
-        // dd($patientData);
-        $this->doctorModel->save($doctorData);
+
+
+        if (empty($doctorData['id'])) {
+            // New record
+
+            if ($this->doctorModel->save($doctorData)) {
+                $doctorId = $this->doctorModel->getInsertID();
+
+                $educationDataDoctor = [];
+                foreach ($educationData as $edu) {
+                    $edu['doctor_id'] = $doctorId;
+                    $educationDataDoctor[] = $edu;
+                }
+
+                $result = $this->educationModel->insertBatchValidated($educationDataDoctor);
+
+                if ($result['status'] == false) {
+                    $del = $this->deleteDoctorHard($userId);
+
+                    if ($del) {
+                        return redirect()->back()->withInput()->with('error', $result['error']);
+                    }
+                }
+            }
+        }
 
         return redirect()->to('admin/users')->with('message', 'User Created Successfully');
     }
@@ -444,6 +478,7 @@ class UserController extends BaseController
                 'doctor_category' => $this->doctorCategoryModel->findAll(),
                 'user' => $this->userModel->getUserWithFullName($id),
             ];
+
 
             if (empty($data['user'])) {
                 return redirect()->to('/users')->with('error', 'User Not Found');
@@ -538,6 +573,7 @@ class UserController extends BaseController
             'doctor_category_id' => $this->request->getPost('doctor_category_id'),
         ];
 
+
         $profilePicture = $this->request->getFile('profile_picture');
         if ($profilePicture && $profilePicture->isValid() && !$profilePicture->hasMoved()) {
             if (!empty($doctor->profile_picture) || $doctor->profile_picture !== null) {
@@ -572,8 +608,33 @@ class UserController extends BaseController
         return redirect()->to('admin/users')->with('message', 'User Updated Successfully');
     }
 
+    public function deleteDoctorHard($id)
+    {
+        $user = $this->userModel->find($id);
+
+        if (empty($user)) {
+            return false;
+        }
+
+        $doctor = $this->doctorModel->getDoctorByUserId($user->id);
+        if (!empty($doctor)) {
+            if (!empty($doctor->profile_picture) || $doctor->profile_picture !== null) {
+                $oldPicturePath = WRITEPATH . $doctor->profile_picture;
+                if (is_file($oldPicturePath)) {
+                    unlink($oldPicturePath);
+                }
+                // $this->deleteFolder(dirname(WRITEPATH . $doctor->profile_picture));
+            }
+            $this->doctorModel->where('user_id', $id)->delete(null, true);
+        }
+
+        $this->userModel->where('id', $id)->delete(null, true);
+        return true;
+    }
+
     public function deleteDoctor($id)
     {
+
         $user = $this->userModel->find($id);
 
         if (empty($user)) {
@@ -593,7 +654,6 @@ class UserController extends BaseController
         }
 
         $this->userModel->delete($user->id);
-
         return redirect()->to('admin/users')->with('message', 'User Deleted Successfully');
     }
 

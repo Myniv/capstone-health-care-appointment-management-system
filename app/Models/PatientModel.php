@@ -21,6 +21,7 @@ class PatientModel extends Model
         'sex',
         'dob',
         'email',
+        'patient_type',
         'profile_picture',
         'user_id',
         'createdAt',
@@ -48,6 +49,7 @@ class PatientModel extends Model
         'phone' => 'required|regex_match[/^[0-9\-\+\s\(\)]+$/]',
         'address' => 'required|max_length[500]',
         'sex' => 'required|in_list[male,female,other]',
+        'patient_type' => 'required',
         'dob' => 'required|valid_date[Y-m-d]',
         'email' => 'required|valid_email|max_length[150]',
         'profile_picture' => 'permit_empty|max_length[255]',
@@ -75,6 +77,9 @@ class PatientModel extends Model
         'sex' => [
             'required' => 'Sex is required.',
             'in_list' => 'Sex must be either Male or Female.',
+        ],
+        'patient_type' => [
+            'required' => 'Type is required.',
         ],
         'dob' => [
             'required' => 'Date of birth is required.',

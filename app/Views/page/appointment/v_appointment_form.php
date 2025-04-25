@@ -9,7 +9,7 @@
     <div class="alert alert-error mb-4">
       <ul>
         <?php foreach (session('errors') as $error) : ?>
-          <li>! <?= $error ?></li>
+          <li><?= $error ?></li>
         <?php endforeach ?>
       </ul>
     </div>

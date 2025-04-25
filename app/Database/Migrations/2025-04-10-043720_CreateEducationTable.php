@@ -4,7 +4,7 @@ namespace App\Database\Migrations;
 
 use CodeIgniter\Database\Migration;
 
-class CreateAppointmentTable extends Migration
+class CreateEducationTable extends Migration
 {
     public function up()
     {
@@ -14,39 +14,33 @@ class CreateAppointmentTable extends Migration
                 'type' => 'INT',
                 'auto_increment' => true,
             ],
-            'patient_id' => [
-                'type' => 'INT',
-                'null' => true
-            ],
-            'doctor_schedule_id' => [
-                'type' => 'INT',
-                'null' => true
-            ],
             'doctor_id' => [
                 'type' => 'INT',
                 'null' => true
             ],
-            'room_id' => [
-                'type' => 'INT',
-                'null' => true
-            ],
-            'date' => [
-                'type' => 'DATETIME',
-                'null' => true
-            ],
-            'documents' => [
+            'university' => [
                 'type' => 'VARCHAR',
-                'constraint' => '255',
+                'constraint' => '100',
                 'null' => true
             ],
-            'status' => [
+            'city' => [
                 'type' => 'VARCHAR',
                 'constraint' => '50',
                 'null' => true
             ],
-            'reason_for_visit' => [
+            'study_program' => [
                 'type' => 'VARCHAR',
                 'constraint' => '100',
+                'null' => true
+            ],
+            'degree' => [
+                'type' => 'VARCHAR',
+                'constraint' => '50',
+                'null' => true
+            ],
+            'year' => [
+                'type' => 'VARCHAR',
+                'constraint' => '50',
                 'null' => true
             ],
             'created_at' => [
@@ -57,18 +51,19 @@ class CreateAppointmentTable extends Migration
                 'type' => 'DATETIME',
                 'null' => true
             ],
+            'deleted_at' => [
+                'type' => 'DATETIME',
+                'null' => true
+            ],
         ]);
         $this->forge->addKey('id', true);
-        $this->forge->addForeignKey('patient_id', 'patients', 'id', 'CASCADE', 'SET NULL');
-        $this->forge->addForeignKey('doctor_schedule_id', 'doctor_schedules', 'id', 'CASCADE', 'SET NULL');
         $this->forge->addForeignKey('doctor_id', 'doctors', 'id', 'CASCADE', 'SET NULL');
-        $this->forge->addForeignKey('room_id', 'rooms', 'id', 'CASCADE', 'SET NULL');
-        $this->forge->createTable('appointments');
+        $this->forge->createTable('educations');
     }
 
     public function down()
     {
-        $this->forge->dropTable('appointments');
+        $this->forge->dropTable('educations');
         //
     }
 }

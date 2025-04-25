@@ -108,6 +108,11 @@ class DoctorModel extends Model
         return $this->where('user_id', $userId)->first();
     }
 
+    public function getUserIdByDoctorId($doctorId)
+    {
+        return $this->find($doctorId)->user_id;
+    }
+
     public function getFilteredDoctors(DataParams $params)
     {
         $this->select('doctors.*');

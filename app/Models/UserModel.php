@@ -83,11 +83,14 @@ class UserModel extends \Myth\Auth\Models\UserModel
 
     public function getUserWithFullName($userId)
     {
+        // COALESCE(doctors.degree, 'N/A') as degree, 
+        // COALESCE(doctors.education, 'N/A') as education, 
         return $this
             ->select("
                 users.id as user_id,
                 users.username,
                 users.email as email,
+                doctors.id as doctor_id,
                 COALESCE(doctors.first_name, patients.first_name, 'N/A') as first_name,
                 COALESCE(doctors.last_name, patients.last_name, 'N/A') as last_name,
                 COALESCE(doctors.phone, patients.phone, 'N/A') as phone,

@@ -24,10 +24,10 @@
 
     <div class="form-control w-full md:w-1/4">
       <select name="perPage" class="select select-bordered" onchange="this.form.submit()">
-        <option value="2" <?= ($params->perPage == 2) ? 'selected' : '' ?>>2 per Page</option>
-        <option value="5" <?= ($params->perPage == 5) ? 'selected' : '' ?>>5 per Page</option>
-        <option value="10" <?= ($params->perPage == 10) ? 'selected' : '' ?>>10 per Page</option>
-        <option value="25" <?= ($params->perPage == 25) ? 'selected' : '' ?>>25 per Page</option>
+        <option value="3" <?= ($params->perPage == 3) ? 'selected' : '' ?>>3 per Page</option>
+        <option value="6" <?= ($params->perPage == 6) ? 'selected' : '' ?>>6 per Page</option>
+        <option value="12" <?= ($params->perPage == 12) ? 'selected' : '' ?>>12 per Page</option>
+        <option value="24" <?= ($params->perPage == 24) ? 'selected' : '' ?>>24 per Page</option>
       </select>
     </div>
 
@@ -80,6 +80,13 @@
               <td><?= $row->roomName ?></td>
               <td><?= date('g:i A', strtotime($row->startTime)) ?> -
                 <?= date('g:i A', strtotime($row->endTime)) ?></td>
+              <td>
+                <form action="<?= $baseUrl ?>/detail" method="post" novalidate>
+                  <?= csrf_field() ?>
+                  <input type="text" hidden name="appointmentId" value="<?= $row->id ?>">
+                  <button type="submit" class="btn btn-primary btn-sm">Details</button>
+                </form>
+              </td>
             </tr>
           <?php endforeach; ?>
         </tbody>
@@ -99,7 +106,11 @@
             <div class="badge badge-warning"><?= $row->status; ?></div>
 
             <div class="card-actions justify-end">
-              <button class="btn btn-primary" disabled>Details</button>
+              <form action="<?= $baseUrl ?>/detail" method="post" novalidate>
+                <?= csrf_field() ?>
+                <input type="text" hidden name="appointmentId" value="<?= $row->id ?>">
+                <button type="submit" class="btn btn-primary">Details</button>
+              </form>
             </div>
           </div>
         </div>

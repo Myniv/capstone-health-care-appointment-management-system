@@ -5,6 +5,7 @@ use App\Controllers\AuthController;
 use App\Controllers\DoctorCategoryController;
 use App\Controllers\DoctorController;
 use App\Controllers\DoctorScheduleController;
+use App\Controllers\EducationController;
 use App\Controllers\EquipmentController;
 use App\Controllers\InventoryController;
 use App\Controllers\ReportController;
@@ -73,10 +74,17 @@ $routes->group('doctor', [], function ($routes) {
     $routes->get('dashboard', [DoctorController::class, 'dashboard']);
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
     $routes->match(['get', 'post'], 'absent/create', [DoctorController::class, 'createDoctorAbsent']);
+
+    $routes->group('education', [], function ($routes) {
+        $routes->match(['get', 'post'], 'create', [EducationController::class, 'create']);
+        $routes->match(['get', 'put'], 'update/(:num)', [EducationController::class, 'update']);
+        $routes->delete('delete/(:num)/(:num)', [EducationController::class, 'delete/$1/$2']);
+    });
 });
 
 $routes->group('appointment', [], function ($routes) {
     $routes->get('', [AppointmentController::class, 'index']);
+    $routes->post('detail', [AppointmentController::class, 'detail']);
     $routes->get('create', [AppointmentController::class, 'createAppointment']);
     $routes->post('create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
     $routes->get('create/form', [AppointmentController::class, 'createAppointmentForm']);
