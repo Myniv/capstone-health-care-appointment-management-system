@@ -130,4 +130,15 @@ class InventoryModel extends Model
         return $data;
     }
 
+    public function getUnassignedInventories()
+    {
+        return $this
+            ->select('id, name, serial_number, status')
+            ->whereNotIn('id', function ($builder) {
+                return $builder->select('id')->from('inventory_rooms');
+            })
+            ->get()
+            ->getResultArray();
+    }
+
 }

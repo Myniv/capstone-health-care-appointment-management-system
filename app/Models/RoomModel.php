@@ -100,4 +100,25 @@ class RoomModel extends Model
             'pager' => $this->pager
         ];
     }
+
+    public function getAssignedInventories()
+    {
+        return $this
+            ->select('rooms.id, rooms.name AS roomName, inventories.id, inventories.name AS inventoryName, inventories.serial_number, inventories.status AS inventoryStatus')
+            ->join('inventory_rooms', 'rooms.id = inventory_rooms.room_id')
+            ->join('inventories', 'inventory_rooms.inventory_id = inventories.id')
+            ->get()
+            ->getResultArray();
+    }
+
+    // Assigned equipment per room
+    public function getAssignedEquipment()
+    {
+        return $this
+            ->select('rooms.id, rooms.name AS roomName, equipments.id, equipments.name AS equipmentName, equipments.status AS equipmentStatus, equipment_rooms.total')
+            ->join('equipment_rooms', 'rooms.id = equipment_rooms.room_id')
+            ->join('equipments', 'equipment_rooms.equipment_id = equipments.id')
+            ->get()
+            ->getResultArray();
+    }
 }

@@ -115,4 +115,15 @@ class EquipmentModel extends Model
             'pager' => $this->pager
         ];
     }
+
+    public function getUnassignedEquipment()
+    {
+        return $this->db->table('equipments')
+            ->select('id, name, stock, status')
+            ->whereNotIn('id', function ($builder) {
+                return $builder->select('id')->from('equipment_rooms');
+            })
+            ->get()
+            ->getResultArray();
+    }
 }
