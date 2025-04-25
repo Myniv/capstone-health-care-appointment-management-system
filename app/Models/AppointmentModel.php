@@ -94,7 +94,7 @@ class AppointmentModel extends Model
         rooms.name as roomName,
         appointments.date as date,
         appointments.status as status,
-        appointments.reason_for_visit')
+        appointments.reason_for_visit as reason')
             ->join('doctor_schedules', 'doctor_schedules.id = appointments.doctor_schedule_id', 'left')
             ->join('rooms', 'rooms.id = doctor_schedules.room_id', 'left')
             ->join('patients', 'patients.id = appointments.patient_id', 'left')

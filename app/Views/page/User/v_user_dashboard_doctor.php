@@ -30,21 +30,29 @@
                     <ul class="list rounded-box border">
                         <?php foreach ($appointments as $appointment): ?>
                             <li class="list-row">
-                                <div>
-                                    <img class="size-10 rounded-full" src="<?= base_url('profile-picture?path=' . $appointment->patientProfilePicture); ?>" alt="Profile Picture <?= $appointment->patientFirstName . ' ' . $appointment->patientLastName; ?>" />
-                                </div>
-                                <div>
-                                    <div><?= $appointment->patientFirstName . ' ' . $appointment->patientLastName; ?></div>
-                                    <p>
+                                <div class="flex flex-col items-center">
+                                    <div class="badge badge-soft badge-warning text-xs mt-2">
+                                        <?= ucwords($appointment->status); ?>
+                                    </div>
+                                    <p class="text-primary font-semibold">
                                         <?= date('g:i A', strtotime($appointment->startTime)) ?> -
                                         <?= date('g:i A', strtotime($appointment->endTime)) ?>
                                     </p>
-                                    <p><?= date('F j, Y', strtotime($appointment->date)) ?></p>
-                                    <div class="badge badge-soft badge-warning text-xs mt-2"><?= ucwords($appointment->status); ?></div>
                                 </div>
-                                <button class="btn btn-ghost">
+                                <div>
+                                    <h3 class="font-semibold">
+                                        <?= $appointment->patientFirstName . ' ' . $appointment->patientLastName; ?>
+                                    </h3>
+                                    <p class="text-gray-700"><?= date('F j, Y', strtotime($appointment->date)) ?></p>
+                                    <span class="text-gray-700">Reason:
+                                        <span class="text-gray-500">
+                                            <?= $appointment->reason; ?>
+                                        </span>
+                                    </span>
+                                </div>
+                                <a class="btn btn-ghost" href="#modal-form-history" data-id="<?= $appointment->id; ?>">
                                     Manage
-                                </button>
+                                </a>
                             </li>
                         <?php endforeach; ?>
                     </ul>
@@ -57,9 +65,35 @@
 
         <div class="card bg-primary-content">
             <div class="card-body">
-                <div class="card-title">test</div>
+                <div class="card-title">Schedule</div>
+                <?php if (!empty($appointments)): ?>
+                    <ul class="list rounded-box border">
+                        <?php $count = 1 ?>
+                        <?php foreach ($appointments as $appointment): ?>
+                            <li class="list-row bg-base-100">
+                                <div class="text-lg font-thin opacity-30 tabular-nums"><?= $count++; ?>.</div>
+                                <div class="list-col-grow">
+                                    <h3 class="font-semibold">
+                                        <?= $appointment->roomName; ?>
+                                    </h3>
+                                    <p class="text-primary font-semibold">
+                                        <?= date('g:i A', strtotime($appointment->startTime)) ?> -
+                                        <?= date('g:i A', strtotime($appointment->endTime)) ?>
+                                    </p>
+
+                                    <p class="text-gray-700"><?= date('F j, Y', strtotime($appointment->date)) ?></p>
+                                </div>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
+
+                <?php else: ?>
+                    <p>There is no schedule.</p>
+                <?php endif; ?>
             </div>
         </div>
     </div>
+
+    
 </div>
 <?= $this->endSection(); ?>

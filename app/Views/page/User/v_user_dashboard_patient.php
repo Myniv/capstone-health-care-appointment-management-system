@@ -13,6 +13,12 @@
             </div>
         <?php endif; ?>
 
+        <div class="card border">
+            <div class="card-body">
+                <a href="appointment/create" class="btn btn-soft btn-success">+ Create Appointment</a>
+            </div>
+        </div>
+
         <div class="card border md:col-span-2">
             <div class="card-body">
                 <div class="flex justify-between">
