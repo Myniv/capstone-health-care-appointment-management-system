@@ -19,16 +19,52 @@
   <p class="text-gray-500/75 font-semibold mb-2">Doctor Information</p>
   <div class="card card-border bg-base-100 mb-4">
     <div class="card-body">
-      <div class="flex">
-        <img src="/images/placeholder.jpg" width="100" alt="">
+      <div class="flex gap-4">
+        <div class="avatar">
+          <div class="w-24 rounded-full">
+            <img src="<?= base_url('profile-picture?path=' . $doctor->profile_picture); ?>" alt="Profile Picture <?= $doctor->first_name . ' ' . $doctor->last_name; ?>">
+          </div>
+        </div>
         <div class="">
           <h2 class="card-title"><?= $doctor->first_name ?> <?= $doctor->last_name ?></h2>
-          <p class="text-gray-500/75"><?= $doctor->education ?></p>
-          <p class="text-gray-500/75"><?= $doctor->degree ?></p>
+          <p class="text-gray-500/75"><?= ucfirst($doctor->categoryName) ?></p>
+          <p class="text-gray-500/75">HealthCare Hospital</p>
         </div>
+      </div>
+      <hr class="my-2">
+
+      <div class="">
+        <h3 class="text-sm font-bold mb-2">Education</h3>
+        <ul class="flex flex-col space-y-4">
+          <?php foreach ($education as $row): ?>
+            <li class="flex items-center space-x-4">
+              <div class="timeline-start self-center flex items-center justify-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 20 20"
+                  fill="currentColor"
+                  class="h-5 w-5">
+                  <path
+                    fill-rule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                    clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="timeline-middle text-left">
+                <p class=" font-bold"><?= $row->study_program ?></p>
+                <div class="flex">
+                  <p class="text-sm"><?= $row->year ?> &#x2022; <?= $row->university ?>,<?= $row->city ?></p>
+                </div>
+              </div>
+            </li>
+          <?php endforeach; ?>
+        </ul>
+
       </div>
     </div>
   </div>
+
+
 
   <form
     action="<?= base_url('appointment/create/form') ?>"

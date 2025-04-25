@@ -7,6 +7,7 @@ use App\Libraries\DataParams;
 use App\Models\AppointmentModel;
 use App\Models\DoctorModel;
 use App\Models\DoctorScheduleModel;
+use App\Models\EducationModel;
 use App\Models\PatientModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use DateTime;
@@ -17,6 +18,7 @@ class AppointmentController extends BaseController
     protected $doctorModel;
     protected $doctorScheduleModel;
     protected $patientModel;
+    protected $educationModel;
 
 
     public function __construct()
@@ -25,6 +27,7 @@ class AppointmentController extends BaseController
         $this->doctorModel = new DoctorModel();
         $this->doctorScheduleModel = new DoctorScheduleModel();
         $this->patientModel = new PatientModel();
+        $this->educationModel = new EducationModel();
     }
 
     public function index()
@@ -138,9 +141,11 @@ class AppointmentController extends BaseController
     public function createAppointmentForm()
     {
         $doctorId = $this->request->getVar('id');
-        $doctor = $this->doctorModel->find($doctorId);
+        $doctor = $this->doctorModel->getDoctorWithCategoryName($doctorId);
+        $education = $this->educationModel->where('doctor_id', $doctorId)->findAll();
 
         $data['doctor'] = $doctor;
+        $data['education'] = $education;
         $data['schedule'] = $this->request->getVar('schedule') ?? 0;
         $data['date'] = $this->request->getVar('date') ?? (new DateTime())->format('Y-m-d');
         $data['reason'] = $this->request->getVar('reason') ?? '';
