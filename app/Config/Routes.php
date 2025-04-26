@@ -122,4 +122,5 @@ $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
     $routes->get('unauthorized', [AuthController::class, 'unauthorized']);
 
     $routes->get('profile-picture', [UserController::class, 'profilePicture']);
+    $routes->get('documents/(:segment)/(:num)', [AppointmentController::class, 'previewDocument']);
 });

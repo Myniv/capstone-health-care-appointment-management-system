@@ -7,13 +7,68 @@
 
   <div class="card card-border bg-base-100 my-4">
     <div class="card-body">
-      <div class="flex">
-        <img src="/images/placeholder.jpg" width="100" alt="">
-        <div class="">
-          <h2 class="card-title"><?= $appointment->first_name ?> <?= $appointment->last_name ?></h2>
-          <p class="text-gray-500/75">EDUCATION</p>
-          <p class="text-gray-500/75">DEGREE</p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="col-span-2">
+          <div class="flex gap-4">
+            <div class="avatar">
+              <div class="w-24 rounded-full">
+                <img src="<?= base_url('profile-picture?path=' . $doctor->profile_picture); ?>" alt="Profile Picture <?= $doctor->first_name . ' ' . $doctor->last_name; ?>">
+              </div>
+            </div>
+            <div class="">
+              <h2 class="card-title"><?= $doctor->first_name ?> <?= $doctor->last_name ?></h2>
+              <p class="text-gray-500/75"><?= ucfirst($doctor->categoryName) ?></p>
+              <p class="text-gray-500/75">HealthCare Hospital</p>
+            </div>
+          </div>
+          <hr class="my-2">
+          <div class="">
+            <h3 class="text-sm font-bold mb-2">Education</h3>
+            <ul class="flex flex-col space-y-4">
+              <?php foreach ($education as $row): ?>
+                <li class="flex items-center space-x-4">
+                  <div class="timeline-start self-center flex items-center justify-center">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      class="h-5 w-5">
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                        clip-rule="evenodd" />
+                    </svg>
+                  </div>
+                  <div class="timeline-middle text-left">
+                    <p class=" font-bold"><?= $row->study_program ?></p>
+                    <div class="flex">
+                      <p class="text-sm"><?= $row->year ?> &#x2022; <?= $row->university ?>,<?= $row->city ?></p>
+                    </div>
+                  </div>
+                </li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+          <hr class="my-2">
         </div>
+        <div class="col-span-1">
+          <div class="card card-border alert alert-warning alert-soft w-full h-full">
+            <div class="card-body items-center text-center">
+              <h2 class="card-title font-bold">Notice</h2>
+              You can cancel your appointment up to <span class="font-bold text-xl">3 days before</span> the scheduled date.
+              <br>
+              Cancellations are not allowed within 3 days of the appointment.
+              <div class="card-actions justify-end">
+                <button class="btn btn-error">Cancel Appointment</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <div role="alert" class="alert alert-info alert-soft">
+        <span>Please reach 10-15 minutes before the appointment starts.</span>
       </div>
       <p class="font-bold">Date, Time & Room</p>
       <span><?= date('F j, Y', strtotime($appointment->date)) ?></span>
@@ -22,15 +77,16 @@
         <?= date('g:i A', strtotime($appointment->end_time)) ?>
       </span>
       <span><?= $appointment->roomName ?></span>
-      <div role="alert" class="alert alert-info alert-soft">
-        <span>Please reach 10 minutes before the appointment starts.</span>
-      </div>
+
       <p class="font-bold">Address</p>
-      <span>Rumah Sakit Permata Harapan
+      <span>Rumah Sakit HealthCare
         Jl. Melati Raya No. 27
         Kelurahan Sukamaju, Kecamatan Serpong
         Tangerang Selatan, Banten 15310 </span>
       <span>Telepon: (021) 555-7283</span>
+      <a href="<?= site_url('documents/' . $appointment->documents . '/' . $appointment->patientUserId) ?>" target="_blank" class="btn btn-outline btn-info w-fit">
+        Preview Document
+      </a>
     </div>
 
   </div>

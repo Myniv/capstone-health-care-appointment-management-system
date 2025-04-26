@@ -61,22 +61,27 @@ class AppointmentController extends BaseController
         $appointment = $this->appointmentModel
             ->select('doctors.first_name as doctorFirstName,
                 doctors.last_name as doctorLastName,
+                doctors.id as doctorId,
+                patients.user_id as patientUserId,
                 patients.first_name as patientFirstName,
                 patients.last_name as patientLastName,
                 doctor_schedules.start_time,
                 doctor_schedules.end_time,
                 appointments.date,
-                rooms.name as roomName')
+                rooms.name as roomName,
+                appointments.documents')
             ->join('doctors', 'appointments.doctor_id = doctors.id')
             ->join('doctor_schedules', 'appointments.doctor_schedule_id = doctor_schedules.id')
             ->join('patients', 'patients.id = appointments.patient_id')
             ->join('rooms', 'rooms.id = doctor_schedules.room_id')
             ->where('appointments.id', $appointmentId)
             ->first();
-
-
+        $education = $this->educationModel->where('doctor_id', $appointment->doctorId)->findAll();
+        $doctor = $this->doctorModel->getDoctorWithCategoryName($appointment->doctorId);
         $data = [
             'appointment' => $appointment,
+            'doctor' => $doctor,
+            'education' => $education,
         ];
         return view('page/appointment/v_appointment_detail', $data);
     }
@@ -109,7 +114,7 @@ class AppointmentController extends BaseController
 
     public function createAppointmentSubmit()
     {
-        $patient_id = $this->patientModel->where('user_id', user_id())->first()->id;
+        $patient = $this->patientModel->where('user_id', user_id())->first();
 
         $room_id = null;
 
@@ -117,23 +122,42 @@ class AppointmentController extends BaseController
             $room_id = $this->doctorScheduleModel->find($this->request->getVar('schedule'))->room_id;
         }
 
+        $documents = $this->request->getFile('documents');
+        $docName = 'documents' . '_' . $patient->user_id . '_' . date('Y_m_d') . '_' . time() . '.' . $documents->getClientExtension();
+        if ($documents && $documents->isValid() && !$documents->hasMoved()) {
+
+            $uploadPath = WRITEPATH . 'uploads/' . 'patients/' . $patient->user_id . '/' . 'documents' . '/';
+
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+
+            $picturePath = $uploadPath . $docName;
+            $documents->move($uploadPath, $docName);
+
+            $relativePath = 'uploads/' . 'patients/' . $patient->user_id . '/' . 'documents' . '/' . $docName;
+            $patientData['documents'] = $relativePath;
+        }
 
         $data = [
-            'patient_id' => $patient_id,
+            'patient_id' => $patient->id,
             'doctor_schedule_id' => $this->request->getVar('schedule'),
             'doctor_id' => $this->request->getVar('id'),
             'date' => $this->request->getVar('date'),
             'room_id' =>  $room_id,
             'status' => 'booking',
+            'documents' => $docName,
             'reason_for_visit' => $this->request->getVar('reason')
         ];
 
         $result = $this->appointmentModel->addAppointment($data);
-        if (isset($result) == false) {
+        if (!$result) {
             return redirect()->back()
                 ->with('errors', $this->appointmentModel->errors())
                 ->withInput();
         }
+
         return redirect()->to(base_url('appointment'))->with('success', 'Data Berhasil Ditambahkan');
     }
 
@@ -179,5 +203,19 @@ class AppointmentController extends BaseController
         $data['appointment'] = $this->appointmentModel->findAll();
 
         return view('page/appointment/v_appointment_form', $data);
+    }
+
+    public function previewDocument($filename, $user_id)
+    {
+        $filePath = WRITEPATH . 'uploads/' . 'patients/'  . $user_id . '/' . 'documents' . '/' . $filename;
+        if (!is_file($filePath)) {
+            return redirect()->back()->with('error', 'File not found.');
+        }
+        $mime = mime_content_type($filePath);
+
+        return response()
+            ->setHeader('Content-Type', $mime)
+            ->setHeader('Content-Disposition', 'inline; filename="' . $filename . '"')
+            ->setBody(file_get_contents($filePath));
     }
 }
