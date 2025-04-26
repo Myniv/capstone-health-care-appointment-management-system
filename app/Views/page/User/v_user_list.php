@@ -72,7 +72,7 @@
                     </th>
                     <th>
                         <a href="<?= $params->getSortUrl('doctor_category', $baseUrl) ?>" class="link link-hover">
-                            Doctor Category <?= $params->isSortedBy('doctor_category') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                            Category <?= $params->isSortedBy('doctor_category') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>

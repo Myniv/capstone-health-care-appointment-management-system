@@ -136,6 +136,7 @@ class UserController extends BaseController
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
             'dob' => 'required|valid_date',
+            'patient_type'=>'required',
             'profile_picture' => [
                 'label' => 'Gambar',
                 'rules' => [
@@ -183,6 +184,7 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
+            'patient_type' => $this->request->getPost('patient_type'),
             'email' => $user->email,
             'profile_picture' => '',
             'user_id' => $userId,
@@ -251,6 +253,7 @@ class UserController extends BaseController
             'phone' => 'required|regex_match[/^[0-9\-\+\s\(\)]+$/]',
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
+            'patient_type' => 'required',
             'dob' => 'required|valid_date',
         ];
 
@@ -289,6 +292,7 @@ class UserController extends BaseController
             'address' => $this->request->getPost('address'),
             'sex' => $this->request->getPost('sex'),
             'dob' => $this->request->getPost('dob'),
+            'patient_type' => $this->request->getPost('patient_type'),
         ];
 
         $profilePicture = $this->request->getFile('profile_picture');

@@ -16,12 +16,21 @@
     <script src="<?= base_url('assets/js/pristine.js') ?>"></script>
 </head>
 
-<body class="bg-base-200" data-theme="light">
-    <main class="flex items-center justify-center min-h-screen">
+<body class="bg-base-200 min-h-screen flex flex-col" data-theme="light">
+    <header class="mb-4">
+        <?= $this->include('components/header'); ?>
+    </header>
+
+    <main class="flex-grow flex items-center justify-center">
         <?= $this->renderSection('content'); ?>
     </main>
 
+    <footer class="text-base-content mt-4">
+        <?= $this->include('components/footer'); ?>
+    </footer>
+
     <?= $this->renderSection('scripts'); ?>
 </body>
+
 
 </html>
