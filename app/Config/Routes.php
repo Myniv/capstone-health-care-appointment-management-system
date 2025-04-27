@@ -91,14 +91,17 @@ $routes->group('report', [], function ($routes) {
     $routes->get('resources/excel', [ReportController::class, 'reportResourceExcel'], ['filter' => 'role:' . Roles::ADMIN]);
 });
 
-// Patient Routes
-$routes->group('', ['filter' => 'role:' . Roles::PATIENT], function ($routes) {
+// Appointment
+$routes->group('', [], function ($routes) {
     $routes->get('/dashboard', [PatientController::class, 'dashboard']);
-    $routes->post('appointment/detail', [AppointmentController::class, 'detail']);
+    $routes->get('appointment/detail/(:num)', [AppointmentController::class, 'detail']);
     $routes->get('appointment', [AppointmentController::class, 'index']);
     $routes->get('appointment/create', [AppointmentController::class, 'createAppointment']);
     $routes->post('appointment/create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
-    $routes->get('appointment/create/form', [AppointmentController::class, 'createAppointmentForm']);
+    $routes->get('appointment/create/form', [AppointmentController::class, 'appointmentForm']);
+    $routes->post('appointment/cancel', [AppointmentController::class, 'cancelAppointment']);
+    $routes->get('appointment/reschedule/form', [AppointmentController::class, 'appointmentRescheduleForm']);
+    $routes->post('appointment/reschedule/submit', [AppointmentController::class, 'rescheduleAppointmentSubmit']);
 });
 
 //Auth routes

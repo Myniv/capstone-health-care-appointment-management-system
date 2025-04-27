@@ -160,6 +160,11 @@ class AppointmentModel extends Model
         return $this->save($data);
     }
 
+    public function updateAppointment($id, $data)
+    {
+        return $this->update($id, $data);
+    }
+
     public function getAllAppointmentsDoctor($doctorId, $date)
     {
         $this->select('appointments.id, 

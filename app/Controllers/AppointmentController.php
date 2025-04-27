@@ -54,10 +54,36 @@ class AppointmentController extends BaseController
         return view('page/appointment/v_appointment_list', $data);
     }
 
-    public function detail()
+    public function cancelAppointment()
+    {
+        $appointmentId = $this->request->getPost('appointmentId');
+        $appointment = $this->appointmentModel->find($appointmentId);
+        $nowDate = new DateTime();
+        $appointmentDate = new DateTime($appointment->date);
+        $diff = $nowDate->diff($appointmentDate)->days;
+
+
+        if ($appointmentDate < $nowDate) {
+            if ($diff < 3) {
+                return redirect()->back()
+                    ->with('message', "Cancellations must be made at least 3 days before the appointment date")
+                    ->withInput();
+            }
+            return redirect()->back()
+                ->with('message', "The appointment date has already passed.")
+                ->withInput();
+        }
+
+
+        $appointment->status = 'cancel';
+        $this->appointmentModel->update($appointmentId, $appointment);
+        return redirect()->back()->with('success', 'Appointment cancelled');
+    }
+
+    public function detail($id)
     {
         //
-        $appointmentId = $this->request->getVar('appointmentId');
+        $appointmentId = $id;
         $appointment = $this->appointmentModel
             ->select('doctors.first_name as doctorFirstName,
                 doctors.last_name as doctorLastName,
@@ -69,7 +95,9 @@ class AppointmentController extends BaseController
                 doctor_schedules.end_time,
                 appointments.date,
                 rooms.name as roomName,
-                appointments.documents')
+                appointments.documents,
+                appointments.id as id,
+                appointments.status as status')
             ->join('doctors', 'appointments.doctor_id = doctors.id')
             ->join('doctor_schedules', 'appointments.doctor_schedule_id = doctor_schedules.id')
             ->join('patients', 'patients.id = appointments.patient_id')
@@ -161,18 +189,56 @@ class AppointmentController extends BaseController
         return redirect()->to(base_url('appointment'))->with('success', 'Data Berhasil Ditambahkan');
     }
 
+    public function rescheduleAppointmentSubmit()
+    {
 
-    public function createAppointmentForm()
+        $appointment = $this->appointmentModel->find($this->request->getPost('appointmentId'));
+        $patient = $this->patientModel->where('user_id', user_id())->first();
+        $room_id = null;
+        if ($this->request->getVar('schedule')) {
+            $room_id = $this->doctorScheduleModel->find($this->request->getVar('schedule'))->room_id;
+        }
+
+        $data = [
+            'patient_id' => $patient->id,
+            'doctor_schedule_id' => $this->request->getVar('schedule'),
+            'doctor_id' => $this->request->getVar('id'),
+            'date' => $this->request->getVar('date'),
+            'room_id' =>  $room_id,
+            'status' => 'booking',
+            'reason_for_visit' => $this->request->getVar('reason')
+        ];
+
+        //update
+        $appointment->doctor_schedule_id = $this->request->getVar('schedule');
+        $appointment->reason_for_visit = $this->request->getVar('reason');
+        $appointment->date = $this->request->getVar('date');
+        $appointment->room_id = $room_id;
+
+        $result = $this->appointmentModel->updateAppointment($appointment->id, $data);
+        if (!$result) {
+            return redirect()->back()
+                ->with('errors', $this->appointmentModel->errors())
+                ->withInput();
+        }
+
+        return redirect()->to(base_url('appointment'))->with('success', 'Reschedule success');
+    }
+
+    public function appointmentForm()
     {
         $doctorId = $this->request->getVar('id');
         $doctor = $this->doctorModel->getDoctorWithCategoryName($doctorId);
         $education = $this->educationModel->where('doctor_id', $doctorId)->findAll();
 
-        $data['doctor'] = $doctor;
-        $data['education'] = $education;
-        $data['schedule'] = $this->request->getVar('schedule') ?? 0;
-        $data['date'] = $this->request->getVar('date') ?? (new DateTime())->format('Y-m-d');
-        $data['reason'] = $this->request->getVar('reason') ?? '';
+        $data = [
+            'type' => 'create',
+            'doctor' =>  $doctor,
+            'education' =>  $education,
+            'schedule' =>  $this->request->getVar('schedule') ?? 0,
+            'date' =>  $this->request->getVar('date') ?? (new DateTime())->format('Y-m-d'),
+            'reason' =>  $this->request->getVar('reason') ?? '',
+        ];
 
         $schedules = $this->doctorScheduleModel
             ->where('doctor_id', $doctorId)
@@ -184,6 +250,7 @@ class AppointmentController extends BaseController
         foreach ($schedules as $schedule) {
             $appointmentCount = $this->appointmentModel
                 ->where('doctor_schedule_id', $schedule->id)
+                ->where('status', 'booking')
                 ->where('date', $data['date']) // Filter by selected date
                 ->countAllResults();
 
@@ -201,6 +268,54 @@ class AppointmentController extends BaseController
 
         $data['doctor_schedule'] = $filteredSchedules;
         $data['appointment'] = $this->appointmentModel->findAll();
+
+        return view('page/appointment/v_appointment_form', $data);
+    }
+
+    public function appointmentRescheduleForm()
+    {
+        $appointmentId = $this->request->getVar('appointmentId');
+        $doctorId = $this->request->getVar('id');
+
+        $doctor = $this->doctorModel->getDoctorWithCategoryName($doctorId);
+        $education = $this->educationModel->where('doctor_id', $doctorId)->findAll();
+
+        $data = [
+            'type' => 'reschedule',
+            'doctor' =>  $doctor,
+            'appointmentId' =>  $appointmentId,
+            'education' =>  $education,
+            'schedule' =>  $this->request->getVar('schedule') ?? 0,
+            'date' =>  $this->request->getVar('date') ?? (new DateTime())->format('Y-m-d'),
+            'reason' =>  $this->request->getVar('reason') ?? '',
+        ];
+
+        $schedules = $this->doctorScheduleModel
+            ->where('doctor_id', $doctorId)
+            ->where('status', 'active')
+            ->findAll();
+
+        $filteredSchedules = [];
+
+        foreach ($schedules as $schedule) {
+            $appointmentCount = $this->appointmentModel
+                ->where('doctor_schedule_id', $schedule->id)
+                ->where('status', 'booking')
+                ->where('date', $data['date']) // Filter by selected date
+                ->countAllResults();
+
+            if ($appointmentCount < $schedule->max_patient) {
+                $schedule->full = 0;
+            } else {
+                $schedule->full = 1;
+            }
+            $filteredSchedules[] = (object) $schedule;
+        }
+
+        //reset the schedule value
+        $data['schedule'] = 0;
+        $data['doctor_schedule'] = $filteredSchedules;
+        //$data['appointment'] = $this->appointmentModel->find($appointmentId);
 
         return view('page/appointment/v_appointment_form', $data);
     }

@@ -46,7 +46,7 @@
 
   use Config\Roles;
 
-  if (!in_groups(Roles::PATIENT)):
+  if (in_groups(Roles::ADMIN)):
   ?>
     <div class="overflow-x-auto">
       <table class="table table-zebra w-full">
@@ -69,6 +69,9 @@
             <th>
               Time
             </th>
+            <th>
+              Status
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -81,11 +84,10 @@
               <td><?= date('g:i A', strtotime($row->startTime)) ?> -
                 <?= date('g:i A', strtotime($row->endTime)) ?></td>
               <td>
-                <form action="<?= $baseUrl ?>/detail" method="post" novalidate>
-                  <?= csrf_field() ?>
-                  <input type="text" hidden name="appointmentId" value="<?= $row->id ?>">
-                  <button type="submit" class="btn btn-primary btn-sm">Details</button>
-                </form>
+                <div class="badge badge-warning"><?= $row->status ?></div>
+              </td>
+              <td>
+                <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-primary btn-sm">Details</a>
               </td>
             </tr>
           <?php endforeach; ?>
@@ -106,11 +108,7 @@
             <div class="badge badge-warning"><?= $row->status; ?></div>
 
             <div class="card-actions justify-end">
-              <form action="<?= $baseUrl ?>/detail" method="post" novalidate>
-                <?= csrf_field() ?>
-                <input type="text" hidden name="appointmentId" value="<?= $row->id ?>">
-                <button type="submit" class="btn btn-primary">Details</button>
-              </form>
+              <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-primary btn-sm">Details</a>
             </div>
           </div>
         </div>

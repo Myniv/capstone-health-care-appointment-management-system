@@ -70,7 +70,7 @@
 
 
     <form
-      action="<?= base_url('appointment/create/form') ?>"
+      action="<?= $type == 'create' ? base_url('appointment/create/form') : base_url('appointment/reschedule/form') ?>"
       method="get"
       enctype="multipart/form-data"
       id="appointmentForm"
@@ -134,21 +134,24 @@
               <div class="text-error text-sm"><?= session('errors.reason') ?? '' ?></div>
             </div>
 
-            <div class="w-full">
-              <label for="documents" class="label">
-                <span class="label-text">Documents</span>
-              </label>
-              <input type="file" name="documents" accept="application/pdf"
-                class="file-input file-input-bordered w-full <?= session('errors.documents') ? 'file-input-error' : '' ?>">
-              <div class="text-error text-sm mt-1"><?= session('errors.documents') ?></div>
-            </div>
+            <?php if ($type == 'create'): ?>
+              <div class="w-full">
+                <label for="documents" class="label">
+                  <span class="label-text">Documents</span>
+                </label>
+                <input type="file" name="documents" accept="application/pdf"
+                  class="file-input file-input-bordered w-full <?= session('errors.documents') ? 'file-input-error' : '' ?>">
+                <div class="text-error text-sm mt-1"><?= session('errors.documents') ?></div>
+              </div>
+            <?php endif; ?>
           </div>
 
 
           <!-- Submit Button -->
           <div class="text-end mt-4">
-            <button type="submit" formaction="<?= base_url('appointment/create/submit') ?>" formmethod="post" class="btn btn-primary">Create</button>
+            <button type="submit" formaction="<?= $type == 'create' ? base_url('appointment/create/submit') :  base_url('appointment/reschedule/submit') ?>" formmethod="post" class="btn btn-primary"><?= $type == 'create' ? 'Create' : 'Reschedule' ?></button>
             <a href="/appointment/create" class="btn btn-secondary">Cancel</a>
+            <input type="hidden" name="appointmentId" value="<?= $type == 'create' ? '' : $appointmentId ?>" />
           </div>
         </div>
       </div>

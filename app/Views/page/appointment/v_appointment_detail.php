@@ -2,9 +2,24 @@
 
 <?= $this->section('content'); ?>
 <div class="container mx-auto mt-4">
-  <h2 class="text-2xl font-bold mb-4">Appointment Details</h2>
+  <div class="flex gap-4 items-center mb-4">
+    <h2 class="text-2xl font-bold">Appointment Details</h2>
+    <div class="badge badge-warning"><?= $appointment->status; ?></div>
+  </div>
+  <?php
 
+  use Config\Roles;
 
+  if (session('message')) : ?>
+    <div class="alert alert-error alert-soft mb-4">
+      <?= session('message') ?>
+    </div>
+  <?php endif ?>
+  <?php if (session('success')) : ?>
+    <div class="alert alert-success alert-soft mb-4">
+      <?= session('success') ?>
+    </div>
+  <?php endif ?>
   <div class="card card-border bg-base-100 my-4">
     <div class="card-body">
       <div class="grid grid-cols-3 gap-4">
@@ -21,7 +36,7 @@
               <p class="text-gray-500/75">HealthCare Hospital</p>
             </div>
           </div>
-          <hr class="my-2">
+          <hr class="my-4">
           <div class="">
             <h3 class="text-sm font-bold mb-2">Education</h3>
             <ul class="flex flex-col space-y-4">
@@ -49,21 +64,41 @@
               <?php endforeach; ?>
             </ul>
           </div>
-          <hr class="my-2">
+          <hr class="my-4">
         </div>
-        <div class="col-span-1">
-          <div class="card card-border alert alert-warning alert-soft w-full h-full">
-            <div class="card-body items-center text-center">
-              <h2 class="card-title font-bold">Notice</h2>
-              You can cancel your appointment up to <span class="font-bold text-xl">3 days before</span> the scheduled date.
-              <br>
-              Cancellations are not allowed within 3 days of the appointment.
-              <div class="card-actions justify-end">
-                <button class="btn btn-error">Cancel Appointment</button>
+
+        <?php if ($appointment->status != 'cancel' && in_groups(Roles::PATIENT)): ?>
+          <div class="col-span-1">
+            <div class="card card-border alert alert-warning alert-soft w-full h-full">
+              <div class="card-body items-center text-center">
+                <h2 class="card-title font-bold">Notice</h2>
+                You can CANCEL or RESCHEDULE your appointment up to <span class="font-bold text-xl text-red-700">3 days before</span> the scheduled date.
+                <br>
+                Cancellations are not allowed within 3 days of the appointment.
+                <div class="card-actions justify-end">
+                  <form action="/appointment/cancel" method="post" novalidate id="cancelForm" name="cancelForm">
+                    <?= csrf_field() ?>
+                    <input type="hidden" name="_method" value="POST">
+                    <input type="text" name="appointmentId" hidden value="<?= $appointment->id ?>">
+                    <button form="cancelForm" type="submit" class="btn btn-error btn-sm"
+                      onclick="return confirm('Are you sure want to cancel appointment?');">
+                      Cancel Appointment
+                    </button>
+                  </form>
+
+                  <form action="/appointment/reschedule/form" method="get">
+                    <div class="card-actions justify-end">
+                      <button type="submit" class="btn btn-info btn-sm ">Reschedule</button>
+                    </div>
+                    <input type="text" name="id" hidden value="<?= $appointment->doctorId ?>">
+                    <input type="text" name="appointmentId" hidden value="<?= $appointment->id ?>">
+                  </form>
+
+                </div>
               </div>
             </div>
           </div>
-        </div>
+        <?php endif; ?>
       </div>
 
 
