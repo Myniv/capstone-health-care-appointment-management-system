@@ -1,20 +1,22 @@
-<?php use Config\Roles; ?>
+<?php
+
+use Config\Roles; ?>
 <aside class="menu">
     <ul class="menu menu-compact lg:menu-normal">
         <li class="menu-title">
             <span>Navigation</span>
         </li>
-        <li>
-            <a href="/admin/dashboard" class="active:bg-primary active:text-white">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M3 10h11M9 21V3m0 0L3 10m6-7l6 7" />
-                </svg>
-                Dashboard
-            </a>
-        </li>
         <?php if (in_groups(Roles::ADMIN)): ?>
+            <li>
+                <a href="/admin/dashboard" class="active:bg-primary active:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 10h11M9 21V3m0 0L3 10m6-7l6 7" />
+                    </svg>
+                    Dashboard
+                </a>
+            </li>
             <li>
                 <a href="/admin/users" class="active:bg-primary active:text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
@@ -121,6 +123,16 @@
         <?php endif; ?>
 
         <?php if (in_groups(Roles::DOCTOR)): ?>
+            <li>
+                <a href="/doctor/dashboard" class="active:bg-primary active:text-white">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 10h11M9 21V3m0 0L3 10m6-7l6 7" />
+                    </svg>
+                    Dashboard
+                </a>
+            </li>
             <li>
                 <a href="/doctor/absent" class="active:bg-primary active:text-white">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"

@@ -47,7 +47,6 @@ class AppointmentModel extends Model
         'room_id' => 'required',
         'date' => 'required',
         'reason_for_visit' => 'required|max_length[100]',
-        'documents' => 'required',
     ];
     protected $validationMessages = [
         'doctor_schedule_id' => [
@@ -66,9 +65,6 @@ class AppointmentModel extends Model
             'required' => 'Needs must be filled.',
             'max_length' => 'Needs must be less than 100 characters.',
         ],
-        'documents' => [
-            'required' => 'Documents is required.',
-        ],
     ];
     protected $skipValidation = false;
     protected $cleanValidationRules = true;
@@ -83,6 +79,29 @@ class AppointmentModel extends Model
     protected $afterFind = [];
     protected $beforeDelete = [];
     protected $afterDelete = [];
+
+    private function getAppointment()
+    {
+        return $this->select('appointments.id, 
+        patients.first_name as patientFirstName, 
+        patients.last_name as patientLastName,
+        patients.profile_picture as patientProfilePicture,
+        doctor_schedules.start_time as startTime,
+        doctor_schedules.end_time as endTime,
+        doctors.first_name as doctorFirstName,
+        doctors.last_name as doctorLastName,
+        doctors.profile_picture as doctorProfilePicture,
+        doctor_category.name as doctorCategoryName,
+        rooms.name as roomName,
+        appointments.date as date,
+        appointments.status as status,
+        appointments.reason_for_visit as reason')
+            ->join('doctor_schedules', 'doctor_schedules.id = appointments.doctor_schedule_id', 'left')
+            ->join('rooms', 'rooms.id = doctor_schedules.room_id', 'left')
+            ->join('patients', 'patients.id = appointments.patient_id', 'left')
+            ->join('doctors', 'doctors.id = appointments.doctor_id', 'left')
+            ->join('doctor_category', 'doctor_category.id = doctors.doctor_category_id');
+    }
 
     public function getSortedAppointment(DataParams $params)
     {
@@ -107,7 +126,6 @@ class AppointmentModel extends Model
         if (Roles::DOCTOR) {
             $this->join('doctors', 'doctors.id = appointments.doctor_id');
         }
-
 
         if (!empty($params->search)) {
             $this->where('CAST(id AS TEXT) LIKE', "%$params->search%");
@@ -139,7 +157,12 @@ class AppointmentModel extends Model
 
     public function addAppointment($data)
     {
-        $this->save($data);
+        return $this->save($data);
+    }
+
+    public function updateAppointment($id, $data)
+    {
+        return $this->update($id, $data);
     }
 
     public function getAllAppointmentsDoctor($doctorId, $date)
@@ -168,5 +191,24 @@ class AppointmentModel extends Model
         }
 
         return $this->findAll();
+    }
+
+    public function getUpcomingAppointmentPatient($patientId)
+    {
+        return $this->getAppointment()
+            ->orderBy('appointments.date', 'ASC')
+            ->where('appointments.status', 'on going')
+            ->where('appointments.patient_id', $patientId)
+            ->first();
+    }
+
+    public function getUpcomingAppointmentDoctor($doctorId)
+    {
+        return $this->getAppointment()
+            ->orderBy('appointments.date', 'ASC')
+            ->where('appointments.status', 'on going')
+            ->where('appointments.doctor_id', $doctorId)
+            ->where('DATE(appointments.date)', date('Y-m-d'))
+            ->findAll();
     }
 }

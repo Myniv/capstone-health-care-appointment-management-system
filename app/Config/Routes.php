@@ -9,6 +9,7 @@ use App\Controllers\EducationController;
 use App\Controllers\EquipmentController;
 use App\Controllers\InventoryController;
 use App\Controllers\ReportController;
+use App\Controllers\PatientController;
 use App\Controllers\RoomController;
 use App\Controllers\SettingController;
 use App\Controllers\UserController;
@@ -70,24 +71,18 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->delete('setting/delete/(:num)', [SettingController::class, 'delete/$1']);
 });
 
+// Doctor Routes
 $routes->group('doctor', [], function ($routes) {
     $routes->get('dashboard', [DoctorController::class, 'dashboard']);
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
     $routes->match(['get', 'post'], 'absent/create', [DoctorController::class, 'createDoctorAbsent']);
+    $routes->match(['get', 'post'], 'history/create', [DoctorController::class, 'storeHistoryPatient']);
 
     $routes->group('education', [], function ($routes) {
         $routes->match(['get', 'post'], 'create', [EducationController::class, 'create']);
         $routes->match(['get', 'put'], 'update/(:num)', [EducationController::class, 'update']);
         $routes->delete('delete/(:num)/(:num)', [EducationController::class, 'delete/$1/$2']);
     });
-});
-
-$routes->group('appointment', [], function ($routes) {
-    $routes->get('', [AppointmentController::class, 'index']);
-    $routes->post('detail', [AppointmentController::class, 'detail']);
-    $routes->get('create', [AppointmentController::class, 'createAppointment']);
-    $routes->post('create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
-    $routes->get('create/form', [AppointmentController::class, 'createAppointmentForm']);
 });
 
 $routes->group('report', [], function ($routes) {
@@ -97,7 +92,18 @@ $routes->group('report', [], function ($routes) {
     $routes->get('resources/excel', [ReportController::class, 'reportResourceExcel'], ['filter' => 'role:' . Roles::ADMIN]);
 });
 
-
+// Appointment
+$routes->group('', [], function ($routes) {
+    $routes->get('/dashboard', [PatientController::class, 'dashboard']);
+    $routes->get('appointment/detail/(:num)', [AppointmentController::class, 'detail']);
+    $routes->get('appointment', [AppointmentController::class, 'index']);
+    $routes->get('appointment/create', [AppointmentController::class, 'createAppointment']);
+    $routes->post('appointment/create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
+    $routes->get('appointment/create/form', [AppointmentController::class, 'appointmentForm']);
+    $routes->post('appointment/cancel', [AppointmentController::class, 'cancelAppointment']);
+    $routes->get('appointment/reschedule/form', [AppointmentController::class, 'appointmentRescheduleForm']);
+    $routes->post('appointment/reschedule/submit', [AppointmentController::class, 'rescheduleAppointmentSubmit']);
+});
 
 //Auth routes
 $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
@@ -120,4 +126,5 @@ $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
     $routes->get('unauthorized', [AuthController::class, 'unauthorized']);
 
     $routes->get('profile-picture', [UserController::class, 'profilePicture']);
+    $routes->get('documents/(:segment)/(:num)', [AppointmentController::class, 'previewDocument']);
 });

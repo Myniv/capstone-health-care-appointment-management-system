@@ -115,11 +115,15 @@ class DoctorModel extends Model
 
     public function getFilteredDoctors(DataParams $params)
     {
-        $this->select('doctors.*');
+        $this
+            ->select('doctors.*, doctor_category.name as categoryName')
+            ->join('doctor_category', 'doctors.doctor_category_id = doctor_category.id');
+
         if (!empty($params->search)) {
             $this->where("first_name ILIKE '%" . $params->search . "%'")
                 ->orWhere("last_name ILIKE '%" . $params->search . "%'");
         }
+
 
         $allowedSort = [
             'id',
@@ -130,6 +134,8 @@ class DoctorModel extends Model
         $order = ($params->order === 'desc') ? 'DESC' : 'ASC';
 
         $this->orderBy($sort, $order);
+
+
 
         return [
             'doctors' => $this->paginate($params->perPage, 'doctors', $params->page),

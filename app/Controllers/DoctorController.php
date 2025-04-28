@@ -4,24 +4,22 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Libraries\DataParams;
+use App\Models\AppointmentModel;
 use App\Models\DoctorAbsentModel;
 use App\Models\DoctorModel;
 use App\Models\EducationModel;
 use CodeIgniter\HTTP\ResponseInterface;
-use CodeIgniter\I18n\Time;
-use Config\Roles;
 
 class DoctorController extends BaseController
 {
-    protected $doctorAbsentModel;
-    protected $doctorModel;
-    protected $educationModel;
+    protected $doctorAbsentModel, $doctorModel, $educationModel, $appointmentModel;
 
     public function __construct()
     {
         $this->doctorAbsentModel = new DoctorAbsentModel();
         $this->doctorModel = new DoctorModel();
         $this->educationModel = new EducationModel();
+        $this->appointmentModel = new AppointmentModel();
     }
 
     public function index()
@@ -31,11 +29,16 @@ class DoctorController extends BaseController
 
     public function dashboard()
     {
+        $doctorId = $this->doctorModel->where('user_id', user_id())->first()->id;
+
+        $result = $this->appointmentModel->getUpcomingAppointmentDoctor($doctorId);
+
         $data = [
-            'title' => 'Dashboard Doctor'
+            'title' => 'Dashboard Doctor',
+            'appointments' => $result
         ];
 
-        return view('page/user/v_user_dashboard_doctor');
+        return view('page/user/v_user_dashboard_doctor', $data);
     }
 
     public function getDoctorAbsent()
