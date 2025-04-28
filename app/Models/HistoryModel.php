@@ -39,9 +39,8 @@ class HistoryModel extends Model
     protected $validationRules      = [
         'appointment_id' => 'required',
         'patient_id' => 'required',
-        'notes' => 'permit_empty|string|max_length[255]',
-        'prescriptions' => 'required|string|max_length[255]',
-        'documents' => 'required|string|max_length[255]',
+        'notes' => 'required|string|max_length[255]',
+        'prescriptions' => 'required|string|max_length[255]'
     ];
     protected $validationMessages   = [
         'appointment_id' => [
@@ -51,16 +50,13 @@ class HistoryModel extends Model
             'required' => 'The Patient ID is required.',
         ],
         'notes' => [
+            'required' => 'The notes is required.',
             'max_length' => 'The notes must be less than 255 characters.',
         ],
         'prescriptions' => [
             'required' => 'The prescriptions is required.',
             'max_length' => 'The prescriptions must be less than 255 characters.',
-        ],
-        'documents' => [
-            'required' => 'The documents is required.',
-            'max_length' => 'The documents must be less than 255 characters.',
-        ],
+        ]
     ];
     protected $skipValidation       = false;
     protected $cleanValidationRules = true;
@@ -83,8 +79,11 @@ class HistoryModel extends Model
         histories.prescriptions as prescriptions,
         appointments.date as date,
         appointments.status as status,
-        appointments.reason_for_visit as reason')
+        appointments.reason_for_visit as reason,
+        doctors.first_name as firstName,
+        doctors.last_name as lastName')
             ->join('appointments', 'appointments.id = histories.appointment_id', 'left')
-            ->first();
+            ->join('doctors', 'appointments.doctor_id = doctors.id', 'left')
+            ->findAll(4);
     }
 }

@@ -2,16 +2,16 @@
 
 <?= $this->section('content'); ?>
 <div class="container mx-auto mt-4 px-4">
-    <div class="grid md:grid-cols-3 gap-4">
-        <?php if (!empty(user())): ?>
-            <div class="card col-span-2">
-                <div class="card-body">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="card md:col-span-2">
+            <div class="card-body">
+                <?php if (!empty(user())): ?>
                     <span class="card-title text-3xl font-bold">
                         Hello, <span class="text-primary"><?= user()->username; ?></span> 👋🏼
                     </span>
-                </div>
+                <?php endif; ?>
             </div>
-        <?php endif; ?>
+        </div>
 
         <div class="stats border bg-secondary-content">
             <div class="stat">
@@ -20,11 +20,11 @@
             </div>
         </div>
 
-        <div class="card border col-span-2">
+        <div class="card border md:col-span-2">
             <div class="card-body">
                 <div class="flex justify-between">
                     <h3 class="card-title">Upcoming Appointment</h3>
-                    <a class="btn btn-sm btn-primary" href="#">View All</a>
+                    <a class="btn btn-sm btn-primary" href="<?= base_url('appointment'); ?>">View All</a>
                 </div>
                 <?php if (!empty($appointments)): ?>
                     <ul class="list rounded-box border">
@@ -50,7 +50,7 @@
                                         </span>
                                     </span>
                                 </div>
-                                <a class="btn btn-ghost" href="#modal-form-history" data-id="<?= $appointment->id; ?>">
+                                <a class="btn btn-ghost btn-sm" href="#modal-form-history" data-id="<?= $appointment->id; ?>">
                                     Manage
                                 </a>
                             </li>
@@ -63,20 +63,20 @@
             </div>
         </div>
 
-        <div class="card bg-primary-content">
+        <div class="card border bg-primary-content">
             <div class="card-body">
                 <div class="card-title">Schedule</div>
                 <?php if (!empty($appointments)): ?>
                     <ul class="list rounded-box border">
                         <?php $count = 1 ?>
                         <?php foreach ($appointments as $appointment): ?>
-                            <li class="list-row bg-base-100">
+                            <li class="list-row bg-base-100 mb-2">
                                 <div class="text-lg font-thin opacity-30 tabular-nums"><?= $count++; ?>.</div>
                                 <div class="list-col-grow">
                                     <h3 class="font-semibold">
                                         <?= $appointment->roomName; ?>
                                     </h3>
-                                    <p class="text-primary font-semibold">
+                                    <p>
                                         <?= date('g:i A', strtotime($appointment->startTime)) ?> -
                                         <?= date('g:i A', strtotime($appointment->endTime)) ?>
                                     </p>
@@ -94,6 +94,82 @@
         </div>
     </div>
 
-    
+    <div class="modal" role="dialog" id="modal-form-history">
+        <div class="modal-box md:max-w-5xl">
+            <form
+                action="<?= base_url('doctor/history/create') ?>"
+                method="post" enctype="multipart/form-data" id="formData" novalidate>
+                <?= csrf_field() ?>
+
+                <?php if (isset($history)): ?>
+                    <input type="hidden" name="_method" value="PUT">
+                <?php endif; ?>
+
+                <input type="hidden" name="appointment_id" id="appointmentId">
+
+                <!-- Notes -->
+                <div class="mb-2">
+                    <label for="notes" class="label">
+                        <span class="label-text">Notes</span>
+                    </label>
+                    <textarea
+                        name="notes"
+                        class="textarea textarea-bordered w-full"
+                        rows="2"><?= old('notes') ?></textarea>
+                    <div class="text-error text-sm"><?= session('errors.notes') ?? '' ?></div>
+                </div>
+
+                <!-- Prescriptions -->
+                <div class="mb-2">
+                    <label for="prescriptions" class="label">
+                        <span class="label-text">Prescriptions</span>
+                    </label>
+                    <textarea
+                        name="prescriptions"
+                        class="textarea textarea-bordered w-full"
+                        rows="2"><?= old('prescriptions') ?></textarea>
+                    <div class="text-error text-sm"><?= session('errors.prescriptions') ?? '' ?></div>
+                </div>
+
+                <!-- Input Documents -->
+                <div class="mb-2">
+                    <label for="documents" class="label">
+                        <span class="label-text">Medical Documents</span>
+                    </label>
+                    <input
+                        type="file"
+                        name="documents"
+                        class="file-input file-input-bordered w-full">
+                    <div class="text-error text-sm mt-1"><?= session('errors.documents') ?></div>
+                </div>
+
+                <div class="modal-action">
+                    <a href="#" class="btn">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        Save & Mark as Done
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
+<?= $this->endSection(); ?>
+
+<?= $this->section('scripts'); ?>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const buttons = document.querySelectorAll('[href="#modal-form-history"]');
+        const appointmentIdInput = document.getElementById('appointmentId');
+
+        buttons.forEach(button => {
+            button.addEventListener('click', function() {
+                // Ambil appointment ID dari atribut data-id
+                const appointmentId = button.getAttribute('data-id');
+
+                // Isi input hidden dengan appointment ID
+                appointmentIdInput.value = appointmentId;
+            });
+        });
+    });
+</script>
 <?= $this->endSection(); ?>

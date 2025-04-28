@@ -197,18 +197,20 @@ class AppointmentModel extends Model
     {
         return $this->getAppointment()
             ->orderBy('appointments.date', 'ASC')
-            ->where('appointments.status', 'on going')
+            ->orderBy('doctor_schedules.start_time', 'ASC')
+            ->where('appointments.status', 'booking')
             ->where('appointments.patient_id', $patientId)
-            ->first();
+            ->findAll(2);
     }
 
     public function getUpcomingAppointmentDoctor($doctorId)
     {
         return $this->getAppointment()
             ->orderBy('appointments.date', 'ASC')
-            ->where('appointments.status', 'on going')
+            ->orderBy('doctor_schedules.start_time', 'ASC')
+            ->where('appointments.status', 'booking')
             ->where('appointments.doctor_id', $doctorId)
             ->where('DATE(appointments.date)', date('Y-m-d'))
-            ->findAll();
+            ->findAll(3);
     }
 }

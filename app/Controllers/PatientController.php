@@ -4,17 +4,19 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Models\AppointmentModel;
+use App\Models\HistoryModel;
 use App\Models\PatientModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class PatientController extends BaseController
 {
-    protected $appointmentModel, $patientModel;
+    protected $appointmentModel, $patientModel, $historyModel;
 
     public function __construct()
     {
         $this->appointmentModel = new AppointmentModel();
         $this->patientModel = new PatientModel();
+        $this->historyModel = new HistoryModel();
     }
 
     public function index()
@@ -26,11 +28,13 @@ class PatientController extends BaseController
     {
         $patientId = $this->patientModel->where('user_id', user_id())->first()->id;
 
-        $result = $this->appointmentModel->getUpcomingAppointmentPatient($patientId);
+        $appointments = $this->appointmentModel->getUpcomingAppointmentPatient($patientId);
+
+        $histories = $this->historyModel->getHistory();
 
         $data = [
-            'title' => 'Dashboard',
-            'appointment' => $result
+            'appointments' => $appointments,
+            'histories' => $histories
         ];
 
         return view('page/user/v_user_dashboard_patient', $data);

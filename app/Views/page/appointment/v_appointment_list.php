@@ -97,7 +97,7 @@
   <?php else: ?>
     <div class="grid grid-cols-3 gap-4">
       <?php foreach ($appointment as $row): ?>
-        <div class="card card-border bg-base-100 w-full">
+        <div class="card border bg-base-100 w-full">
           <div class="card-body">
             <h2 class="card-title">
               <?php if (in_groups(Roles::PATIENT)): ?>
@@ -112,19 +112,79 @@
             <div class="badge badge-warning"><?= $row->status; ?></div>
 
             <div class="card-actions justify-end">
-              <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-primary btn-sm">
-                <?php if (in_groups(Roles::PATIENT)): ?>
+              <?php if (in_groups(Roles::PATIENT)): ?>
+                <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-soft btn-sm">
                   Details
-                <?php else: ?>
+                </a>
+              <?php else: ?>
+                <a href="#modal-form-history" data-id="<?= $row->id; ?>" class="btn btn-soft btn-sm">
                   Manage
-                <?php endif; ?>
-              </a>
+                </a>
+              <?php endif; ?>
             </div>
           </div>
         </div>
       <?php endforeach; ?>
     </div>
 
+    <div class="modal" role="dialog" id="modal-form-history">
+      <div class="modal-box md:max-w-5xl">
+        <form
+          action="<?= base_url('doctor/history/create') ?>"
+          method="post" enctype="multipart/form-data" id="formData" novalidate>
+          <?= csrf_field() ?>
+
+          <?php if (isset($history)): ?>
+            <input type="hidden" name="_method" value="PUT">
+          <?php endif; ?>
+
+          <input type="hidden" name="appointment_id" id="appointmentId">
+
+          <!-- Notes -->
+          <div class="mb-2">
+            <label for="notes" class="label">
+              <span class="label-text">Notes</span>
+            </label>
+            <textarea
+              name="notes"
+              class="textarea textarea-bordered w-full"
+              rows="2"><?= old('notes') ?></textarea>
+            <div class="text-error text-sm"><?= session('errors.notes') ?? '' ?></div>
+          </div>
+
+          <!-- Prescriptions -->
+          <div class="mb-2">
+            <label for="prescriptions" class="label">
+              <span class="label-text">Prescriptions</span>
+            </label>
+            <textarea
+              name="prescriptions"
+              class="textarea textarea-bordered w-full"
+              rows="2"><?= old('prescriptions') ?></textarea>
+            <div class="text-error text-sm"><?= session('errors.prescriptions') ?? '' ?></div>
+          </div>
+
+          <!-- Input Documents -->
+          <div class="mb-2">
+            <label for="documents" class="label">
+              <span class="label-text">Medical Documents</span>
+            </label>
+            <input
+              type="file"
+              name="documents"
+              class="file-input file-input-bordered w-full">
+            <div class="text-error text-sm mt-1"><?= session('errors.documents') ?></div>
+          </div>
+
+          <div class="modal-action">
+            <a href="#" class="btn">Cancel</a>
+            <button type="submit" class="btn btn-primary">
+              Save & Mark as Done
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
   <?php endif; ?>
 
   <!-- Pagination -->
@@ -135,4 +195,23 @@
     </div>
   </div>
 </div>
+<?= $this->endSection(); ?>
+
+<?= $this->section('scripts'); ?>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('[href="#modal-form-history"]');
+    const appointmentIdInput = document.getElementById('appointmentId');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', function() {
+        // Ambil appointment ID dari atribut data-id
+        const appointmentId = button.getAttribute('data-id');
+
+        // Isi input hidden dengan appointment ID
+        appointmentIdInput.value = appointmentId;
+      });
+    });
+  });
+</script>
 <?= $this->endSection(); ?>

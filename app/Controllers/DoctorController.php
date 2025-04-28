@@ -8,11 +8,13 @@ use App\Models\AppointmentModel;
 use App\Models\DoctorAbsentModel;
 use App\Models\DoctorModel;
 use App\Models\EducationModel;
+use App\Models\HistoryModel;
+use App\Models\PatientModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class DoctorController extends BaseController
 {
-    protected $doctorAbsentModel, $doctorModel, $educationModel, $appointmentModel;
+    protected $doctorAbsentModel, $doctorModel, $educationModel, $appointmentModel, $patientModel, $historyModel;
 
     public function __construct()
     {
@@ -20,6 +22,8 @@ class DoctorController extends BaseController
         $this->doctorModel = new DoctorModel();
         $this->educationModel = new EducationModel();
         $this->appointmentModel = new AppointmentModel();
+        $this->patientModel = new PatientModel();
+        $this->historyModel = new HistoryModel();
     }
 
     public function index()
@@ -90,5 +94,67 @@ class DoctorController extends BaseController
         }
 
         return redirect()->to(base_url('doctor/absent'))->with('success', 'Doctor absent requested.');
+    }
+
+    public function storeHistoryPatient()
+    {
+        $data = $this->request->getPost();
+
+        $patientId = $this->appointmentModel->where('id', $data['appointment_id'])->first()->patient_id;
+
+        $userId = $this->patientModel->where('id', $patientId)->first()->user_id;
+
+        $data['patient_id'] = $patientId;
+
+        $validationRules = [
+            'documents' => [
+                'label' => 'Documents',
+                'rules' => [
+                    'uploaded[documents]',
+                    'mime_in[documents,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpg,image/jpeg,image/png]',
+                    'max_size[documents,5120]', // 5MB dalam KB (5 * 1024)
+                ],
+                'errors' => [
+                    'uploaded' => 'The document must be uploaded.',
+                    'mime_in' => 'The document must be a valid file type (PDF, DOC, JPG, JPEG, PNG).',
+                    'max_size' => 'The document must not exceed 5 MB in size.',
+                ]
+            ]
+        ];
+
+
+        if (!$this->validate($validationRules)) {
+            return redirect()->back()->with(
+                'errors',
+                $this->validator->getErrors()
+            );
+        }
+
+        $document = $this->request->getFile('documents');
+        if ($document && $document->isValid() && !$document->hasMoved()) {
+
+            $uploadPath = WRITEPATH . 'uploads/' . 'patients/' . $userId . '/' . 'medical_document' . '/';
+
+            if (!is_dir($uploadPath)) {
+                mkdir($uploadPath, 0777, true);
+            }
+
+            $documentName = 'medical_document' . '_' . $userId . '_' . date('Y_m_d') . '_' . time() . '.' . $document->getClientExtension();
+            $document->move($uploadPath, $documentName);
+
+            $relativePath = 'uploads/' . 'patients/' . $userId . '/' . 'medical_document' . '/' . $documentName;
+            $data['documents'] = $relativePath;
+        }
+
+        if (!$this->historyModel->save($data)) {
+            return redirect()->back()->with('errors', $this->historyModel->errors())->withInput();
+        }
+
+        // set status appointment 'done'
+        $appointment = $this->appointmentModel->find($data['appointment_id']);
+        $appointment->status = 'done';
+        $this->appointmentModel->update($data['appointment_id'], $appointment);
+
+        return redirect()->to(base_url('doctor/dashboard'))->with('success', 'History added successfully.');
     }
 }
