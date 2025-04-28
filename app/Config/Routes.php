@@ -76,6 +76,7 @@ $routes->group('doctor', [], function ($routes) {
     $routes->get('dashboard', [DoctorController::class, 'dashboard']);
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
     $routes->match(['get', 'post'], 'absent/create', [DoctorController::class, 'createDoctorAbsent']);
+    $routes->match(['get', 'post'], 'history/create', [DoctorController::class, 'storeHistoryPatient']);
 
     $routes->group('education', [], function ($routes) {
         $routes->match(['get', 'post'], 'create', [EducationController::class, 'create']);
