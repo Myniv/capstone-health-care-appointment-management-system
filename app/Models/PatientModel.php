@@ -110,4 +110,13 @@ class PatientModel extends Model
     {
         return $this->select('*')->where('user_id', $userId)->first();
     }
+
+    public function getPatientCountByType()
+    {
+        return $this
+            ->select('patient_type, COUNT(patient_type) AS total')
+            ->groupBy('patient_type')
+            ->findAll();
+    }
+
 }

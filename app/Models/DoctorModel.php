@@ -137,4 +137,23 @@ class DoctorModel extends Model
             'pager' => $this->pager
         ];
     }
+
+    public function getDoctorWithCategoryName($doctorId)
+    {
+        return $this
+            ->select('doctors.*, doctor_category.name as categoryName')
+            ->where('doctors.id', $doctorId)
+            ->join('doctor_category', 'doctors.doctor_category_id = doctor_category.id')
+            ->first();
+    }
+    public function getDoctorCountsByCategory()
+    {
+        return $this
+            ->select('doctor_category.name as category_name, COUNT(doctors.id) as total')
+            ->join('doctor_category', 'doctors.doctor_category_id = doctor_category.id', 'left')
+            ->groupBy('doctor_category.id, doctor_category.name')
+            ->orderBy('total', 'DESC')
+            ->findAll();
+    }
+
 }

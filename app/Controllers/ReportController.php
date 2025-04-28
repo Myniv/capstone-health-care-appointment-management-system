@@ -8,8 +8,10 @@ use App\Models\AppointmentModel;
 use App\Models\DoctorModel;
 use App\Models\EquipmentModel;
 use App\Models\InventoryModel;
+use App\Models\PatientModel;
 use App\Models\RoomModel;
 use App\Models\UserModel;
+use CodeIgniter\Database\Config;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Roles;
 use Myth\Auth\Models\GroupModel;
@@ -23,6 +25,7 @@ class ReportController extends BaseController
     protected $groupModel;
     protected $appointmentModel;
     protected $doctorModel;
+    protected $patientModel;
     protected $roomModel;
     protected $inventoryModel;
     protected $equipmentModel;
@@ -35,6 +38,7 @@ class ReportController extends BaseController
         $this->roomModel = new RoomModel();
         $this->inventoryModel = new InventoryModel();
         $this->equipmentModel = new EquipmentModel();
+        $this->patientModel = new PatientModel();
     }
 
     public function getReportUserPdf()
@@ -68,10 +72,18 @@ class ReportController extends BaseController
         $datas = $this->userModel->getUserByRole($role);
         // dd($datas);
         $roleName = 'All';
+        $doctor = $this->doctorModel->getDoctorCountsByCategory();
+        $patient = $this->patientModel->getPatientCountByType();
         if (!empty($role)) {
             $roleName = $this->groupModel->find($role)->name;
+            if ($roleName == Roles::DOCTOR) {
+                $patient = null;
+            }
+            if ($roleName == Roles::PATIENT) {
+                $doctor = null;
+            }
         }
-        $this->generateUserPdfHtmlContent($pdf, $datas, "User Reports", $roleName);
+        $this->generateUserPdfHtmlContent($pdf, $datas, "User Reports", $roleName, $patient, $doctor);
 
         // Output PDF
         $filename = 'User_Reports_' . $roleName . '_' . date('Y-m-d') . '.pdf';
@@ -79,7 +91,7 @@ class ReportController extends BaseController
         exit;
     }
 
-    private function generateUserPdfHtmlContent($pdf, $datas, $title, $subject)
+    private function generateUserPdfHtmlContent($pdf, $datas, $title, $subject, $patient, $doctor)
     {
         $titleReports = $title ?? 'User Reports';
         $subjectReports = $subject ?? '';
@@ -115,13 +127,40 @@ class ReportController extends BaseController
         }
 
         $html .= '
-               </tbody>
-           </table>
-           
-           <p style="margin-top:30px; text-align:left;">      
-               Total Users: ' . count($datas) . ' 
-           </p>
-   
+        </tbody>
+        </table>
+                <h2 style="text-align:center; margin-top:40px;">Summary Demographic</h2>
+        <div style="margin-top:5px; text-align:left;">';
+        if ($subject == 'All' || $subject ==  Roles::ADMIN) {
+            $html .= '
+                <p><strong>Total Users:</strong> ' . count($datas) . '</p>';
+        }
+
+        if ($patient) {
+            $html .= '<p style="margin-top:20px;"><strong>Total Patients:</strong> ' . $this->patientModel->countAll() . '</p>';
+
+            $html .= '<ul style="margin-left:40px;">';
+            foreach ($patient as $value) {
+                $html .= '<li>Type <strong>' . htmlspecialchars($value->patient_type) . '</strong>: ' . $value->total . ' patients</li>';
+            }
+            $html .= '</ul>';
+        }
+
+        if ($doctor) {
+            $html .= '<p style="margin-top:20px;"><strong>Total Doctors:</strong> ' . $this->doctorModel->countAll() . '</p>';
+
+            $html .= '<ul style="margin-left:40px;">';
+            foreach ($doctor as $value) {
+                $html .= '<li>Category <strong>' . htmlspecialchars($value->category_name) . '</strong>: ' . $value->total . ' doctors</li>';
+            }
+            $html .= '</ul>';
+        }
+
+        $html .= '</div>';
+
+
+
+        $html .= '
            <p style="margin-top:30px; text-align:right;">    
                Print Date: ' . date('d-m-Y H:i:s') . '<br> 
            </p>';
@@ -233,7 +272,8 @@ class ReportController extends BaseController
         $pdf->writeHTML($html, true, false, true, false, '');
     }
 
-    public function getReportResourceExcel(){
+    public function getReportResourceExcel()
+    {
         return view('page/report/v_report_resources_excel');
     }
 
@@ -321,5 +361,10 @@ class ReportController extends BaseController
         $writer = new Xlsx($spreadsheet);
         $writer->save('php://output');
         exit();
+    }
+
+    public function reportDemographicPdf()
+    {
+        helper('tcpdf');
     }
 }
