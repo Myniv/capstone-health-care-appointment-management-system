@@ -114,6 +114,7 @@ class AppointmentModel extends Model
             doctors.last_name as doctorLastName,
             rooms.name as roomName,
             appointments.date as date,
+            appointments.reason_for_visit as reason,
             appointments.status as status');
 
         $this->join('doctor_schedules', 'doctor_schedules.id = appointments.doctor_schedule_id');
@@ -129,7 +130,7 @@ class AppointmentModel extends Model
         //     $this->join('doctors', 'doctors.id = appointments.doctor_id');
         // }
 
-        if(!empty($params->doctor)) {
+        if (!empty($params->doctor)) {
             $this->where('doctors.id', $params->doctor);
         }
 
@@ -182,7 +183,8 @@ class AppointmentModel extends Model
             doctors.last_name as doctorLastName,
             rooms.name as roomName,
             appointments.date as date,
-            appointments.status as status')
+            appointments.status as status,
+            appointments.reason_for_visit as reason')
             ->join('doctor_schedules', 'doctor_schedules.id = appointments.doctor_schedule_id')
             ->join('rooms', 'rooms.id = doctor_schedules.room_id')
             ->join('patients', 'patients.id = appointments.patient_id')

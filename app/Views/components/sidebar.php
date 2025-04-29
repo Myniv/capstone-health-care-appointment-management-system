@@ -107,15 +107,19 @@ use Config\Roles; ?>
                     <ul class="pl-6">
                         <li>
                             <a href="/report/user"
-                                class="<?= current_url() === base_url('/admin/equipment') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">User</a>
+                                class="<?= current_url() === base_url('/report/user') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">User</a>
                         </li>
                         <li>
                             <a href="/report/resources"
-                                class="<?= current_url() === base_url('/admin/inventory') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Resources</a>
+                                class="<?= current_url() === base_url('/report/resources') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Resources</a>
                         </li>
                         <li>
                             <a href="/report/appointment"
-                                class="<?= current_url() === base_url('/admin/room') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Appointment</a>
+                                class="<?= current_url() === base_url('/report/appointment') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Appointment</a>
+                        </li>
+                        <li>
+                            <a href="/report/history"
+                                class="<?= current_url() === base_url('/report/history') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">History</a>
                         </li>
                     </ul>
                 </details>
@@ -161,7 +165,11 @@ use Config\Roles; ?>
                     <ul class="pl-6">
                         <li>
                             <a href="/report/appointment"
-                                class="<?= current_url() === base_url('/admin/room') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Appointment</a>
+                                class="<?= current_url() === base_url('/report/appointment') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">Appointment</a>
+                        </li>
+                        <li>
+                            <a href="/report/history"
+                                class="<?= current_url() === base_url('/report/history') ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">History</a>
                         </li>
                     </ul>
                 </details>

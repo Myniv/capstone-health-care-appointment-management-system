@@ -94,17 +94,17 @@ class HistoryModel extends Model
     public function getSortedHistory(DataParams $params)
     {
         $this->select('
-        patients.first_name as patient_firstName,
-        patients.last_name as patient_lastName,
+        patients.first_name as patientFirstName,
+        patients.last_name as patientLastName,
         histories.id as historyId,
         histories.notes as notes,
-        histories.prescriptions as prescriptions,
+        histories.prescriptions as prescription,
         histories.documents as documents,
         appointments.date as date,
         appointments.status as status,
-        appointments.reason_for_visit as reason
-        doctors.first_name as doctor_firstName,
-        doctors.last_name as doctor_lastName
+        appointments.reason_for_visit as reason,
+        doctors.first_name as doctorFirstName,
+        doctors.last_name as doctorLastName
         ')
             ->join('appointments', 'appointments.id = histories.appointment_id', 'left')
             ->join('doctors', 'appointments.doctor_id = doctors.id', 'left')
@@ -112,10 +112,6 @@ class HistoryModel extends Model
 
         if (!empty($params->doctor)) {
             $this->where('doctors.id', $params->doctor);
-        }
-
-        if (Roles::DOCTOR) {
-            $this->where('doctors.id', user_id());
         }
 
         $allowedSort = [
@@ -149,7 +145,7 @@ class HistoryModel extends Model
         histories.documents as documents,
         appointments.date as date,
         appointments.status as status,
-        appointments.reason_for_visit as reason
+        appointments.reason_for_visit as reason,
         doctors.first_name as doctor_firstName,
         doctors.last_name as doctor_lastName
         ')

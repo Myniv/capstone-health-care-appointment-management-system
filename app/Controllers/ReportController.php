@@ -179,9 +179,9 @@ class ReportController extends BaseController
         ]);
 
         if (in_groups(Roles::DOCTOR)) {
-            $doctor = $this->doctorModel->where('user_id', user()->id)->first()->id;
+            $doctorId = $this->doctorModel->where('user_id', user()->id)->first()->id;
             $params = new DataParams([
-                "doctor" => $doctor,
+                "doctor" => $doctorId,
                 "date" => $this->request->getGet("date"),
                 "page" => $this->request->getGet("page_appointments"),
             ]);
@@ -254,6 +254,7 @@ class ReportController extends BaseController
             <th>Patient</th>
             <th>Rooms</th>
             <th>Date</th>
+            <th>Reason</th>
             <th>Status</th>
           </tr>
          </thead>
@@ -268,6 +269,7 @@ class ReportController extends BaseController
             <td>' . $data->patientFirstName . ' ' . $data->patientLastName . '</td>
             <td>' . $data->roomName . '</td>
             <td>' . $data->date . '</td>
+            <td>' . $data->reason . '</td>
             <td>' . $data->status . '</td>
            </tr>';
             $no++;
@@ -294,15 +296,26 @@ class ReportController extends BaseController
             "date" => $this->request->getGet("date"),
             "page" => $this->request->getGet("page_histories"),
         ]);
+        if (in_groups(Roles::DOCTOR)) {
+            $doctorId = $this->doctorModel->where('user_id', user()->id)->first()->id;
+            $params = new DataParams([
+                "doctor" => $doctorId,
+                "date" => $this->request->getGet("date"),
+                "page" => $this->request->getGet("page_histories"),
+            ]);
+
+        }
+        $doctors = $this->doctorModel->findAll();
 
         $result = $this->historyModel->getSortedHistory($params);
 
         $data = [
-            'histories' => $result['data'],
+            'histories' => $result['histories'],
             'pager' => $result['pager'],
+            'doctors' => $doctors,
             'total' => $result['total'],
             'params' => $params,
-            'baseUrl' => base_url('reports/history'),
+            'baseUrl' => base_url('report/history'),
         ];
 
         return view('page/report/v_report_history_pdf', $data);
@@ -358,7 +371,6 @@ class ReportController extends BaseController
             <th>Notes</th>
             <th>Prescription</th>
             <th>Documents</th>
-            <th>Created At</th>
            </tr>
          </thead>
          <tbody>';
@@ -368,12 +380,11 @@ class ReportController extends BaseController
             $html .= '
            <tr>
             <td style="text-align:center;">' . $no . '</td>
-            <td>' . $doctorName . '</td>
+            <td>' . $data->doctor_firstName . ' ' . $data->doctor_lastName . '</td>
             <td>' . $data->patient_firstName . ' ' . $data->patient_lastName . '</td>
             <td>' . $data->notes . '</td>
             <td>' . $data->prescriptions . '</td>
             <td>' . $data->documents . '</td>
-            <td>' . $data->date . '</td>
            </tr>';
             $no++;
         }
@@ -382,7 +393,7 @@ class ReportController extends BaseController
          </tbody>
        </table>
        <p style="margin-top:30px; text-align:left;">      
-               Total Appointment: ' . count($datas) . ' 
+               Total History: ' . count($datas) . ' 
            </p>
    
            <p style="margin-top:30px; text-align:right;">    
