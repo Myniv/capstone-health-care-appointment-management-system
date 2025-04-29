@@ -87,6 +87,7 @@ class HistoryModel extends Model
         doctors.last_name as lastName')
             ->join('appointments', 'appointments.id = histories.appointment_id', 'left')
             ->join('doctors', 'appointments.doctor_id = doctors.id', 'left')
+            ->orderBy('histories.id', 'DESC')
             ->where('appointments.patient_id', $id)
             ->findAll(4);
     }

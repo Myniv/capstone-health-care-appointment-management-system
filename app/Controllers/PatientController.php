@@ -53,8 +53,6 @@ class PatientController extends BaseController
             ->where('id', $historyId)
             ->first();
 
-        // dd($document);
-
         if (!$document || empty($document->documents)) {
             throw new \CodeIgniter\Exceptions\PageNotFoundException('Medical document not found.');
         }
@@ -65,11 +63,15 @@ class PatientController extends BaseController
             throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found.');
         }
 
+        // detect MIME type file
+        $mimeType = mime_content_type($pathDocument);
+
+        // define header Content-Disposition
+        $disposition = in_array($mimeType, ['application/pdf', 'image/jpeg', 'image/png']) ? 'inline' : 'attachment';
+
         return response()
-            ->setHeader('Content-Type', 'application/pdf')
-            ->setHeader('Content-Disposition', 'inline; filename="' . basename($document->documents) . '"')
+            ->setHeader('Content-Type', $mimeType)
+            ->setHeader('Content-Disposition', $disposition . '; filename="' . basename($document->documents) . '"')
             ->setBody(file_get_contents($pathDocument));
     }
-
-
 }

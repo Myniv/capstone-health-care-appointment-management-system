@@ -62,9 +62,12 @@
                 <h3 class="card-title">Medical History</h3>
                 <?php if (!empty($histories)): ?>
                     <?php foreach ($histories as $history): ?>
-                        <div class="p-4 border rounded-lg grid grid-cols-1 md:grid-cols-[auto,1fr] bg-base-100 gap-2">
-                            <div>
-                                <a href="#modal-medical-history" class="pointer" data-id="<?= $history->historyId; ?>"
+                        <ul class="menu border rounded-box bg-base-100 w-full">
+                            <li class="flex flex-wrap justify-between">
+                                <button
+                                    id="btn-modal-medical-history"
+                                    class="pointer w-full"
+                                    data-id="<?= htmlspecialchars($history->historyId); ?>"
                                     data-reason="<?= htmlspecialchars($history->reason); ?>"
                                     data-notes="<?= htmlspecialchars($history->notes); ?>"
                                     data-prescriptions="<?= htmlspecialchars($history->prescriptions); ?>"
@@ -72,12 +75,13 @@
                                     data-lastName="<?= htmlspecialchars($history->lastName); ?>"
                                     data-date="<?= htmlspecialchars($history->date); ?>"
                                     data-status="<?= htmlspecialchars($history->status); ?>"
-                                    data-documents="<?= $history->documents; ?>">
-                                    <?= strlen($history->notes) >= 45 ? substr($history->notes, 0, 45) . '...' : $history->notes; ?>
-                                </a>
-                            </div>
-                            <p class="text-gray-700 md:justify-self-end"><?= date('F j, Y', strtotime($history->date)) ?></p>
-                        </div>
+                                    data-documents="<?= htmlspecialchars($history->documents); ?>">
+                                    <?= strlen($history->notes) >= 40 ? substr($history->notes, 0, 40) . '...' : $history->notes; ?>
+
+                                    <p class="text-gray-700 md:justify-self-end"><?= date('F j, Y', strtotime($history->date)) ?></p>
+                                </button>
+                            </li>
+                        </ul>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <p>There is no history.</p>
@@ -86,80 +90,95 @@
         </div>
     </div>
 
-    <?php if (!empty($history)): ?>
-        <div class="modal" role="dialog" id="modal-medical-history">
-            <div class="modal-box md:max-w-xl">
-                <div class="card">
-                    <div class="card-body grid gap-2 p-4 rounded-md">
+    <dialog class="modal" id="modal-medical-history">
+        <div class="modal-box md:max-w-xl">
+            <form method="dialog">
+                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+            </form>
+            <div class="card">
+                <div class="card-body grid gap-2 p-4 rounded-md">
+                    <div>
+                        <h3 class="font-semibold">Treatment</h3>
                         <div>
-                            <h3 class="font-semibold">Treatment</h3>
-                            <div>
-                                <span>Complaint: </span>
-                                <span class="text-gray-700"><?= $history->reason; ?></span>
-                            </div>
-                            <div>
-                                <span>Notes: </span>
-                                <span class="text-gray-700"><?= $history->notes; ?></span>
-                            </div>
-                            <div>
-                                <span>Prescriptions: </span>
-                                <span class="text-gray-700"><?= $history->prescriptions; ?></span>
-                            </div>
+                            <span>Complaint: </span>
+                            <span class="text-gray-700 modal-reason"></span>
                         </div>
                         <div>
-                            <h3 class="font-semibold">Appointment</h3>
-                            <div>
-                                <span class="text-gray-700">Doctor:
-                                    <?= $history->firstName . ' ' . $history->lastName; ?></span>
-                            </div>
-                            <span class="text-gray-700">Date: <?= date('F j, Y', strtotime($history->date)) ?></span>
+                            <span>Notes: </span>
+                            <span class="text-gray-700 modal-notes"></span>
                         </div>
                         <div>
-                            <h3 class="font-semibold">Status</h3>
-                            <div class="badge badge-soft badge-success text-md mt-2">
-                                Done
-                            </div>
+                            <span>Prescriptions: </span>
+                            <span class="text-gray-700 modal-prescriptions"></span>
                         </div>
                     </div>
-                    <div class="card-actions flex justify-end mt-4">
-                        <?php if (!empty($history->documents)): ?>
-                            <a href="/history/document/<?= $history->historyId ?>" target="_blank" class="btn btn-primary">
-                                Preview Document
-                            </a>
-                        <?php endif ?>
-                        <a href="dashboard" class="btn btn-soft">Back</a>
+                    <div>
+                        <h3 class="font-semibold">Appointment</h3>
+                        <div>
+                            <span>Doctor: </span>
+                            <span class="text-gray-700 modal-doctor-name"></span>
+                        </div>
+                        <div>
+                            <span>Date: </span>
+                            <span class="text-gray-700 modal-date"></span>
+                        </div>
                     </div>
+                    <div>
+                        <h3 class="font-semibold">Status</h3>
+                        <div class="badge badge-soft badge-success mt-2 modal-status"></div>
+                    </div>
+                </div>
+                <div class="card-actions flex justify-end mt-4">
+                    <a href="" target="_blank" class="btn btn-primary modal-id">
+                        Preview Document
+                    </a>
                 </div>
             </div>
         </div>
-    <?php endif; ?>
+    </dialog>
 </div>
 <?= $this->endSection(); ?>
 
 <?= $this->section('scripts'); ?>
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const links = document.querySelectorAll('[href="#modal-medical-history"]');
+    document.addEventListener('DOMContentLoaded', function() {
+        const links = document.querySelectorAll('#btn-modal-medical-history');
         const modal = document.getElementById('modal-medical-history');
 
         links.forEach(link => {
-            link.addEventListener('click', function () {
+            link.addEventListener('click', function() {
+                const id = link.getAttribute('data-id');
                 const reason = link.getAttribute('data-reason');
                 const notes = link.getAttribute('data-notes');
                 const prescriptions = link.getAttribute('data-prescriptions');
                 const firstName = link.getAttribute('data-firstName');
-                const lastName = link.getAttribute('data-date');
+                const lastName = link.getAttribute('data-lastName');
                 const date = link.getAttribute('data-date');
                 const status = link.getAttribute('data-status');
                 const documents = link.getAttribute('data-documents');
 
+                // formatting date
+                const formattedDate = new Intl.DateTimeFormat('id-ID', {
+                    weekday: 'long',
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                }).format(new Date(date));
+
+                // formatting status
+                const formattedStatus = `${status.charAt(0).toUpperCase()}${status.slice(1)}`;
+
+                // assign data
                 modal.querySelector('.modal-reason').textContent = reason;
                 modal.querySelector('.modal-notes').textContent = notes;
                 modal.querySelector('.modal-prescriptions').textContent = prescriptions;
-                modal.querySelector('.modal-firstName').textContent = firstName;
-                modal.querySelector('.modal-lastName').textContent = lastName;
-                modal.querySelector('.modal-date').textContent = date;
-                modal.querySelector('.modal-status').textContent = status;
+                modal.querySelector('.modal-doctor-name').textContent = `${firstName} ${lastName}`;
+                modal.querySelector('.modal-date').textContent = formattedDate;
+                modal.querySelector('.modal-status').textContent = formattedStatus;
+                modal.querySelector('.modal-id').href = `history/document/${id}`;
+
+                // show modal
+                modal.showModal();
             });
         });
     });

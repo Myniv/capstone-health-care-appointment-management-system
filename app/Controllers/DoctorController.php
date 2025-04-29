@@ -126,17 +126,15 @@ class DoctorController extends BaseController
             ]
         ];
 
-
         if (!$this->validate($validationRules)) {
             return redirect()->back()->with(
                 'errors',
                 $this->validator->getErrors()
-            );
+            )->withInput();
         }
 
         $document = $this->request->getFile('documents');
         if ($document && $document->isValid() && !$document->hasMoved()) {
-
             $uploadPath = WRITEPATH . 'uploads/' . 'patients/' . $userId . '/' . 'medical_document' . '/';
 
             if (!is_dir($uploadPath)) {
@@ -150,8 +148,16 @@ class DoctorController extends BaseController
             $data['documents'] = $relativePath;
         }
 
-        if (!$this->historyModel->save($data)) {
-            return redirect()->back()->with('errors', $this->historyModel->errors())->withInput();
+        $existingHistory = $this->historyModel->where('appointment_id', $data['appointment_id'])->first();
+
+        if ($existingHistory) {
+            if (!$this->historyModel->update($existingHistory->id, $data)) {
+                return redirect()->back()->with('errors', $this->historyModel->errors())->withInput();
+            }
+        } else {
+            if (!$this->historyModel->save($data)) {
+                return redirect()->back()->with('errors', $this->historyModel->errors())->withInput();
+            }
         }
 
         $insertedId = $this->historyModel->getInsertID();
@@ -188,8 +194,8 @@ class DoctorController extends BaseController
             'appointment_date' => date('F j, Y', strtotime($appointment_date)),
             'appointment_time' => date('g:i A', strtotime($appointment_time)),
             'reason' => $appointment->reason,
-            'notes' => $history->notes,
-            'prescriptions' => $history->prescriptions,
+            'notes' => $history->notes ?? '',
+            'prescriptions' => $history->prescriptions ?? '',
         ];
 
         // Attach documents if they exist
@@ -198,7 +204,6 @@ class DoctorController extends BaseController
             if (file_exists($filePath)) {
                 $email->attach($filePath);
             }
-
         }
 
         $email->setMessage(view('email/email_history', $data));

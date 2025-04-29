@@ -32,7 +32,6 @@ class AppointmentController extends BaseController
 
     public function index()
     {
-        //
         $params = new DataParams([
             "search" => $this->request->getGet("search"),
             "date" => $this->request->getGet("date"),
@@ -45,7 +44,7 @@ class AppointmentController extends BaseController
         $result = $this->appointmentModel->getSortedAppointment($params);
 
         $data = [
-            'appointment' => $result['appointment'],
+            'appointment' => $result['appointments'],
             'pager' => $result['pager'],
             'total' => $result['total'],
             'params' => $params,
