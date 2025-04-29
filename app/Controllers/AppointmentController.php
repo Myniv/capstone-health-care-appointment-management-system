@@ -143,6 +143,7 @@ class AppointmentController extends BaseController
     public function createAppointmentSubmit()
     {
         $patient = $this->patientModel->where('user_id', user_id())->first();
+        $doctor = $this->doctorModel->find($this->request->getVar('id'));
 
         $room_id = null;
 
@@ -186,7 +187,44 @@ class AppointmentController extends BaseController
                 ->withInput();
         }
 
+        $appointment = $this->appointmentModel->find($this->appointmentModel->getInsertID());
+
+        $send = $this->sendEmail($doctor, $patient, $appointment);
+
+        if (!$send) {
+            return redirect()->back()
+                ->with('errors', ['Fail to send email'])
+                ->withInput();
+        }
+
         return redirect()->to(base_url('appointment'))->with('success', 'Data Berhasil Ditambahkan');
+    }
+
+    private function sendEmail($doctor, $patient, $appointment)
+    {
+        $email = service('email');
+        $email->setTo($patient->email);
+        $email->setCC($doctor->email);
+        $email->setSubject("Medical Appointment Booking - HealthCare Hospital");
+        $appointment_datetime = strtotime($appointment->date);
+        // Example: Friday, April 25, 2025
+        $appointment_date = date('l, F j, Y', $appointment_datetime);
+        // Example: 12:00 AM
+        $appointment_time = date('g:i A', $appointment_datetime);
+        $data = [
+            'title' => "Medical Appointment Booking",
+            'patient_name' => $patient->first_name . " " . $patient->last_name,
+            'doctor_name' => $doctor->first_name . " " . $doctor->last_name,
+            'appointment_date' => $appointment_date,
+            'appointment_time' => $appointment_time,
+        ];
+        $email->setMessage(view('email/email_appointment_template', $data));
+
+        if ($email->send()) {
+            return true;
+        }
+
+        return false;
     }
 
     public function rescheduleAppointmentSubmit()
