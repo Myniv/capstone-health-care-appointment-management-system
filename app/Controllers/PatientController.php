@@ -26,6 +26,10 @@ class PatientController extends BaseController
 
     public function dashboard()
     {
+        if (empty(user_id())) {
+            return redirect()->to('/login');
+        }
+
         $patientId = $this->patientModel->where('user_id', user_id())->first()->id;
 
         $appointments = $this->appointmentModel->getUpcomingAppointmentPatient($patientId);

@@ -64,7 +64,7 @@
                                 <a
                                     href="#modal-medical-history"
                                     class="pointer"
-                                    data-id="<?= $appointment->historyId; ?>"
+                                    data-id="<?= $history->historyId; ?>"
                                     data-reason="<?= htmlspecialchars($history->reason); ?>"
                                     data-notes="<?= htmlspecialchars($history->notes); ?>"
                                     data-prescriptions="<?= htmlspecialchars($history->prescriptions); ?>"
