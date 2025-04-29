@@ -118,13 +118,19 @@ class AppointmentModel extends Model
 
         $this->join('doctor_schedules', 'doctor_schedules.id = appointments.doctor_schedule_id');
         $this->join('rooms', 'rooms.id = doctor_schedules.room_id');
+        $this->join('patients', 'patients.id = appointments.patient_id');
+        $this->join('doctors', 'doctors.id = appointments.doctor_id');
 
-        if (Roles::PATIENT) {
-            $this->join('patients', 'patients.id = appointments.patient_id');
-        }
+        // if (Roles::PATIENT) {
+        //     $this->join('patients', 'patients.id = appointments.patient_id');
+        // }
 
-        if (Roles::DOCTOR) {
-            $this->join('doctors', 'doctors.id = appointments.doctor_id');
+        // if (Roles::DOCTOR || Roles::ADMIN) {
+        //     $this->join('doctors', 'doctors.id = appointments.doctor_id');
+        // }
+
+        if(!empty($params->doctor)) {
+            $this->where('doctors.id', $params->doctor);
         }
 
         if (!empty($params->search)) {
@@ -149,7 +155,7 @@ class AppointmentModel extends Model
         $this->orderBy($sort, $order);
 
         return [
-            'appointment' => $this->paginate($params->perPage, 'appointment', $params->page),
+            'appointments' => $this->paginate($params->perPage, 'appointments', $params->page),
             'total' => $this->countAllResults(),
             'pager' => $this->pager
         ];
@@ -187,7 +193,7 @@ class AppointmentModel extends Model
         }
 
         if (!empty($doctorId)) {
-            $this->where('doctors.id', $doctorId);
+            $this->where('appointments.doctor_id', $doctorId);
         }
 
         return $this->findAll();

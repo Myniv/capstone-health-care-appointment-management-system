@@ -3,17 +3,19 @@
 namespace App\Models;
 
 use App\Entities\History;
+use App\Libraries\DataParams;
 use CodeIgniter\Model;
+use Config\Roles;
 
 class HistoryModel extends Model
 {
-    protected $table            = 'histories';
-    protected $primaryKey       = 'id';
+    protected $table = 'histories';
+    protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = History::class;
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
-    protected $allowedFields    = [
+    protected $returnType = History::class;
+    protected $useSoftDeletes = false;
+    protected $protectFields = true;
+    protected $allowedFields = [
         'id',
         'appointment_id',
         'patient_id',
@@ -30,19 +32,19 @@ class HistoryModel extends Model
 
     // Dates
     protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
+    protected $dateFormat = 'datetime';
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
     // protected $deletedField  = 'deleted_at';
 
     // Validation
-    protected $validationRules      = [
+    protected $validationRules = [
         'appointment_id' => 'required',
         'patient_id' => 'required',
         'notes' => 'required|string|max_length[255]',
         'prescriptions' => 'required|string|max_length[255]'
     ];
-    protected $validationMessages   = [
+    protected $validationMessages = [
         'appointment_id' => [
             'required' => 'The appointment ID is required.',
         ],
@@ -58,19 +60,19 @@ class HistoryModel extends Model
             'max_length' => 'The prescriptions must be less than 255 characters.',
         ]
     ];
-    protected $skipValidation       = false;
+    protected $skipValidation = false;
     protected $cleanValidationRules = true;
 
     // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
+    protected $beforeInsert = [];
+    protected $afterInsert = [];
+    protected $beforeUpdate = [];
+    protected $afterUpdate = [];
+    protected $beforeFind = [];
+    protected $afterFind = [];
+    protected $beforeDelete = [];
+    protected $afterDelete = [];
 
     public function getHistory($id)
     {
@@ -87,5 +89,82 @@ class HistoryModel extends Model
             ->join('doctors', 'appointments.doctor_id = doctors.id', 'left')
             ->where('appointments.patient_id', $id)
             ->findAll(4);
+    }
+
+    public function getSortedHistory(DataParams $params)
+    {
+        $this->select('
+        patients.first_name as patient_firstName,
+        patients.last_name as patient_lastName,
+        histories.id as historyId,
+        histories.notes as notes,
+        histories.prescriptions as prescriptions,
+        histories.documents as documents,
+        appointments.date as date,
+        appointments.status as status,
+        appointments.reason_for_visit as reason
+        doctors.first_name as doctor_firstName,
+        doctors.last_name as doctor_lastName
+        ')
+            ->join('appointments', 'appointments.id = histories.appointment_id', 'left')
+            ->join('doctors', 'appointments.doctor_id = doctors.id', 'left')
+            ->join('patients', 'appointments.patient_id = patients.id', 'left');
+
+        if (!empty($params->doctor)) {
+            $this->where('doctors.id', $params->doctor);
+        }
+
+        if (Roles::DOCTOR) {
+            $this->where('doctors.id', user_id());
+        }
+
+        $allowedSort = [
+            'patient_firstName',
+            'doctor_firstName',
+            'date',
+            'status',
+            'reason'
+        ];
+
+        $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'date';
+        $order = ($params->order === 'desc') ? 'DESC' : 'ASC';
+
+        $this->orderBy($sort, $order);
+
+        return [
+            'histories' => $this->paginate($params->perPage, 'histories', $params->page),
+            'total' => $this->countAllResults(),
+            'pager' => $this->pager
+        ];
+    }
+
+    public function getAllHistoryDoctorPatient($doctorId, $date)
+    {
+        $this->select('
+        patients.first_name as patient_firstName,
+        patients.last_name as patient_lastName,
+        histories.id as historyId,
+        histories.notes as notes,
+        histories.prescriptions as prescriptions,
+        histories.documents as documents,
+        appointments.date as date,
+        appointments.status as status,
+        appointments.reason_for_visit as reason
+        doctors.first_name as doctor_firstName,
+        doctors.last_name as doctor_lastName
+        ')
+            ->join('appointments', 'appointments.id = histories.appointment_id', 'left')
+            ->join('doctors', 'appointments.doctor_id = doctors.id', 'left')
+            ->join('patients', 'appointments.patient_id = patients.id', 'left');
+
+        if (!empty($date)) {
+            $this->where("TO_CHAR(date, 'YYYY-MM-DD') LIKE", "%{$date}%");
+        }
+
+        if (!empty($doctorId)) {
+            $this->where('doctors.id', $doctorId);
+        }
+
+        return $this->findAll();
     }
 }

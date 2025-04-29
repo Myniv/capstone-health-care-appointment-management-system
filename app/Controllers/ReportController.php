@@ -7,6 +7,7 @@ use App\Libraries\DataParams;
 use App\Models\AppointmentModel;
 use App\Models\DoctorModel;
 use App\Models\EquipmentModel;
+use App\Models\HistoryModel;
 use App\Models\InventoryModel;
 use App\Models\PatientModel;
 use App\Models\RoomModel;
@@ -29,6 +30,7 @@ class ReportController extends BaseController
     protected $roomModel;
     protected $inventoryModel;
     protected $equipmentModel;
+    protected $historyModel;
     public function __construct()
     {
         $this->userModel = new UserModel();
@@ -39,6 +41,7 @@ class ReportController extends BaseController
         $this->inventoryModel = new InventoryModel();
         $this->equipmentModel = new EquipmentModel();
         $this->patientModel = new PatientModel();
+        $this->historyModel = new HistoryModel();
     }
 
     public function getReportUserPdf()
@@ -131,7 +134,7 @@ class ReportController extends BaseController
         </table>
                 <h2 style="text-align:center; margin-top:40px;">Summary Demographic</h2>
         <div style="margin-top:5px; text-align:left;">';
-        if ($subject == 'All' || $subject ==  Roles::ADMIN) {
+        if ($subject == 'All' || $subject == Roles::ADMIN) {
             $html .= '
                 <p><strong>Total Users:</strong> ' . count($datas) . '</p>';
         }
@@ -172,17 +175,29 @@ class ReportController extends BaseController
         $params = new DataParams([
             "doctor" => $this->request->getGet("doctor"),
             "date" => $this->request->getGet("date"),
-            "page" => $this->request->getGet("page_appointment"),
+            "page" => $this->request->getGet("page_appointments"),
         ]);
+
+        if (in_groups(Roles::DOCTOR)) {
+            $doctor = $this->doctorModel->where('user_id', user()->id)->first()->id;
+            $params = new DataParams([
+                "doctor" => $doctor,
+                "date" => $this->request->getGet("date"),
+                "page" => $this->request->getGet("page_appointments"),
+            ]);
+        }
 
         $result = $this->appointmentModel->getSortedAppointment($params);
 
+        $doctors = $this->doctorModel->findAll();
+
         $data = [
-            'appointment' => $result['appointment'],
+            'appointments' => $result['appointments'],
+            'doctors' => $doctors,
             'pager' => $result['pager'],
             'total' => $result['total'],
             'params' => $params,
-            'baseUrl' => base_url('reports/appointment'),
+            'baseUrl' => base_url('report/appointment'),
         ];
 
         return view('page/report/v_report_appointment_pdf', $data);
@@ -196,10 +211,11 @@ class ReportController extends BaseController
         } else if (in_groups(Roles::DOCTOR)) {
             $doctor = $this->doctorModel->where('user_id', user()->id)->first()->id;
         }
-        ;
+        // dd($doctor);
+
         $date = $this->request->getGet("date");
 
-        $pdf = initTcpdf(user()->username, user()->username, "User Reports", "User Reports", );
+        $pdf = initTcpdf(user()->username, user()->username, "Appointment Reports", "Appointment Reports", );
 
         $datas = $this->appointmentModel->getAllAppointmentsDoctor($doctor, $date);
         // dd($datas);
@@ -215,7 +231,7 @@ class ReportController extends BaseController
         if (!empty($date)) {
             $dateName = $date;
         }
-        $this->generateUserPdfHtmlContent($pdf, $datas, "Appointment Reports", $doctorName . '_' . $dateName);
+        $this->generateAppointmentPdfHtmlContent($pdf, $datas, "Appointment Reports", $doctorName);
 
         // Output PDF
         $filename = 'Appointment_Reports_' . $doctorName . '_' . 'month_' . $dateName . '_' . date('Y-m-d') . '.pdf';
@@ -234,11 +250,11 @@ class ReportController extends BaseController
         <thead>
           <tr style="background-color:#CCCCCC; font-weight:bold; text-align:center;">
             <th>No</th>
-            <th>Username</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Type</th>
+            <th>Doctor</th>
+            <th>Patient</th>
+            <th>Rooms</th>
+            <th>Date</th>
+            <th>Status</th>
           </tr>
          </thead>
          <tbody>';
@@ -248,12 +264,11 @@ class ReportController extends BaseController
             $html .= '
            <tr>
             <td style="text-align:center;">' . $no . '</td>
-            <td>' . $data->username . '</td>
-            <td>' . $data->first_name . ' ' . $data->last_name . '</td>
-            <td>' . $data->email . '</td>
-            <td>' . $data->role . '</td>
-            <td>' . ($data->doctor_category ?? 'N/A') . '</td>
-            <td>' . ($data->last_login ?? 'N/A') . '</td>
+            <td>' . $data->doctorFirstName . ' ' . $data->doctorLastName . '</td>
+            <td>' . $data->patientFirstName . ' ' . $data->patientLastName . '</td>
+            <td>' . $data->roomName . '</td>
+            <td>' . $data->date . '</td>
+            <td>' . $data->status . '</td>
            </tr>';
             $no++;
         }
@@ -263,7 +278,7 @@ class ReportController extends BaseController
            </table>
            
            <p style="margin-top:30px; text-align:left;">      
-               Total Users: ' . count($datas) . ' 
+               Total Appointment: ' . count($datas) . ' 
            </p>
    
            <p style="margin-top:30px; text-align:right;">    
@@ -271,6 +286,113 @@ class ReportController extends BaseController
            </p>';
         $pdf->writeHTML($html, true, false, true, false, '');
     }
+
+    public function getReportHistoryPdf()
+    {
+        $params = new DataParams([
+            "doctor" => $this->request->getGet("doctor"),
+            "date" => $this->request->getGet("date"),
+            "page" => $this->request->getGet("page_histories"),
+        ]);
+
+        $result = $this->historyModel->getSortedHistory($params);
+
+        $data = [
+            'histories' => $result['data'],
+            'pager' => $result['pager'],
+            'total' => $result['total'],
+            'params' => $params,
+            'baseUrl' => base_url('reports/history'),
+        ];
+
+        return view('page/report/v_report_history_pdf', $data);
+    }
+
+    public function reportHistoryPdf()
+    {
+        helper('tcpdf');
+        if (in_groups(Roles::ADMIN)) {
+            $doctor = $this->request->getGet("doctor");
+        } else if (in_groups(Roles::DOCTOR)) {
+            $doctor = $this->doctorModel->where('user_id', user()->id)->first()->id;
+        }
+        ;
+        $date = $this->request->getGet("date");
+
+        $pdf = initTcpdf(user()->username, user()->username, "History Reports", "History Reports", );
+
+        $datas = $this->historyModel->getAllHistoryDoctorPatient($doctor, $date);
+
+        $doctorName = 'All';
+        if (!empty($doctor)) {
+            $doctorFirstName = $this->doctorModel->find($doctor)->first_name;
+            $doctorLastName = $this->doctorModel->find($doctor)->last_name;
+            $doctorName = $doctorFirstName . ' ' . $doctorLastName;
+        }
+
+        $dateName = 'All';
+        if (!empty($date)) {
+            $dateName = $date;
+        }
+
+        $this->generateHistoryPdfHtmlContent($pdf, $datas, $doctorName, $dateName);
+
+        $filename = 'History_Reports_' . $doctorName . '_' . 'month_' . $dateName . '_' . date('Y-m-d') . '.pdf';
+        $pdf->Output($filename, 'I');
+        exit;
+    }
+
+    private function generateHistoryPdfHtmlContent($pdf, $datas, $doctorName, $dateName)
+    {
+        $titleReports = 'History Reports';
+        $subjectReports = 'History Reports';
+
+        $html = '<h2 style="text-align:center;">' . $titleReports . '</h2>
+        <h4 style="text-align:center;">' . $subjectReports . '</h2>
+      <table border="1" cellpadding="5" cellspacing="0" style="width:100%;">
+         <thead>
+           <tr style="background-color:#CCCCCC; font-weight:bold; text-align:center;">
+            <th>No</th>
+            <th>Doctor</th>
+            <th>Patient</th>
+            <th>Notes</th>
+            <th>Prescription</th>
+            <th>Documents</th>
+            <th>Created At</th>
+           </tr>
+         </thead>
+         <tbody>';
+
+        $no = 1;
+        foreach ($datas as $data) {
+            $html .= '
+           <tr>
+            <td style="text-align:center;">' . $no . '</td>
+            <td>' . $doctorName . '</td>
+            <td>' . $data->patient_firstName . ' ' . $data->patient_lastName . '</td>
+            <td>' . $data->notes . '</td>
+            <td>' . $data->prescriptions . '</td>
+            <td>' . $data->documents . '</td>
+            <td>' . $data->date . '</td>
+           </tr>';
+            $no++;
+        }
+
+        $html .= '
+         </tbody>
+       </table>
+       <p style="margin-top:30px; text-align:left;">      
+               Total Appointment: ' . count($datas) . ' 
+           </p>
+   
+           <p style="margin-top:30px; text-align:right;">    
+               Print Date: ' . date('d-m-Y H:i:s') . '<br> 
+           </p>';
+
+        $pdf->writeHTML($html, true, false, true, false, '');
+    }
+
+
 
     public function getReportResourceExcel()
     {

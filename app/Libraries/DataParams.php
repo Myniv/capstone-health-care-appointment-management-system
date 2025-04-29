@@ -18,6 +18,8 @@ class DataParams
     //Status Filter
     public $status = '';
 
+    public $doctor = '';
+
 
     public $sort = 'id';
     public $order = 'asc';
@@ -32,6 +34,8 @@ class DataParams
         $this->role = $params['role'] ?? '';
 
         $this->status = $params['status'] ?? '';
+
+        $this->doctor = $params['doctor'] ?? '';
 
         $this->sort = $params['sort'] ?? 'id';
         $this->order = $params['order'] ?? 'asc';
@@ -49,6 +53,8 @@ class DataParams
             'role' => $this->role,
 
             'status' => $this->status,
+
+            'doctor' => $this->doctor,
 
             'sort' => $this->sort,
             'order' => $this->order,

@@ -90,6 +90,19 @@ $routes->group('report', [], function ($routes) {
     $routes->get('user/pdf', [ReportController::class, 'reportUserPdf'], ['filter' => 'role:' . Roles::ADMIN]);
     $routes->get('resources', [ReportController::class, 'getReportResourceExcel'], ['filter' => 'role:' . Roles::ADMIN]);
     $routes->get('resources/excel', [ReportController::class, 'reportResourceExcel'], ['filter' => 'role:' . Roles::ADMIN]);
+    $routes->get('history', [ReportController::class, 'getReportHistoryPdf'], [
+        'filter' => 'role:' . Roles::ADMIN . ',' . Roles::DOCTOR
+    ]);
+    $routes->get('history/pdf', [ReportController::class, 'reportHistoryPdf'], [
+        'filter' => 'role:' . Roles::ADMIN . ',' . Roles::DOCTOR
+    ]);
+    $routes->get('appointment', [ReportController::class, 'getReportAppointmentPdf'], [
+        'filter' => 'role:' . Roles::ADMIN . ',' . Roles::DOCTOR
+    ]);
+    $routes->get('appointment/pdf', [ReportController::class, 'reportAppointmentPdf'], [
+        'filter' => 'role:' . Roles::ADMIN . ',' . Roles::DOCTOR
+    ]);
+
 });
 
 // Appointment
