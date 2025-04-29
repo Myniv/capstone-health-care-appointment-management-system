@@ -114,12 +114,12 @@ class DoctorController extends BaseController
             'documents' => [
                 'label' => 'Documents',
                 'rules' => [
-                    'uploaded[documents]',
+                    // 'uploaded[documents]',
                     'mime_in[documents,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpg,image/jpeg,image/png]',
                     'max_size[documents,5120]', // 5MB dalam KB (5 * 1024)
                 ],
                 'errors' => [
-                    'uploaded' => 'The document must be uploaded.',
+                    // 'uploaded' => 'The document must be uploaded.',
                     'mime_in' => 'The document must be a valid file type (PDF, DOC, JPG, JPEG, PNG).',
                     'max_size' => 'The document must not exceed 5 MB in size.',
                 ]
@@ -154,11 +154,55 @@ class DoctorController extends BaseController
             return redirect()->back()->with('errors', $this->historyModel->errors())->withInput();
         }
 
+        $insertedId = $this->historyModel->getInsertID();
+        $historyData = $this->historyModel->find($insertedId);
+
         // set status appointment 'done'
         $appointment = $this->appointmentModel->find($data['appointment_id']);
         $appointment->status = 'done';
         $this->appointmentModel->update($data['appointment_id'], $appointment);
 
+        // send email to patient
+        $patient = $this->patientModel->find($patientId);
+        $doctor = $this->doctorModel->find($appointment->doctor_id);
+        $this->sendEmailHistoryPatient($patient, $doctor, $appointment, $historyData);
+
         return redirect()->to(base_url('doctor/dashboard'))->with('success', 'History added successfully.');
+    }
+
+    public function sendEmailHistoryPatient($patient, $doctor, $appointment, $history)
+    {
+        $appointment_datetime = strtotime($appointment->date);
+        $appointment_date = date('l, F j, Y', $appointment_datetime);
+        $appointment_time = date('g:i A', $appointment_datetime);
+
+
+        $email = service('email');
+        $email->setTo($patient->email);
+        $email->setSubject('Your Appointment Summary');
+
+        $data = [
+            'title' => 'Appointment Summary',
+            'patient_name' => $patient->first_name . ' ' . $patient->last_name,
+            'doctor_name' => $doctor->first_name . ' ' . $doctor->last_name,
+            'appointment_date' => date('F j, Y', strtotime($appointment_date)),
+            'appointment_time' => date('g:i A', strtotime($appointment_time)),
+            'reason' => $appointment->reason,
+            'notes' => $history->notes,
+            'prescriptions' => $history->prescriptions,
+        ];
+
+        // Attach documents if they exist
+        if (!empty($history->documents)) {
+            $filePath = WRITEPATH . $history->documents; // Adjust if stored in public path
+            if (file_exists($filePath)) {
+                $email->attach($filePath);
+            }
+
+        }
+
+        $email->setMessage(view('email/email_history', $data));
+        $email->setMailType('html');
+        $email->send();
     }
 }

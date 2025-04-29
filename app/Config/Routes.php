@@ -128,3 +128,5 @@ $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
     $routes->get('profile-picture', [UserController::class, 'profilePicture']);
     $routes->get('documents/(:segment)/(:num)', [AppointmentController::class, 'previewDocument']);
 });
+
+$routes->get('history/document/(:num)', [PatientController::class, 'viewMedicalDocument/$1']);

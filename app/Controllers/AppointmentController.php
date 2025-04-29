@@ -151,8 +151,9 @@ class AppointmentController extends BaseController
         }
 
         $documents = $this->request->getFile('documents');
-        $docName = 'documents' . '_' . $patient->user_id . '_' . date('Y_m_d') . '_' . time() . '.' . $documents->getClientExtension();
+        $docName = '';
         if ($documents && $documents->isValid() && !$documents->hasMoved()) {
+            $docName = 'documents' . '_' . $patient->user_id . '_' . date('Y_m_d') . '_' . time() . '.' . $documents->getClientExtension();
 
             $uploadPath = WRITEPATH . 'uploads/' . 'patients/' . $patient->user_id . '/' . 'documents' . '/';
 
@@ -173,7 +174,7 @@ class AppointmentController extends BaseController
             'doctor_schedule_id' => $this->request->getVar('schedule'),
             'doctor_id' => $this->request->getVar('id'),
             'date' => $this->request->getVar('date'),
-            'room_id' =>  $room_id,
+            'room_id' => $room_id,
             'status' => 'booking',
             'documents' => $docName,
             'reason_for_visit' => $this->request->getVar('reason')
@@ -204,7 +205,7 @@ class AppointmentController extends BaseController
             'doctor_schedule_id' => $this->request->getVar('schedule'),
             'doctor_id' => $this->request->getVar('id'),
             'date' => $this->request->getVar('date'),
-            'room_id' =>  $room_id,
+            'room_id' => $room_id,
             'status' => 'booking',
             'reason_for_visit' => $this->request->getVar('reason')
         ];
@@ -233,11 +234,11 @@ class AppointmentController extends BaseController
 
         $data = [
             'type' => 'create',
-            'doctor' =>  $doctor,
-            'education' =>  $education,
-            'schedule' =>  $this->request->getVar('schedule') ?? 0,
-            'date' =>  $this->request->getVar('date') ?? (new DateTime())->format('Y-m-d'),
-            'reason' =>  $this->request->getVar('reason') ?? '',
+            'doctor' => $doctor,
+            'education' => $education,
+            'schedule' => $this->request->getVar('schedule') ?? 0,
+            'date' => $this->request->getVar('date') ?? (new DateTime())->format('Y-m-d'),
+            'reason' => $this->request->getVar('reason') ?? '',
         ];
 
         $schedules = $this->doctorScheduleModel
@@ -282,12 +283,12 @@ class AppointmentController extends BaseController
 
         $data = [
             'type' => 'reschedule',
-            'doctor' =>  $doctor,
-            'appointmentId' =>  $appointmentId,
-            'education' =>  $education,
-            'schedule' =>  $this->request->getVar('schedule') ?? 0,
-            'date' =>  $this->request->getVar('date') ?? (new DateTime())->format('Y-m-d'),
-            'reason' =>  $this->request->getVar('reason') ?? '',
+            'doctor' => $doctor,
+            'appointmentId' => $appointmentId,
+            'education' => $education,
+            'schedule' => $this->request->getVar('schedule') ?? 0,
+            'date' => $this->request->getVar('date') ?? (new DateTime())->format('Y-m-d'),
+            'reason' => $this->request->getVar('reason') ?? '',
         ];
 
         $schedules = $this->doctorScheduleModel
@@ -322,7 +323,7 @@ class AppointmentController extends BaseController
 
     public function previewDocument($filename, $user_id)
     {
-        $filePath = WRITEPATH . 'uploads/' . 'patients/'  . $user_id . '/' . 'documents' . '/' . $filename;
+        $filePath = WRITEPATH . 'uploads/' . 'patients/' . $user_id . '/' . 'documents' . '/' . $filename;
         if (!is_file($filePath)) {
             return redirect()->back()->with('error', 'File not found.');
         }

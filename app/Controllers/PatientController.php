@@ -34,7 +34,7 @@ class PatientController extends BaseController
 
         $appointments = $this->appointmentModel->getUpcomingAppointmentPatient($patientId);
 
-        $histories = $this->historyModel->getHistory();
+        $histories = $this->historyModel->getHistory($patientId);
 
         $data = [
             'appointments' => $appointments,
@@ -43,4 +43,33 @@ class PatientController extends BaseController
 
         return view('page/user/v_user_dashboard_patient', $data);
     }
+
+    public function viewMedicalDocument($historyId)
+    {
+        $patientId = $this->patientModel->where('user_id', user_id())->first()->id;
+
+        $document = $this->historyModel
+            ->where('patient_id', $patientId)
+            ->where('id', $historyId)
+            ->first();
+
+        // dd($document);
+
+        if (!$document || empty($document->documents)) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('Medical document not found.');
+        }
+
+        $pathDocument = WRITEPATH . ltrim($document->documents, '/');
+
+        if (!file_exists($pathDocument)) {
+            throw new \CodeIgniter\Exceptions\PageNotFoundException('File not found.');
+        }
+
+        return response()
+            ->setHeader('Content-Type', 'application/pdf')
+            ->setHeader('Content-Disposition', 'inline; filename="' . basename($document->documents) . '"')
+            ->setBody(file_get_contents($pathDocument));
+    }
+
+
 }

@@ -72,11 +72,12 @@ class HistoryModel extends Model
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    public function getHistory()
+    public function getHistory($id)
     {
         return $this->select('histories.id as historyId,
         histories.notes as notes,
         histories.prescriptions as prescriptions,
+        histories.documents as documents,
         appointments.date as date,
         appointments.status as status,
         appointments.reason_for_visit as reason,
@@ -84,6 +85,7 @@ class HistoryModel extends Model
         doctors.last_name as lastName')
             ->join('appointments', 'appointments.id = histories.appointment_id', 'left')
             ->join('doctors', 'appointments.doctor_id = doctors.id', 'left')
+            ->where('appointments.patient_id', $id)
             ->findAll(4);
     }
 }

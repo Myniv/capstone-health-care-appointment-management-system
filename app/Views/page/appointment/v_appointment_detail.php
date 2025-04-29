@@ -10,12 +10,12 @@
 
   use Config\Roles;
 
-  if (session('message')) : ?>
+  if (session('message')): ?>
     <div class="alert alert-error alert-soft mb-4">
       <?= session('message') ?>
     </div>
   <?php endif ?>
-  <?php if (session('success')) : ?>
+  <?php if (session('success')): ?>
     <div class="alert alert-success alert-soft mb-4">
       <?= session('success') ?>
     </div>
@@ -27,7 +27,8 @@
           <div class="flex gap-4">
             <div class="avatar">
               <div class="w-24 rounded-full">
-                <img src="<?= base_url('profile-picture?path=' . $doctor->profile_picture); ?>" alt="Profile Picture <?= $doctor->first_name . ' ' . $doctor->last_name; ?>">
+                <img src="<?= base_url('profile-picture?path=' . $doctor->profile_picture); ?>"
+                  alt="Profile Picture <?= $doctor->first_name . ' ' . $doctor->last_name; ?>">
               </div>
             </div>
             <div class="">
@@ -43,13 +44,8 @@
               <?php foreach ($education as $row): ?>
                 <li class="flex items-center space-x-4">
                   <div class="timeline-start self-center flex items-center justify-center">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      class="h-5 w-5">
-                      <path
-                        fill-rule="evenodd"
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+                      <path fill-rule="evenodd"
                         d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
                         clip-rule="evenodd" />
                     </svg>
@@ -72,7 +68,8 @@
             <div class="card card-border alert alert-warning alert-soft w-full h-full">
               <div class="card-body items-center text-center">
                 <h2 class="card-title font-bold">Notice</h2>
-                You can CANCEL or RESCHEDULE your appointment up to <span class="font-bold text-xl text-red-700">3 days before</span> the scheduled date.
+                You can CANCEL or RESCHEDULE your appointment up to <span class="font-bold text-xl text-red-700">3 days
+                  before</span> the scheduled date.
                 <br>
                 Cancellations are not allowed within 3 days of the appointment.
                 <div class="card-actions justify-end">
@@ -119,9 +116,12 @@
         Kelurahan Sukamaju, Kecamatan Serpong
         Tangerang Selatan, Banten 15310 </span>
       <span>Telepon: (021) 555-7283</span>
-      <a href="<?= site_url('documents/' . $appointment->documents . '/' . $appointment->patientUserId) ?>" target="_blank" class="btn btn-outline btn-info w-fit">
-        Preview Document
-      </a>
+      <?php if (!empty($appointment->documents)): ?>
+        <a href="<?= site_url('documents/' . $appointment->documents . '/' . $appointment->patientUserId) ?>"
+          target="_blank" class="btn btn-outline btn-info w-fit">
+          Preview Document
+        </a>
+      <?php endif ?>
     </div>
 
   </div>
