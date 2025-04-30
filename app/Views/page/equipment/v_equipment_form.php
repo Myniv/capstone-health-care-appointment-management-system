@@ -2,6 +2,9 @@
 
 <?= $this->section('content'); ?>
 <div class="container mx-auto mt-4">
+<div class="mb-4">
+        <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+    </div>
     <h2 class="text-2xl font-bold mb-4"><?= isset($equipment) ? 'Edit Equipment' : 'Add Equipment'; ?></h2>
 
     <form

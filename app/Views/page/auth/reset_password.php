@@ -3,6 +3,9 @@
 <?= $this->section('content') ?>
 
 <div class="w-full max-w-md bg-base-100 p-6 rounded-lg shadow-md">
+    <div class="mb-4">
+        <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+    </div>
     <h2 class="text-2xl font-bold text-center mb-4"><?= lang('Auth.resetYourPassword') ?></h2>
 
     <?= view('Myth\Auth\Views\_message_block') ?>

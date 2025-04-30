@@ -2,6 +2,9 @@
 <?= $this->section('content'); ?>
 
 <div class="container mx-auto mt-4">
+  <div class="mb-4">
+    <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+  </div>
   <h2 class="text-2xl font-bold mb-4"><?= isset($education) ? 'Edit' : 'Add'; ?> Education</h2>
 
   <?php if (session('errors')): ?>
@@ -75,10 +78,10 @@
         <input type="text" name="year" placeholder="<?= date("Y"); ?>"
           class="input input-bordered w-full <?= session('errors.year') ? 'input-error' : '' ?>"
           value="<?= old('year', $education->year ?? '') ?>" data-pristine-required
-          data-pristine-required-message="Year must be filled."
-          data-pristine-type="number" data-pristine-type-message="Year cant be string."
-          data-pristine-maxlength="4" data-pristine-maxlength-message="Year must be 4 character."
-          data-pristine-minlength="4" data-pristine-minlength-message="Year must be 4 character.">
+          data-pristine-required-message="Year must be filled." data-pristine-type="number"
+          data-pristine-type-message="Year cant be string." data-pristine-maxlength="4"
+          data-pristine-maxlength-message="Year must be 4 character." data-pristine-minlength="4"
+          data-pristine-minlength-message="Year must be 4 character.">
         <div class="text-error text-sm"><?= session('errors.year') ?? '' ?></div>
       </div>
     </div>

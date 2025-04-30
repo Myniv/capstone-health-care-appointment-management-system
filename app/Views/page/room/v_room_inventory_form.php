@@ -2,6 +2,10 @@
 
 <?= $this->section('content'); ?>
 <div class="container mx-auto mt-4">
+    <div class="mb-4">
+        <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+    </div>
+
     <h2 class="text-2xl font-bold mb-4"><?= isset($room_inventory) ? 'Edit Room Inventory' : 'Add Room Inventory'; ?>
     </h2>
 
@@ -22,7 +26,7 @@
                             <option value="<?= $inventory->id ?>" data-id="<?= $inventory->id ?>"
                                 data-name="<?= $inventory->name ?>" data-serial_number="<?= $inventory->serial_number ?>"
                                 <?= $inventory->status === 'Available' ? '' : 'disabled' ?>>
-                            <?= $inventory->serial_number ?> - <?= $inventory->name ?> (<?= $inventory->status ?>)
+                                <?= $inventory->serial_number ?> - <?= $inventory->name ?> (<?= $inventory->status ?>)
                             </option>
                         <?php endif; ?>
                     <?php endforeach; ?>

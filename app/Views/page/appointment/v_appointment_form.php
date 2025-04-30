@@ -3,6 +3,9 @@
 <?= $this->section('content'); ?>
 <div class="container mx-auto mt-4">
   <!-- <h2 class="text-2xl font-bold mb-4"></h2> -->
+  <div class="mb-4">
+        <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+    </div>
   <h2 class="text-2xl font-bold mb-4">Create Appointment</h2>
 
   <?php if (session('errors')) : ?>
