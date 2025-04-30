@@ -49,6 +49,10 @@ class DoctorScheduleController extends BaseController
             'baseUrl' => base_url('admin/doctor_schedule'),
         ];
 
+        if (!cache()->get("doctor_schedule")) {
+            cache()->save("doctor_schedule", $data['doctor_schedule'], 3600);
+        }
+
         return view('page/doctor_schedule/v_doctor_schedule_list', $data);
     }
 
@@ -81,6 +85,8 @@ class DoctorScheduleController extends BaseController
                 // Pass error message and old input back to the form
                 return redirect()->back()->withInput()->with('error', $result['error']);
             }
+
+            cache()->delete("doctor_schedule");
 
             return redirect()->to(base_url('admin/doctor-schedule'))->with('success', 'Data Berhasil Ditambahkan');
         }
@@ -117,6 +123,8 @@ class DoctorScheduleController extends BaseController
             // Pass error message and old input back to the form
             return redirect()->back()->withInput()->with('error', $result['error']);
         }
+
+        cache()->delete("doctor_schedule");
 
         return redirect()->to(base_url('admin/doctor-schedule'))->with('success', 'Data Berhasil Ditambahkan');
     }
@@ -215,6 +223,8 @@ class DoctorScheduleController extends BaseController
     public function delete($id)
     {
         $this->doctorScheduleModel->delete($id);
+
+        cache()->delete("doctor_schedule");
         return redirect()->to(base_url('admin/doctor-schedule'))->with('success', 'Data Berhasil Dihapus');
     }
 }

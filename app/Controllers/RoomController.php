@@ -48,6 +48,10 @@ class RoomController extends BaseController
             'baseUrl' => base_url('admin/room'),
         ];
 
+        if (!cache()->get("room")) {
+            cache()->save("room", $data['rooms'], 3600);
+        }
+
         return view('page/room/v_room_list', $data);
     }
 
@@ -67,6 +71,8 @@ class RoomController extends BaseController
         if (!$this->roomModel->save($data)) {
             return redirect()->back()->withInput()->with('errors', $this->roomModel->errors());
         }
+
+        cache()->delete("room");
 
         return redirect()->to(base_url('admin/room'))->with('success', 'Data berhasil disimpan.');
     }
@@ -243,12 +249,17 @@ class RoomController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->roomModel->errors());
         }
 
+        cache()->delete("room");
+
         return redirect()->to(base_url('admin/room'))->with('success', 'Data berhasil disimpan.');
     }
 
     public function delete($id)
     {
         $this->roomModel->delete($id);
+
+        cache()->delete("room");
+
         return redirect()->to(base_url('admin/room'))->with('success', 'Data berhasil dihapus.');
     }
 

@@ -36,6 +36,10 @@ class InventoryController extends BaseController
             'baseUrl' => base_url('admin/inventory'),
         ];
 
+        if (!cache()->get("inventory")) {
+            cache()->save("inventory", $data['inventories'], 3600);
+        }
+
         return view('page/inventory/v_inventory_list', $data);
     }
 
@@ -55,6 +59,8 @@ class InventoryController extends BaseController
         if (!$this->inventoryModel->save($data)) {
             return redirect()->back()->withInput()->with('errors', $this->inventoryModel->errors());
         }
+
+        cache()->delete("inventory");
 
         return redirect()->to(base_url('admin/inventory'))->with('success', 'Data berhasil disimpan.');
     }
@@ -81,12 +87,15 @@ class InventoryController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->inventoryModel->errors());
         }
 
+        cache()->delete("inventory");
+
         return redirect()->to(base_url('admin/inventory'))->with('success', 'Data berhasil disimpan.');
     }
 
     public function delete($id)
     {
         $this->inventoryModel->delete($id);
+        cache()->delete("inventory");
         return redirect()->to(base_url('admin/inventory'))->with('success', 'Data berhasil dihapus.');
     }
 }

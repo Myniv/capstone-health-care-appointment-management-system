@@ -33,6 +33,10 @@ class DoctorCategoryController extends BaseController
             'baseUrl' => base_url('admin/doctor-category'),
         ];
 
+        if (!cache()->get("doctor_category")) {
+            cache()->save("doctor_category", $data['doctor_category'], 3600);
+        }
+
         return view('page/doctor_category/v_doctor_category_list', $data);
     }
 
@@ -51,6 +55,8 @@ class DoctorCategoryController extends BaseController
         if (!$this->doctorCategoryModel->save($data)) {
             return redirect()->back()->withInput()->with('errors', $this->doctorCategoryModel->errors());
         }
+
+        cache()->delete("doctor_category");
 
         return redirect()->to('admin/doctor-category')->with('success', 'Doctor Category Created Successfully');
     }
@@ -77,12 +83,16 @@ class DoctorCategoryController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->doctorCategoryModel->errors());
         }
 
+        cache()->delete("doctor_category");
+
         return redirect()->to('admin/doctor-category')->with('success', 'Doctor Category Updated Successfully');
     }
 
     public function delete($id)
     {
         $this->doctorCategoryModel->delete($id);
+
+        cache()->delete("doctor_category");
         return redirect()->to('admin/doctor-category')->with('success', 'Doctor Category Deleted Successfully');
     }
 }

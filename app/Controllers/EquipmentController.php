@@ -37,6 +37,10 @@ class EquipmentController extends BaseController
             'baseUrl' => base_url('admin/equipment'),
         ];
 
+        if (!cache()->get("equipment")) {
+            cache()->save("equipment", $data['equipments'], 3600);
+        }
+
         return view('page/equipment/v_equipment_list', $data);
     }
 
@@ -59,6 +63,8 @@ class EquipmentController extends BaseController
         if (!$this->equipmentModel->save($dataEquipment)) {
             return redirect()->back()->withInput()->with('errors', $this->equipmentModel->errors());
         }
+
+        cache()->delete("equipment");
 
         return redirect()->to(base_url('admin/equipment'))->with('success', 'Data berhasil disimpan.');
 
@@ -89,12 +95,16 @@ class EquipmentController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->equipmentModel->errors());
         }
 
+        cache()->delete("equipment");
+
         return redirect()->to(base_url('admin/equipment'))->with('success', 'Data berhasil disimpan.');
     }
 
     public function delete($id)
     {
         $this->equipmentModel->delete($id);
+
+        cache()->delete("equipment");
         return redirect()->to(base_url('admin/equipment'))->with('success', 'Data berhasil dihapus.');
     }
 }

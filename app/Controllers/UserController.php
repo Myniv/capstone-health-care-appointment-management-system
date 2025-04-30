@@ -64,6 +64,10 @@ class UserController extends BaseController
             'baseUrl' => base_url('admin/users'),
         ];
 
+        if (!cache()->get("user-list")) {
+            cache()->save("user-list", $data['users'], 3600);
+        }
+
         return view('page/user/v_user_list', $data);
     }
 
@@ -136,7 +140,7 @@ class UserController extends BaseController
             'address' => 'required|max_length[500]',
             'sex' => 'required|in_list[male,female]',
             'dob' => 'required|valid_date',
-            'patient_type'=>'required',
+            'patient_type' => 'required',
             'profile_picture' => [
                 'label' => 'Gambar',
                 'rules' => [
@@ -208,6 +212,8 @@ class UserController extends BaseController
         }
         // dd($patientData);
         $this->patientModel->save($patientData);
+
+        cache()->delete("user-list");
 
         return redirect()->to('admin/users')->with('message', 'User Created Successfully');
     }
@@ -325,6 +331,8 @@ class UserController extends BaseController
             }
         }
 
+        cache()->delete("user-list");
+
         return redirect()->to('admin/users')->with('message', 'User Updated Successfully');
     }
 
@@ -350,6 +358,8 @@ class UserController extends BaseController
         }
 
         $this->userModel->delete($user->id);
+
+        cache()->delete("user-list");
 
         return redirect()->to('admin/users')->with('message', 'User Deleted Successfully');
     }
@@ -470,6 +480,8 @@ class UserController extends BaseController
                 }
             }
         }
+
+        cache()->delete("user-list");
 
         return redirect()->to('admin/users')->with('message', 'User Created Successfully');
     }
@@ -608,6 +620,7 @@ class UserController extends BaseController
             }
         }
 
+        cache()->delete("user-list");
 
         return redirect()->to('admin/users')->with('message', 'User Updated Successfully');
     }
@@ -658,6 +671,9 @@ class UserController extends BaseController
         }
 
         $this->userModel->delete($user->id);
+        
+        cache()->delete("user-list");
+
         return redirect()->to('admin/users')->with('message', 'User Deleted Successfully');
     }
 

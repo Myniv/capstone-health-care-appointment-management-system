@@ -34,6 +34,10 @@ class SettingController extends BaseController
             'baseUrl' => base_url('admin/setting'),
         ];
 
+        if (!cache()->get("setting")) {
+            cache()->save("setting", $data['settings'], 3600);
+        }
+
         return view('page/setting/v_setting_list', $data);
     }
 
@@ -53,6 +57,8 @@ class SettingController extends BaseController
         if (!$this->settingModel->save($data)) {
             return redirect()->back()->withInput()->with('errors', $this->settingModel->errors());
         }
+
+        cache()->delete("setting");
 
         return redirect()->to(base_url('admin/setting'))->with('success', 'Data berhasil disimpan.');
     }
@@ -81,12 +87,17 @@ class SettingController extends BaseController
             return redirect()->back()->withInput()->with('errors', $this->settingModel->errors());
         }
 
+        cache()->delete("setting");
+
         return redirect()->to(base_url('admin/setting'))->with('success', 'Data berhasil disimpan.');
     }
 
     public function delete($id)
     {
         $this->settingModel->delete($id);
+
+        cache()->delete("setting");
+
         return redirect()->to(base_url('admin/setting'))->with('success', 'Data berhasil dihapus.');
     }
 }
