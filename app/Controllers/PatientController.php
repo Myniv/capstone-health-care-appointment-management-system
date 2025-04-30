@@ -34,7 +34,7 @@ class PatientController extends BaseController
 
         $appointments = $this->appointmentModel->getUpcomingAppointmentPatient($patientId);
 
-        $histories = $this->historyModel->getHistory($patientId);
+        $histories = $this->historyModel->getHistoryForDashboard($patientId);
 
         $data = [
             'appointments' => $appointments,

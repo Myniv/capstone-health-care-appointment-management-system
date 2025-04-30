@@ -69,10 +69,12 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->match(['get', 'post'], 'setting/create', [SettingController::class, 'create']);
     $routes->match(['get', 'put'], 'setting/update/(:num)', [SettingController::class, 'update']);
     $routes->delete('setting/delete/(:num)', [SettingController::class, 'delete/$1']);
+
+    $routes->get('appointment', [AppointmentController::class, 'index']);
 });
 
 // Doctor Routes
-$routes->group('doctor', [], function ($routes) {
+$routes->group('doctor', ['filter' => 'role:' . Roles::DOCTOR], function ($routes) {
     $routes->get('dashboard', [DoctorController::class, 'dashboard']);
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
     $routes->match(['get', 'post'], 'absent/create', [DoctorController::class, 'createDoctorAbsent']);
@@ -83,8 +85,11 @@ $routes->group('doctor', [], function ($routes) {
         $routes->match(['get', 'put'], 'update/(:num)', [EducationController::class, 'update']);
         $routes->delete('delete/(:num)/(:num)', [EducationController::class, 'delete/$1/$2']);
     });
+
+    $routes->get('appointment', [AppointmentController::class, 'index']);
 });
 
+// Report Routes
 $routes->group('report', [], function ($routes) {
     $routes->get('user', [ReportController::class, 'getReportUserPdf'], ['filter' => 'role:' . Roles::ADMIN]);
     $routes->get('user/pdf', [ReportController::class, 'reportUserPdf'], ['filter' => 'role:' . Roles::ADMIN]);
@@ -102,20 +107,22 @@ $routes->group('report', [], function ($routes) {
     $routes->get('appointment/pdf', [ReportController::class, 'reportAppointmentPdf'], [
         'filter' => 'role:' . Roles::ADMIN . ',' . Roles::DOCTOR
     ]);
-
 });
 
-// Appointment
-$routes->group('', [], function ($routes) {
+// Patient Routes
+$routes->group('', ['filter' => 'role:' . Roles::PATIENT], function ($routes) {
     $routes->get('/dashboard', [PatientController::class, 'dashboard']);
-    $routes->get('appointment/detail/(:num)', [AppointmentController::class, 'detail']);
+
     $routes->get('appointment', [AppointmentController::class, 'index']);
+    $routes->get('appointment/detail/(:num)', [AppointmentController::class, 'detail']);
     $routes->get('appointment/create', [AppointmentController::class, 'createAppointment']);
     $routes->post('appointment/create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
     $routes->get('appointment/create/form', [AppointmentController::class, 'appointmentForm']);
     $routes->post('appointment/cancel', [AppointmentController::class, 'cancelAppointment']);
     $routes->get('appointment/reschedule/form', [AppointmentController::class, 'appointmentRescheduleForm']);
     $routes->post('appointment/reschedule/submit', [AppointmentController::class, 'rescheduleAppointmentSubmit']);
+
+    $routes->get('history/document/(:num)', [PatientController::class, 'viewMedicalDocument/$1']);
 });
 
 //Auth routes
@@ -141,5 +148,3 @@ $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
     $routes->get('profile-picture', [UserController::class, 'profilePicture']);
     $routes->get('documents/(:segment)/(:num)', [AppointmentController::class, 'previewDocument']);
 });
-
-$routes->get('history/document/(:num)', [PatientController::class, 'viewMedicalDocument/$1']);

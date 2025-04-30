@@ -70,7 +70,7 @@ class ReportController extends BaseController
         helper('tcpdf');
         $role = $this->request->getGet("role");
 
-        $pdf = initTcpdf(user()->username, user()->username, "User Reports", "User Reports", );
+        $pdf = initTcpdf(user()->username, user()->username, "User Reports", "User Reports");
 
         $datas = $this->userModel->getUserByRole($role);
         // dd($datas);
@@ -215,7 +215,7 @@ class ReportController extends BaseController
 
         $date = $this->request->getGet("date");
 
-        $pdf = initTcpdf(user()->username, user()->username, "Appointment Reports", "Appointment Reports", );
+        $pdf = initTcpdf(user()->username, user()->username, "Appointment Reports", "Appointment Reports");
 
         $datas = $this->appointmentModel->getAllAppointmentsDoctor($doctor, $date);
         // dd($datas);
@@ -303,7 +303,6 @@ class ReportController extends BaseController
                 "date" => $this->request->getGet("date"),
                 "page" => $this->request->getGet("page_histories"),
             ]);
-
         }
         $doctors = $this->doctorModel->findAll();
 
@@ -328,11 +327,10 @@ class ReportController extends BaseController
             $doctor = $this->request->getGet("doctor");
         } else if (in_groups(Roles::DOCTOR)) {
             $doctor = $this->doctorModel->where('user_id', user()->id)->first()->id;
-        }
-        ;
+        };
         $date = $this->request->getGet("date");
 
-        $pdf = initTcpdf(user()->username, user()->username, "History Reports", "History Reports", );
+        $pdf = initTcpdf(user()->username, user()->username, "History Reports", "History Reports");
 
         $datas = $this->historyModel->getAllHistoryDoctorPatient($doctor, $date);
 
@@ -380,8 +378,8 @@ class ReportController extends BaseController
             $html .= '
            <tr>
             <td style="text-align:center;">' . $no . '</td>
-            <td>' . $data->doctor_firstName . ' ' . $data->doctor_lastName . '</td>
-            <td>' . $data->patient_firstName . ' ' . $data->patient_lastName . '</td>
+            <td>' . $data->doctorFirstName . ' ' . $data->doctorLastName . '</td>
+            <td>' . $data->patientFirstName . ' ' . $data->patientLastName . '</td>
             <td>' . $data->notes . '</td>
             <td>' . $data->prescriptions . '</td>
             <td>' . $data->documents . '</td>
