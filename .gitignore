@@ -134,3 +134,7 @@ nb-configuration.xml
 node_modules/
 public/assets/css/tailwind.css
 package-lock.json
+
+#pristsine 
+!public/assets/js/pristine/
+!public/assets/js/pristine/**
