@@ -74,7 +74,7 @@ class HistoryModel extends Model
     protected $beforeDelete = [];
     protected $afterDelete = [];
 
-    public function getHistory($id)
+    private function getHistory()
     {
         return $this->select('histories.id as historyId,
         histories.notes as notes,
@@ -83,10 +83,18 @@ class HistoryModel extends Model
         appointments.date as date,
         appointments.status as status,
         appointments.reason_for_visit as reason,
-        doctors.first_name as firstName,
-        doctors.last_name as lastName')
+        doctors.first_name as doctorFirstName,
+        doctors.last_name as doctorLastName,
+        patients.first_name as patientFirstName,
+        patients.last_name as patientLastName')
             ->join('appointments', 'appointments.id = histories.appointment_id', 'left')
             ->join('doctors', 'appointments.doctor_id = doctors.id', 'left')
+            ->join('patients', 'appointments.patient_id = patients.id', 'left');
+    }
+
+    public function getHistoryForDashboard($id)
+    {
+        return $this->getHistory()
             ->orderBy('histories.id', 'DESC')
             ->where('appointments.patient_id', $id)
             ->findAll(4);
@@ -94,36 +102,29 @@ class HistoryModel extends Model
 
     public function getSortedHistory(DataParams $params)
     {
-        $this->select('
-        patients.first_name as patientFirstName,
-        patients.last_name as patientLastName,
-        histories.id as historyId,
-        histories.notes as notes,
-        histories.prescriptions as prescription,
-        histories.documents as documents,
-        appointments.date as date,
-        appointments.status as status,
-        appointments.reason_for_visit as reason,
-        doctors.first_name as doctorFirstName,
-        doctors.last_name as doctorLastName
-        ')
-            ->join('appointments', 'appointments.id = histories.appointment_id', 'left')
-            ->join('doctors', 'appointments.doctor_id = doctors.id', 'left')
-            ->join('patients', 'appointments.patient_id = patients.id', 'left');
+        $this->getHistory();
 
         if (!empty($params->doctor)) {
             $this->where('doctors.id', $params->doctor);
         }
 
-        $allowedSort = [
-            'patient_firstName',
-            'doctor_firstName',
-            'date',
-            'status',
-            'reason'
-        ];
+        if (!empty($params->search)) {
+            $this->groupStart()
+                ->like('histories.notes', $params->search, 'both', null, true)
+                ->orLike('histories.prescriptions', $params->search, 'both', null, true)
+                ->orLike('appointments.reason_for_visit', $params->search, 'both', null, true)
+                ->orLike('doctors.first_name', $params->search, 'both', null, true)
+                ->orLike('doctors.last_name', $params->search, 'both', null, true)
+                ->groupEnd();
+        }
 
-        $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'date';
+        if (!empty($params->date)) {
+            $this->where("TO_CHAR(date, 'YYYY-MM-DD') LIKE", "%{$params->date}%");
+        }
+
+        $allowedSort = ['historyId'];
+
+        $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'historyId';
         $order = ($params->order === 'desc') ? 'DESC' : 'ASC';
 
         $this->orderBy($sort, $order);
@@ -137,22 +138,7 @@ class HistoryModel extends Model
 
     public function getAllHistoryDoctorPatient($doctorId, $date)
     {
-        $this->select('
-        patients.first_name as patient_firstName,
-        patients.last_name as patient_lastName,
-        histories.id as historyId,
-        histories.notes as notes,
-        histories.prescriptions as prescriptions,
-        histories.documents as documents,
-        appointments.date as date,
-        appointments.status as status,
-        appointments.reason_for_visit as reason,
-        doctors.first_name as doctor_firstName,
-        doctors.last_name as doctor_lastName
-        ')
-            ->join('appointments', 'appointments.id = histories.appointment_id', 'left')
-            ->join('doctors', 'appointments.doctor_id = doctors.id', 'left')
-            ->join('patients', 'appointments.patient_id = patients.id', 'left');
+        $this->getHistory();
 
         if (!empty($date)) {
             $this->where("TO_CHAR(date, 'YYYY-MM-DD') LIKE", "%{$date}%");

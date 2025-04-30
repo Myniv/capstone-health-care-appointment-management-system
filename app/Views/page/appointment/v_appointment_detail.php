@@ -4,7 +4,7 @@
 <div class="container mx-auto mt-4">
   <div class="flex gap-4 items-center mb-4">
     <h2 class="text-2xl font-bold">Appointment Details</h2>
-    <div class="badge badge-warning"><?= $appointment->status; ?></div>
+    <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $appointment->status]) ?>
   </div>
   <?php
 

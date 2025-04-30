@@ -1,4 +1,5 @@
 <?= $this->extend('layouts/admin_layout');
+
 use Config\Roles; ?>
 
 <?= $this->section('content'); ?>
@@ -27,8 +28,8 @@ use Config\Roles; ?>
                 </div>
 
                 <a href="<?= base_url('report/history/pdf') . '?' . http_build_query([
-                    'doctor' => $params->doctor,
-                ]) ?>" class="btn btn-success whitespace-nowrap mt-4 px-4" target="_blank">
+                                'doctor' => $params->doctor,
+                            ]) ?>" class="btn btn-success whitespace-nowrap mt-4 px-4" target="_blank">
                     <i class="bi bi-file-earmark-pdf-fill me-1"></i> Export PDF
                 </a>
             </div>
@@ -70,7 +71,7 @@ use Config\Roles; ?>
                         <td><?= esc($history->doctorFirstName . ' ' . $history->doctorLastName ?? '-') ?></td>
                         <td><?= esc($history->patientFirstName . ' ' . $history->patientLastName ?? '-') ?></td>
                         <td><?= esc($history->notes ?? '-') ?></td>
-                        <td><?= esc($history->prescription ?? '-') ?></td>
+                        <td><?= esc($history->prescriptions ?? '-') ?></td>
                         <td><?= esc($history->documents ?? '-') ?></td>
                     </tr>
                 <?php endforeach; ?>

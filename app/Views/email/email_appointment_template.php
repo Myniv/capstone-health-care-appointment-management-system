@@ -56,7 +56,6 @@
             <p>We look forward to seeing you!</p>
             <p>Sincerely,<br>Health Care</p>
         </div>
-
         <div class="footer">
             <p>This email is automatically sent. Please do not reply to this email.</p>
             <p>Copyright &copy; <?= date('Y') ?> Health Care</p>
