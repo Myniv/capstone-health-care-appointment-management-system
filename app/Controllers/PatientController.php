@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Controllers\BaseController;
+use App\Libraries\DataParams;
 use App\Models\AppointmentModel;
 use App\Models\HistoryModel;
 use App\Models\PatientModel;
@@ -42,6 +43,34 @@ class PatientController extends BaseController
         ];
 
         return view('page/user/v_user_dashboard_patient', $data);
+    }
+
+    public function historyList()
+    {
+        $patient = $this->patientModel->getPatientByUserId(user_id());
+
+        $params = new DataParams([
+            "doctor" => $this->request->getGet("doctor"),
+            "date" => $this->request->getGet("date"),
+            "search" => $this->request->getGet("search"),
+            // "sort" => $this->request->getGet("sort"),
+            // "order" => $this->request->getGet("order"),
+            "perPage" => 4,
+            "page" => $this->request->getGet("page_histories"),
+        ]);
+
+        $result = $this->historyModel->getSortedHistory($params);
+
+        $data = [
+            'histories' => $result['histories'],
+            'pager' => $result['pager'],
+            'total' => $result['total'],
+            'params' => $params,
+            'baseUrl' => base_url('history'),
+            'patient' => $patient
+        ];
+
+        return view('page/patient/v_history_list', $data);
     }
 
     public function viewMedicalDocument($historyId)

@@ -59,7 +59,10 @@
 
         <div class="card border bg-primary-content">
             <div class="card-body">
-                <h3 class="card-title">Medical History</h3>
+                <div class="flex justify-between">
+                    <h3 class="card-title">Medical History</h3>
+                    <a class="p-2 rounded-md text-sm text-primary duration-300 hover:bg-primary hover:text-base-100" href="profile/history">View All</a>
+                </div>
                 <?php if (!empty($histories)): ?>
                     <?php foreach ($histories as $history): ?>
                         <ul class="menu border rounded-box bg-base-100 w-full">
@@ -175,7 +178,7 @@
                 modal.querySelector('.modal-doctor-name').textContent = `${firstName} ${lastName}`;
                 modal.querySelector('.modal-date').textContent = formattedDate;
                 modal.querySelector('.modal-status').textContent = formattedStatus;
-                modal.querySelector('.modal-id').href = `history/document/${id}`;
+                modal.querySelector('.modal-id').href = `profile/history/document/${id}`;
 
                 // show modal
                 modal.showModal();

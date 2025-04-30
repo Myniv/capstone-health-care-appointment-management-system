@@ -122,7 +122,8 @@ $routes->group('', ['filter' => 'role:' . Roles::PATIENT], function ($routes) {
     $routes->get('appointment/reschedule/form', [AppointmentController::class, 'appointmentRescheduleForm']);
     $routes->post('appointment/reschedule/submit', [AppointmentController::class, 'rescheduleAppointmentSubmit']);
 
-    $routes->get('history/document/(:num)', [PatientController::class, 'viewMedicalDocument/$1']);
+    $routes->get('profile/history', [PatientController::class, 'historyList']);
+    $routes->get('profile/history/document/(:num)', [PatientController::class, 'viewMedicalDocument/$1']);
 });
 
 //Auth routes

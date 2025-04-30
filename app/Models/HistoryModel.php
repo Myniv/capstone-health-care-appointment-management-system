@@ -108,15 +108,23 @@ class HistoryModel extends Model
             $this->where('doctors.id', $params->doctor);
         }
 
-        $allowedSort = [
-            'patient_firstName',
-            'doctor_firstName',
-            'date',
-            'status',
-            'reason'
-        ];
+        if (!empty($params->search)) {
+            $this->groupStart()
+                ->like('histories.notes', $params->search, 'both', null, true)
+                ->orLike('histories.prescriptions', $params->search, 'both', null, true)
+                ->orLike('appointments.reason_for_visit', $params->search, 'both', null, true)
+                ->orLike('doctors.first_name', $params->search, 'both', null, true)
+                ->orLike('doctors.last_name', $params->search, 'both', null, true)
+                ->groupEnd();
+        }
 
-        $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'date';
+        if (!empty($params->date)) {
+            $this->where("TO_CHAR(date, 'YYYY-MM-DD') LIKE", "%{$params->date}%");
+        }
+
+        $allowedSort = ['historyId'];
+
+        $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'historyId';
         $order = ($params->order === 'desc') ? 'DESC' : 'ASC';
 
         $this->orderBy($sort, $order);
