@@ -41,7 +41,6 @@
   </form>
 
   <!-- Table -->
-
   <?php
 
   use Config\Roles;
@@ -57,75 +56,68 @@
                 ID <?= $params->isSortedBy('id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
               </a>
             </th>
-            <th>
-              Doctor
-            </th>
-            <th>
-              Patient
-            </th>
-            <th>
-              Room
-            </th>
-            <th>
-              Time
-            </th>
-            <th>
-              Status
-            </th>
+            <th>Doctor</th>
+            <th>Patient</th>
+            <th>Room</th>
+            <th>Time</th>
+            <th>Status</th>
           </tr>
         </thead>
         <tbody>
-          <?php foreach ($appointment as $row): ?>
-            <tr>
-              <td><?= $row->id ?></td>
-              <td><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></td>
-              <td><?= $row->patientFirstName ?> <?= $row->patientLastName ?></td>
-              <td><?= $row->roomName ?></td>
-              <td><?= date('g:i A', strtotime($row->startTime)) ?> -
-                <?= date('g:i A', strtotime($row->endTime)) ?></td>
-              <td>
-                <div class="badge badge-warning"><?= $row->status ?></div>
-              </td>
-              <td>
-                <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-primary btn-sm">Details</a>
-              </td>
-            </tr>
-          <?php endforeach; ?>
+          <?php if (!empty($appointment)): ?>
+            <?php foreach ($appointment as $row): ?>
+              <tr>
+                <td><?= $row->id ?></td>
+                <td><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></td>
+                <td><?= $row->patientFirstName ?> <?= $row->patientLastName ?></td>
+                <td><?= $row->roomName ?></td>
+                <td><?= date('g:i A', strtotime($row->startTime)) ?> -
+                  <?= date('g:i A', strtotime($row->endTime)) ?></td>
+                <td>
+                  <div class="badge badge-warning"><?= $row->status ?></div>
+                </td>
+                <td>
+                  <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-primary btn-sm">Details</a>
+                </td>
+              </tr>
+            <?php endforeach; ?>
+          <?php endif; ?>
         </tbody>
       </table>
     </div>
   <?php else: ?>
     <div class="grid grid-cols-3 gap-4">
-      <?php foreach ($appointment as $row): ?>
-        <div class="card border bg-base-100 w-full">
-          <div class="card-body">
-            <h2 class="card-title">
-              <?php if (in_groups(Roles::PATIENT)): ?>
-                <p><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></p>
-              <?php else: ?>
-                <p><?= $row->patientFirstName ?> <?= $row->patientLastName ?></p>
-              <?php endif; ?>
-            </h2>
-            <p><?= date('g:i A', strtotime($row->startTime)) ?> -
-              <?= date('g:i A', strtotime($row->endTime)) ?></p>
-            <p><?= date('F j, Y', strtotime($row->date)) ?></p>
-            <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $row->status]) ?>
+      <?php if (!empty($appointment)): ?>
+        <?php foreach ($appointment as $row): ?>
+          <div class="card border bg-base-100 w-full">
+            <div class="card-body">
+              <h2 class="card-title">
+                <?php if (in_groups(Roles::PATIENT)): ?>
+                  <p><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></p>
+                <?php elseif (in_groups(Roles::DOCTOR)): ?>
+                  <p><?= $row->patientFirstName ?> <?= $row->patientLastName ?></p>
+                <?php endif; ?>
+              </h2>
+              <p><?= date('g:i A', strtotime($row->startTime)) ?> -
+                <?= date('g:i A', strtotime($row->endTime)) ?></p>
+              <p><?= date('F j, Y', strtotime($row->date)) ?></p>
+              <div class="badge badge-warning"><?= ucfirst($row->status); ?></div>
 
-
-            <div class="card-actions justify-end">
-              <?php if (in_groups(Roles::PATIENT)): ?>
-                <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-soft btn-sm">
-                  Details
-                </a>
-              <?php else: ?>
-                <a href="#modal-form-history" data-id="<?= $row->id; ?>" class="btn btn-soft btn-sm">
-                  Manage
-                </a>
-              <?php endif; ?>
+              <div class="card-actions justify-end">
+                <?php if (in_groups(Roles::PATIENT)): ?>
+                  <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-primary btn-sm">
+                    Details
+                  </a>
+                <?php elseif (in_groups(Roles::DOCTOR)): ?>
+                  <a href="#modal-form-history" data-id="<?= $row->id; ?>" class="btn btn-primary btn-sm">
+                    Manage
+                  </a>
+                <?php endif; ?>
+              </div>
             </div>
           </div>
-        </div>
-      <?php endforeach; ?>
+        <?php endforeach; ?>
+      <?php endif; ?>
     </div>
 
     <div class="modal" role="dialog" id="modal-form-history">
@@ -134,10 +126,6 @@
           action="<?= base_url('doctor/history/create') ?>"
           method="post" enctype="multipart/form-data" id="formData" novalidate>
           <?= csrf_field() ?>
-
-          <?php if (isset($history)): ?>
-            <input type="hidden" name="_method" value="PUT">
-          <?php endif; ?>
 
           <input type="hidden" name="appointment_id" id="appointmentId">
 

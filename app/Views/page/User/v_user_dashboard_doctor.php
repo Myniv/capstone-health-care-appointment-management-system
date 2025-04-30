@@ -65,7 +65,7 @@
 
         <div class="card border bg-primary-content">
             <div class="card-body">
-                <div class="card-title">Schedule</div>
+                <div class="card-title">Doctor Schedule</div>
                 <?php if (!empty($appointments)): ?>
                     <ul class="list rounded-box border">
                         <?php $count = 1 ?>

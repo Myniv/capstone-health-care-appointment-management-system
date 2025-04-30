@@ -23,7 +23,7 @@
             <div class="card-body">
                 <div class="flex justify-between">
                     <h3 class="card-title">Upcoming Appointment</h3>
-                    <a class="btn btn-sm btn-primary" href="appointment">View All</a>
+                    <a class="p-2 rounded-md text-sm text-primary duration-300 hover:bg-primary hover:text-base-100" href="appointment">View All</a>
                 </div>
                 <?php if (!empty($appointments)): ?>
                     <?php foreach ($appointments as $appointment): ?>
@@ -44,7 +44,7 @@
                                 </div>
                             </div>
                             <div class="card-actions self-center">
-                                <a class="btn btn-soft btn-sm" href="/appointment/detail/<?= $appointment->id ?>">
+                                <a class="btn btn-ghost btn-sm" href="/appointment/detail/<?= $appointment->id ?>">
                                     Details
                                 </a>
                             </div>
@@ -59,7 +59,10 @@
 
         <div class="card border bg-primary-content">
             <div class="card-body">
-                <h3 class="card-title">Medical History</h3>
+                <div class="flex justify-between">
+                    <h3 class="card-title">Medical History</h3>
+                    <a class="p-2 rounded-md text-sm text-primary duration-300 hover:bg-primary hover:text-base-100" href="profile/history">View All</a>
+                </div>
                 <?php if (!empty($histories)): ?>
                     <?php foreach ($histories as $history): ?>
                         <ul class="menu border rounded-box bg-base-100 w-full">
@@ -71,8 +74,8 @@
                                     data-reason="<?= htmlspecialchars($history->reason); ?>"
                                     data-notes="<?= htmlspecialchars($history->notes); ?>"
                                     data-prescriptions="<?= htmlspecialchars($history->prescriptions); ?>"
-                                    data-firstName="<?= htmlspecialchars($history->firstName); ?>"
-                                    data-lastName="<?= htmlspecialchars($history->lastName); ?>"
+                                    data-firstName="<?= htmlspecialchars($history->doctorFirstName); ?>"
+                                    data-lastName="<?= htmlspecialchars($history->doctorLastName); ?>"
                                     data-date="<?= htmlspecialchars($history->date); ?>"
                                     data-status="<?= htmlspecialchars($history->status); ?>"
                                     data-documents="<?= htmlspecialchars($history->documents); ?>">
@@ -175,7 +178,7 @@
                 modal.querySelector('.modal-doctor-name').textContent = `${firstName} ${lastName}`;
                 modal.querySelector('.modal-date').textContent = formattedDate;
                 modal.querySelector('.modal-status').textContent = formattedStatus;
-                modal.querySelector('.modal-id').href = `history/document/${id}`;
+                modal.querySelector('.modal-id').href = `profile/history/document/${id}`;
 
                 // show modal
                 modal.showModal();
