@@ -13,7 +13,7 @@
     <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" />
 
     <!-- Pristine.js -->
-    <script src="<?= base_url('assets/js/pristine.js') ?>"></script>
+    <script src="<?= base_url('assets/js/pristine/dist/pristine.js') ?>" type="text/javascript"></script>
 </head>
 
 <body class="bg-base-200 min-h-screen flex flex-col" data-theme="light">

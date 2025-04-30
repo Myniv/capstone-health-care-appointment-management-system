@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="<?= base_url('assets/css/tailwind.css') ?>">
 
     <!-- Pristine.js -->
-    <script src="<?= base_url('assets/js/pristine.js') ?>"></script>
+    <script src="<?= base_url('assets/js/pristine/dist/pristine.js') ?>" type="text/javascript"></script>
 </head>
 
 <body class="flex flex-col min-h-screen bg-base-200" data-theme="light">

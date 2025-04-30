@@ -43,7 +43,7 @@ class EducationModel extends Model
         'city' => 'required',
         'study_program' => 'required',
         'degree' => 'required',
-        'year' => 'required'
+        'year' => 'required|integer|min_length[4]|max_length[4]',
     ];
     protected $validationMessages   = [
         'doctor_id' => [
@@ -63,6 +63,9 @@ class EducationModel extends Model
         ],
         'year' => [
             'required' => 'Year must be filled.',
+            'integer' => 'Year cant be string.',
+            'min_length' => 'Year must be 4 digits.',
+            'max_length' => 'Year must be 4 digits.',
         ],
     ];
     protected $skipValidation       = false;
