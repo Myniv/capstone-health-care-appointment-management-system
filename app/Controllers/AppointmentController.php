@@ -218,7 +218,7 @@ class AppointmentController extends BaseController
             'appointment_date' => $appointment_date,
             'appointment_time' => $appointment_time,
         ];
-        $email->setMessage(view('email/email_appointment_template', $data));
+        $email->setMessage(view('email/email_appointment_booking', $data));
 
         if ($email->send()) {
             return true;
