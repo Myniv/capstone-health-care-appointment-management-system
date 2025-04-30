@@ -86,8 +86,6 @@ class SendAppointmentReminders extends BaseCommand
         $email->send();
     }
 
-
-
     private function emailAppointmentTemplate($doctor, $patient, $day, $appointment)
     {
         $email = service('email');
