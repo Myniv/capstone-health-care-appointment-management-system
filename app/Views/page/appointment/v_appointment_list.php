@@ -74,7 +74,7 @@
                 <td><?= date('g:i A', strtotime($row->startTime)) ?> -
                   <?= date('g:i A', strtotime($row->endTime)) ?></td>
                 <td>
-                  <div class="badge badge-warning"><?= $row->status ?></div>
+                  <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $row->status]) ?>
                 </td>
                 <td>
                   <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-primary btn-sm">Details</a>
@@ -101,7 +101,7 @@
               <p><?= date('g:i A', strtotime($row->startTime)) ?> -
                 <?= date('g:i A', strtotime($row->endTime)) ?></p>
               <p><?= date('F j, Y', strtotime($row->date)) ?></p>
-              <div class="badge badge-warning"><?= ucfirst($row->status); ?></div>
+              <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $row->status]) ?>
 
               <div class="card-actions justify-end">
                 <?php if (in_groups(Roles::PATIENT)): ?>

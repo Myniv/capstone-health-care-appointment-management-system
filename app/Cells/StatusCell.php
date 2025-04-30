@@ -31,6 +31,6 @@ class StatusCell extends Cell
             $color =  'info';
         }
 
-        return "<div class=\"badge badge-{$color}\">{$this->status}</div>";
+        return "<div class=\"badge badge-soft badge-{$color}\">" . ucwords($this->status) . "</div>";
     }
 }

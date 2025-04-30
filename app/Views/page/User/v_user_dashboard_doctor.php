@@ -24,16 +24,14 @@
             <div class="card-body">
                 <div class="flex justify-between">
                     <h3 class="card-title">Upcoming Appointment</h3>
-                    <a class="btn btn-sm btn-primary" href="<?= base_url('appointment'); ?>">View All</a>
+                    <a class="btn btn-sm btn-primary" href="<?= base_url('doctor/appointment'); ?>">View All</a>
                 </div>
                 <?php if (!empty($appointments)): ?>
                     <ul class="list rounded-box border">
                         <?php foreach ($appointments as $appointment): ?>
                             <li class="list-row">
                                 <div class="flex flex-col items-center">
-                                    <div class="badge badge-soft badge-warning text-xs mt-2">
-                                        <?= ucwords($appointment->status); ?>
-                                    </div>
+                                    <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $appointment->status]) ?>
                                     <p class="text-primary font-semibold">
                                         <?= date('g:i A', strtotime($appointment->startTime)) ?> -
                                         <?= date('g:i A', strtotime($appointment->endTime)) ?>
