@@ -329,21 +329,22 @@ class AppointmentController extends BaseController
 
     public function appointmentRescheduleForm()
     {
+
         $appointmentId = $this->request->getVar('appointmentId');
         $doctorId = $this->request->getVar('id');
-
-
-        $appointment = $this->appointmentModel->find($appointmentId);
+        $appointment = $this->appointmentModel->where('id', $appointmentId)->first();
 
         $doctor = $this->doctorModel->getDoctorWithCategoryName($doctorId);
         $education = $this->educationModel->where('doctor_id', $doctorId)->findAll();
 
-        $datePicked = '';
+
+        $datePicked = (new DateTime())->format('Y-m-d');
         if ($this->request->getVar('date')) {
             $datePicked = $this->request->getVar('date');
         } else {
             $datePicked = (new DateTime($appointment->date))->format('Y-m-d');
         }
+
 
         $reason = '';
         if ($this->request->getVar('reason')) {
@@ -352,13 +353,14 @@ class AppointmentController extends BaseController
             $reason = $appointment->reason_for_visit;
         }
 
+
         $data = [
             'type' => 'reschedule',
             'doctor' => $doctor,
             'appointmentId' => $appointmentId,
             'education' => $education,
             'schedule' => $this->request->getVar('schedule') ?? 0,
-            'date' => $datePicked  ?? (new DateTime())->format('Y-m-d'),
+            'date' => $datePicked,
             'reason' => $reason ?? '',
         ];
 

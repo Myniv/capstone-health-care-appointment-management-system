@@ -75,12 +75,8 @@ use Config\Roles; ?>
       </div>
     </div>
   </div>
-
-
-
-
   <form
-    action="<?= $type == 'create' ? base_url('appointment/create/form') : base_url(Roles::ADMIN ? 'admin/appointment/reschedule/form' : 'appointment/reschedule/form') ?>"
+    action="<?= $type == 'create' ? base_url('appointment/create/form') : base_url(in_groups(Roles::ADMIN) ? 'admin/appointment/reschedule/form' : 'appointment/reschedule/form') ?>"
     method="get"
     enctype="multipart/form-data"
     id="appointmentForm"
@@ -161,12 +157,12 @@ use Config\Roles; ?>
         <div class="text-end mt-4">
           <button type="submit" formaction="<?= $type == 'create' ?
                                               base_url('appointment/create/submit') :
-                                              base_url(Roles::ADMIN ? 'admin/appointment/reschedule/submit' : 'appointment/reschedule/submit') ?>"
+                                              base_url(in_groups(Roles::ADMIN) ? 'admin/appointment/reschedule/submit' : 'appointment/reschedule/submit') ?>"
             formmethod="post"
             class="btn btn-primary">
             <?= $type == 'create' ? 'Create' : 'Reschedule' ?>
           </button>
-          <a href="<?= Roles::ADMIN ? '/admin/appointment/detail/' . $appointmentId : '/appointment/create' ?>" class="btn btn-secondary">Cancel</a>
+          <a href="<?= in_groups(Roles::ADMIN) ? '/admin/appointment/detail/' . $appointmentId : '/appointment/create' ?>" class="btn btn-secondary">Cancel</a>
           <input type="hidden" name="appointmentId" value="<?= $type == 'create' ? '' : $appointmentId ?>" />
         </div>
       </div>
