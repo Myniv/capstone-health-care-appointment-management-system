@@ -16,11 +16,15 @@ use Config\Roles; ?>
 
     <!-- Tailwind CSS & DaisyUI -->
     <link rel="stylesheet" href="<?= base_url('assets/css/tailwind.css') ?>">
+
     <!-- Font Awesome CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Pristine.js -->
     <script src="<?= base_url('assets/js/pristine/dist/pristine.js') ?>" type="text/javascript"></script>
+
+    <!-- ChartJS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="flex flex-col min-h-screen bg-base-100" data-theme="light">
