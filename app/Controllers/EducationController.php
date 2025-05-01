@@ -7,6 +7,7 @@ use App\Models\DoctorModel;
 use App\Models\EducationModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use Config\Roles;
 
 class EducationController extends BaseController
 {
@@ -91,7 +92,12 @@ class EducationController extends BaseController
         }
 
         $userId = $this->doctorModel->getUserIdByDoctorId($this->request->getPost('doctor_id'));
-        return redirect()->to(base_url('admin/users/doctor/profile/' . $userId))->with('success', 'Data updated');
+
+        if (in_groups(Roles::ADMIN)) {
+            return redirect()->to(base_url('admin/users/doctor/profile/' . $userId))->with('success', 'Data updated');
+        } else {
+            return redirect()->to(base_url('doctor/profile/detail'))->with('success', 'Data updated');
+        }
     }
 
     public function delete($educationId, $userId)

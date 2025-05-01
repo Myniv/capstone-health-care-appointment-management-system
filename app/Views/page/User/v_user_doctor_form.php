@@ -1,3 +1,7 @@
+<?php
+
+use Config\Roles; ?>
+
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
@@ -15,9 +19,21 @@
 
 <div class="bg-base-100 p-6 rounded-md shadow-md">
     <form
-        action="<?= isset($user) ? base_url('admin/users/doctor/update/' . $user->user_id) : base_url('admin/users/doctor/create') ?>"
+        action="<?php
+                if (isset($user)) {
+                    // Jika data $user ada
+                    echo in_groups(Roles::DOCTOR)
+                        ? base_url('doctor/profile/detail/update/' . $user->user_id)
+                        : base_url('admin/users/doctor/update/' . $user->user_id);
+                } else {
+                    // Jika data $user tidak ada
+                    echo base_url('admin/users/doctor/create');
+                }
+                ?>"
         method="post" enctype="multipart/form-data" id="formData" novalidate>
+
         <?= csrf_field() ?>
+
         <?php if (isset($user)): ?>
             <input type="hidden" name="_method" value="PUT">
         <?php endif; ?>
@@ -116,7 +132,7 @@
                 rows="2" required data-pristine-required-message="The address field is required."
                 data-pristine-minlength="2" data-pristine-minlength-message="The address minimal 2 characters."
                 data-pristine-maxlength="500"
-                data-pristine-maxlength-message="The address must not exceed 500 characters."></textarea><?= old('address', $user->address ?? '') ?></textarea>
+                data-pristine-maxlength-message="The address must not exceed 500 characters."><?= old('address', $user->address ?? '') ?></textarea>
             <div class="text-error text-sm"><?= session('errors.address') ?? '' ?></div>
         </div>
 

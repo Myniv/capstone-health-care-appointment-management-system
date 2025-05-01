@@ -1,3 +1,7 @@
+<?php
+
+use Config\Roles; ?>
+
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
@@ -15,9 +19,21 @@
 
 <div class="bg-base-100 p-6 rounded-md shadow-md">
     <form
-        action="<?= isset($user) ? base_url('admin/users/patient/update/' . $user->user_id) : base_url('admin/users/patient/create') ?>"
+        action="<?php
+                if (isset($user)) {
+                    // Jika data $user ada
+                    echo in_groups(Roles::PATIENT)
+                        ? base_url('profile/detail/update/' . $user->user_id)
+                        : base_url('admin/users/patient/update/' . $user->user_id);
+                } else {
+                    // Jika data $user tidak ada
+                    echo base_url('admin/users/patient/create');
+                }
+                ?>"
         method="post" enctype="multipart/form-data" id="formData" novalidate>
+
         <?= csrf_field() ?>
+
         <?php if (isset($user)): ?>
             <input type="hidden" name="_method" value="PUT">
         <?php endif; ?>

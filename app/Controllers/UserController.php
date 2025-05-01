@@ -10,6 +10,7 @@ use App\Models\EducationModel;
 use App\Models\PatientModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use Config\Roles;
 use Myth\Auth\Models\GroupModel;
 
 class UserController extends BaseController
@@ -333,7 +334,11 @@ class UserController extends BaseController
 
         cache()->delete("user-list");
 
-        return redirect()->to('admin/users')->with('message', 'User Updated Successfully');
+        if (in_groups(Roles::ADMIN)) {
+            return redirect()->to('admin/users')->with('message', 'User Updated Successfully');
+        } else {
+            return redirect()->to('profile/detail')->with('message', 'User Updated Successfully');
+        }
     }
 
 
@@ -622,7 +627,11 @@ class UserController extends BaseController
 
         cache()->delete("user-list");
 
-        return redirect()->to('admin/users')->with('message', 'User Updated Successfully');
+        if (in_groups(Roles::ADMIN)) {
+            return redirect()->to('admin/users')->with('message', 'User Updated Successfully');
+        } else {
+            return redirect()->to('doctor/profile/detail')->with('message', 'User Updated Successfully');
+        }
     }
 
     public function deleteDoctorHard($id)
@@ -671,7 +680,7 @@ class UserController extends BaseController
         }
 
         $this->userModel->delete($user->id);
-        
+
         cache()->delete("user-list");
 
         return redirect()->to('admin/users')->with('message', 'User Deleted Successfully');

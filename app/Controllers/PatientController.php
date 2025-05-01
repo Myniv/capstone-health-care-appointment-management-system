@@ -7,17 +7,19 @@ use App\Libraries\DataParams;
 use App\Models\AppointmentModel;
 use App\Models\HistoryModel;
 use App\Models\PatientModel;
+use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class PatientController extends BaseController
 {
-    protected $appointmentModel, $patientModel, $historyModel;
+    protected $appointmentModel, $patientModel, $historyModel, $userModel;
 
     public function __construct()
     {
         $this->appointmentModel = new AppointmentModel();
         $this->patientModel = new PatientModel();
         $this->historyModel = new HistoryModel();
+        $this->userModel = new UserModel();
     }
 
     public function index()
@@ -45,9 +47,20 @@ class PatientController extends BaseController
         return view('page/user/v_user_dashboard_patient', $data);
     }
 
+    public function profile()
+    {
+        $user = $this->userModel->getUserWithFullName(user_id());
+
+        $data = [
+            'user' => $user,
+        ];
+
+        return view('page/patient/v_profile_detail', $data);
+    }
+
     public function historyList()
     {
-        $patient = $this->patientModel->getPatientByUserId(user_id());
+        $user = $this->patientModel->getPatientByUserId(user_id());
 
         $params = new DataParams([
             "doctor" => $this->request->getGet("doctor"),
@@ -67,7 +80,7 @@ class PatientController extends BaseController
             'total' => $result['total'],
             'params' => $params,
             'baseUrl' => base_url('history'),
-            'patient' => $patient
+            'user' => $user
         ];
 
         return view('page/patient/v_history_list', $data);

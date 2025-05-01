@@ -2,33 +2,7 @@
 
 <?= $this->section('content'); ?>
 <div class="flex flex-wrap gap-4 h-full">
-    <aside class="flex-grow lg:flex-grow-0 p-6 rounded-lg flex flex-col justify-between bg-base-100 shadow-md">
-        <div class="flex gap-2 items-center justify-center">
-            <div class="avatar">
-                <div class="w-20 rounded-full">
-                    <img
-                        src="<?= base_url('profile-picture?path=' . $patient->profile_picture); ?>"
-                        alt="Profile Picture <?= $patient->first_name . ' ' . $patient->last_name; ?>">
-                </div>
-            </div>
-            <div>
-                <h3 class="font-semibold">
-                    <?= $patient->first_name . ' ' . $patient->last_name; ?>
-                </h3>
-                <h5 class="text-sm text-gray-700"><?= user()->username; ?></h5>
-            </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <ul class="menu border rounded-box w-full">
-            <li><a href="detail">Profile</a></li>
-            <li><a href="history">Medical History</a></li>
-        </ul>
-
-        <a href="logout" class="btn btn-error text-base-100 w-full mt-auto">Logout</a>
-    </aside>
-
+    <?= $this->include('components/sidebar_profile'); ?>
 
     <section class="flex-grow p-6 rounded-lg flex flex-col bg-base-100 shadow-md">
         <h1 class="font-bold text-2xl mb-4">Medical History</h1>

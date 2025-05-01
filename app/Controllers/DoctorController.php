@@ -10,11 +10,12 @@ use App\Models\DoctorModel;
 use App\Models\EducationModel;
 use App\Models\HistoryModel;
 use App\Models\PatientModel;
+use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 
 class DoctorController extends BaseController
 {
-    protected $doctorAbsentModel, $doctorModel, $educationModel, $appointmentModel, $patientModel, $historyModel;
+    protected $doctorAbsentModel, $doctorModel, $educationModel, $appointmentModel, $patientModel, $historyModel, $userModel;
 
     public function __construct()
     {
@@ -24,6 +25,7 @@ class DoctorController extends BaseController
         $this->appointmentModel = new AppointmentModel();
         $this->patientModel = new PatientModel();
         $this->historyModel = new HistoryModel();
+        $this->userModel = new UserModel();
     }
 
     public function index()
@@ -47,6 +49,20 @@ class DoctorController extends BaseController
         ];
 
         return view('page/user/v_user_dashboard_doctor', $data);
+    }
+
+    public function profile()
+    {
+        $user = $this->userModel->getUserWithFullName(user_id());
+
+        $educations = $this->educationModel->where('doctor_id', $user->doctor_id)->findAll();
+
+        $data = [
+            'user' => $user,
+            'educations' => $educations
+        ];
+
+        return view('page/patient/v_profile_detail', $data);
     }
 
     public function getDoctorAbsent()

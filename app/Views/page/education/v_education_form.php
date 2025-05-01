@@ -1,31 +1,38 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 <?= $this->section('content'); ?>
 
-<div class="container mx-auto mt-4">
-  <div class="mb-4">
-    <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+<div class="mb-4">
+  <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+</div>
+<h2 class="text-2xl font-bold mb-4"><?= isset($education) ? 'Edit' : 'Add'; ?> Education</h2>
+
+<?php if (session('errors')): ?>
+  <div class="alert alert-error mb-4">
+    <ul>
+      <?php foreach (session('errors') as $error): ?>
+        <li><?= $error ?></li>
+      <?php endforeach ?>
+    </ul>
   </div>
-  <h2 class="text-2xl font-bold mb-4"><?= isset($education) ? 'Edit' : 'Add'; ?> Education</h2>
+<?php endif ?>
 
-  <?php if (session('errors')): ?>
-    <div class="alert alert-error mb-4">
-      <ul>
-        <?php foreach (session('errors') as $error): ?>
-          <li><?= $error ?></li>
-        <?php endforeach ?>
-      </ul>
-    </div>
-  <?php endif ?>
-
+<div class="bg-base-100 p-6 rounded-md shadow-md mb-4">
   <form
     action="<?= isset($education) ? base_url('doctor/education/update/' . $education->id) : base_url('doctor/education/create') ?>"
     method="post" enctype="multipart/form-data" id="formData" novalidate>
+
     <?= csrf_field() ?>
+
     <?php if (isset($education)): ?>
       <input type="hidden" name="_method" value="PUT">
       <input type="hidden" name="education_id" value="<?= $education->id ?>">
     <?php endif; ?>
-    <input type="hidden" name="doctor_id" value="<?= $doctor_id ?>" data-pristine-required
+
+    <input
+      type="hidden"
+      name="doctor_id"
+      value="<?= $doctor_id ?>"
+      data-pristine-required
       data-pristine-required-message="Doctor ID is required.">
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -75,9 +82,13 @@
 
       <div class="mb-3">
         <label for="year" class="label"><span class="label-text">Year</span></label>
-        <input type="text" name="year" placeholder="<?= date("Y"); ?>"
+        <input
+          type="text"
+          name="year"
+          placeholder="<?= date("Y"); ?>"
           class="input input-bordered w-full <?= session('errors.year') ? 'input-error' : '' ?>"
-          value="<?= old('year', $education->year ?? '') ?>" data-pristine-required
+          value="<?= old('year', $education->year ?? '') ?>"
+          data-pristine-required
           data-pristine-required-message="Year must be filled." data-pristine-type="number"
           data-pristine-type-message="Year cant be string." data-pristine-maxlength="4"
           data-pristine-maxlength-message="Year must be 4 character." data-pristine-minlength="4"
@@ -96,7 +107,7 @@
 
 <?= $this->section('scripts') ?>
 <script>
-  window.onload = function () {
+  window.onload = function() {
     let form = document.getElementById("formData");
 
     let pristine = new Pristine(form, {
@@ -108,7 +119,7 @@
       errorTextClass: 'text-error text-sm'
     });
 
-    form.addEventListener('submit', function (e) {
+    form.addEventListener('submit', function(e) {
       let valid = pristine.validate();
       if (!valid) {
         e.preventDefault();

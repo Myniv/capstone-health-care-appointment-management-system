@@ -77,6 +77,10 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
 // Doctor Routes
 $routes->group('doctor', ['filter' => 'role:' . Roles::DOCTOR], function ($routes) {
     $routes->get('dashboard', [DoctorController::class, 'dashboard']);
+
+    $routes->get('profile/detail', [DoctorController::class, 'profile']);
+    $routes->match(['get', 'put'], 'profile/detail/update/(:num)', [UserController::class, 'updateDoctor']);
+
     $routes->get('absent', [DoctorController::class, 'getDoctorAbsent']);
     $routes->match(['get', 'post'], 'absent/create', [DoctorController::class, 'createDoctorAbsent']);
     $routes->match(['get', 'post'], 'history/create', [DoctorController::class, 'storeHistoryPatient']);
@@ -115,14 +119,14 @@ $routes->group('', ['filter' => 'role:' . Roles::PATIENT], function ($routes) {
     $routes->get('/dashboard', [PatientController::class, 'dashboard']);
 
     $routes->get('appointment', [AppointmentController::class, 'index']);
-    $routes->get('appointment/detail/(:num)', [AppointmentController::class, 'detail']);
-    $routes->get('appointment/create', [AppointmentController::class, 'createAppointment']);
     $routes->post('appointment/create/submit', [AppointmentController::class, 'createAppointmentSubmit']);
     $routes->get('appointment/create/form', [AppointmentController::class, 'appointmentForm']);
     $routes->post('appointment/cancel', [AppointmentController::class, 'cancelAppointment']);
     $routes->get('appointment/reschedule/form', [AppointmentController::class, 'appointmentRescheduleForm']);
     $routes->post('appointment/reschedule/submit', [AppointmentController::class, 'rescheduleAppointmentSubmit']);
 
+    $routes->get('profile/detail', [PatientController::class, 'profile']);
+    $routes->match(['get', 'put'], 'profile/detail/update/(:num)', [UserController::class, 'updatePatient']);
     $routes->get('profile/history', [PatientController::class, 'historyList']);
     $routes->get('profile/history/document/(:num)', [PatientController::class, 'viewMedicalDocument/$1']);
 });
