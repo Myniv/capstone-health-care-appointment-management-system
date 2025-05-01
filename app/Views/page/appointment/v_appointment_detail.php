@@ -2,6 +2,7 @@
 
 <?= $this->section('content'); ?>
 <div class="container mt-4">
+  <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
   <div class="flex gap-4 items-center mb-4">
     <h2 class="text-2xl font-bold">Appointment Details</h2>
     <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $appointment->status]) ?>
@@ -82,7 +83,7 @@
                 $today = Time::parse('today');
                 $diff = $today->difference($appointment->date)->getDays();
                 if ($diff > 3):
-                ?>
+                  ?>
                   <div class="card-actions justify-end">
                     <form action="/appointment/cancel" method="post" novalidate id="cancelForm" name="cancelForm">
                       <?= csrf_field() ?>
@@ -128,9 +129,15 @@
       </span>
       <span class="flex gap-2 items-center">
         <i class="fa-solid fa-door-open"></i>
-        <span>
-          <?= $appointment->roomName ?>
-        </span>
+        <?php if (!in_groups(Roles::PATIENT)): ?>
+          <a href="/room/detail/<?= $appointment->roomId ?>" class="text-blue-500 hover:text-blue-700">
+            <?= $appointment->roomName ?>
+          </a>
+        <?php else: ?>
+          <span>
+            <?= $appointment->roomName ?>
+          </span>
+        <?php endif; ?>
       </span>
 
       <span class="flex gap-2 items-center">

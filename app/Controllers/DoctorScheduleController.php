@@ -33,7 +33,7 @@ class DoctorScheduleController extends BaseController
             "sort" => $this->request->getGet("sort"),
             "order" => $this->request->getGet("order"),
             "perPage" => $this->request->getGet("perPage"),
-            "page" => $this->request->getGet("page_users"),
+            "page" => $this->request->getGet("page_doctor_schedule"),
         ]);
 
         $result = $this->doctorScheduleModel->getFilteredDoctorSchedule($params);
@@ -46,7 +46,7 @@ class DoctorScheduleController extends BaseController
             'pager' => $result['pager'],
             'total' => $result['total'],
             'params' => $params,
-            'baseUrl' => base_url('admin/doctor_schedule'),
+            'baseUrl' => base_url('admin/doctor-schedule'),
         ];
 
         if (!cache()->get("doctor_schedule")) {

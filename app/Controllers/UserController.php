@@ -720,10 +720,11 @@ class UserController extends BaseController
         // Query untuk menghitung jumlah appointment per hari
         $appointments = $this->appointmentModel
             ->select("DATE(date) as appointment_date, COUNT(*) as appointment_count")
-            ->where("DATE(date) BETWEEN '$lastWeek' AND '$today'")
+            // ->where("DATE(date) BETWEEN '$lastWeek' AND '$today'")
             ->groupBy("DATE(date)")
             ->orderBy("appointment_date", "ASC")
             ->findAll();
+            // dd($appointments);
 
         // Siapkan data untuk Chart.js
         $labels = [];
@@ -740,19 +741,20 @@ class UserController extends BaseController
         foreach ($appointments as $appointment) {
             $appointmentMap[$appointment->appointment_date] = (int) $appointment->appointment_count;
         }
+        // dd($appointmentMap);
 
         // Isi data untuk setiap tanggal
         foreach ($dates as $date) {
             $labels[] = date('D, M j', strtotime($date)); // Format label (contoh: Mon, Jan 1)
-            $data[] = $appointmentMap[$date] ?? 0; // Jika tidak ada data, isi dengan 0
         }
+        // dd($dates);
 
         return [
             'labels' => $labels,
             'datasets' => [
                 [
                     'label' => 'Appointments',
-                    'data' => $data,
+                    'data' => $appointmentMap,
                     'backgroundColor' => 'rgba(75, 192, 192, 0.5)',
                     'borderColor' => 'rgba(75, 192, 192, 1)',
                     'borderWidth' => 1,

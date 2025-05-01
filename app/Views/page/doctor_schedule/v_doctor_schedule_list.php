@@ -52,16 +52,16 @@
             <thead>
                 <tr>
                     <th>
-                        <a href="<?= $params->getSortUrl('id', $baseUrl) ?>" class="link link-hover">
+                        <a href="<?= $params->getSortUrl('doctor_id', $baseUrl) ?>" class="link link-hover">
                             ID
-                            <?= $params->isSortedBy('id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                            <?= $params->isSortedBy('doctor_id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
 
                     <th>
-                        <a href="<?= $params->getSortUrl('doctor_id', $baseUrl) ?>" class="link link-hover">
+                        <a href="<?= $params->getSortUrl('doctor_first_name', $baseUrl) ?>" class="link link-hover">
                             Doctor Name
-                            <?= $params->isSortedBy('doctor_id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                            <?= $params->isSortedBy('doctor_first_name') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
@@ -140,7 +140,7 @@
 
     <!-- Pagination -->
     <div class="mt-8 text-center">
-        <?= $pager->links('doctor_absent', 'custom_pager') ?>
+        <?= $pager->links('doctor_schedule', 'custom_pager') ?>
         <div class="mt-2">
             <small>Show <?= count($doctor_schedule) ?> of <?= $total ?> total data (Page <?= $params->page ?>)</small>
         </div>

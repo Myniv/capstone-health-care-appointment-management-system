@@ -10,6 +10,7 @@ use App\Models\DoctorScheduleModel;
 use App\Models\EducationModel;
 use App\Models\PatientModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use Config\Roles;
 use DateTime;
 
 class AppointmentController extends BaseController
@@ -32,14 +33,38 @@ class AppointmentController extends BaseController
 
     public function index()
     {
-        $params = new DataParams([
-            "search" => $this->request->getGet("search"),
-            "date" => $this->request->getGet("date"),
-            "sort" => 'date',
-            "order" => $this->request->getGet("order"),
-            "perPage" => $this->request->getGet("perPage"),
-            "page" => $this->request->getGet("page_appointment"),
-        ]);
+        if (in_groups(Roles::DOCTOR)) {
+            $doctorId = $this->doctorModel->getDoctorByUserId(user_id())->id;
+            $params = new DataParams([
+                "search" => $this->request->getGet("search"),
+                "date" => $this->request->getGet("date"),
+                "sort" => 'date',
+                "order" => $this->request->getGet("order"),
+                "perPage" => $this->request->getGet("perPage"),
+                "page" => $this->request->getGet("page_appointment"),
+                "doctor" => $doctorId,
+            ]);
+        } else if (in_groups(Roles::PATIENT)) {
+            $patientId = $this->patientModel->getPatientByUserId(user_id())->id;
+            $params = new DataParams([
+                "search" => $this->request->getGet("search"),
+                "date" => $this->request->getGet("date"),
+                "sort" => 'date',
+                "order" => $this->request->getGet("order"),
+                "perPage" => $this->request->getGet("perPage"),
+                "page" => $this->request->getGet("page_appointment"),
+                "patient" => $patientId,
+            ]);
+        } else { //Admin
+            $params = new DataParams([
+                "search" => $this->request->getGet("search"),
+                "date" => $this->request->getGet("date"),
+                "sort" => 'date',
+                "order" => $this->request->getGet("order"),
+                "perPage" => $this->request->getGet("perPage"),
+                "page" => $this->request->getGet("page_appointment"),
+            ]);
+        }
 
         $result = $this->appointmentModel->getSortedAppointment($params);
 
@@ -94,6 +119,7 @@ class AppointmentController extends BaseController
                 doctor_schedules.end_time,
                 appointments.date,
                 rooms.name as roomName,
+                rooms.id as roomId,
                 appointments.documents,
                 appointments.id as id,
                 appointments.status as status')

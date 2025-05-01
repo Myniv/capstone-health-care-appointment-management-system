@@ -73,6 +73,7 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->get('appointment', [AppointmentController::class, 'index']);
     $routes->get('appointment/detail/(:num)', [AppointmentController::class, 'detail']);
 });
+$routes->get('room/detail/(:num)', [RoomController::class, 'detail/$1'], ['filter' => 'role:' . Roles::DOCTOR]);
 
 // Doctor Routes
 $routes->group('doctor', ['filter' => 'role:' . Roles::DOCTOR], function ($routes) {
