@@ -26,6 +26,7 @@
         </label>
         <input type="date" name="date" id="date"
           class="input input-bordered w-full <?= session('errors.date') ? 'input-error' : '' ?>"
+          min="<?= date('Y-m-d') ?>"
           value="<?= old('date', $doctor_absent->date ?? '') ?>" data-pristine-required
           data-pristine-required-message="The date field is required.">
         <div class="text-error text-sm"><?= session('errors.date') ?? '' ?></div>
@@ -47,7 +48,7 @@
 
     <!-- Submit Button -->
     <div class="text-end">
-      <button type="submit" class="btn btn-primary">Request Absent</button>
+      <button type="submit" class="btn btn-primary">Add Absent</button>
       <a href="/doctor/absent" class="btn btn-secondary">Cancel</a>
     </div>
   </form>

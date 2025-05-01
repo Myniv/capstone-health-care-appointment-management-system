@@ -53,7 +53,7 @@ class DoctorController extends BaseController
     {
         $params = new DataParams([
             "search" => $this->request->getGet("search"),
-            "date" => $this->request->getGet("date"),
+            //"date" => $this->request->getGet("date"),
             "sort" => $this->request->getGet("sort"),
             "order" => $this->request->getGet("order"),
             "perPage" => $this->request->getGet("perPage"),
@@ -62,6 +62,7 @@ class DoctorController extends BaseController
 
         //$result = $this->doctorAbsentModel->getDoctorAbsentById(user_id());
         $result = $this->doctorAbsentModel->getSortedDoctorAbsent($params);
+
 
         $data = [
             'doctor_absent' => $result['doctor_absent'],
@@ -86,7 +87,7 @@ class DoctorController extends BaseController
         $data = [
             'doctor_id' => $this->doctorModel->getDoctorByUserId(user_id())->id,
             'date' => $date,
-            'status' => 'pending',
+            'status' => null,
             'reason' => $this->request->getPost('reason'),
         ];
 

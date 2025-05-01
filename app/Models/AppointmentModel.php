@@ -112,6 +112,7 @@ class AppointmentModel extends Model
             doctor_schedules.end_time as endTime,
             doctors.first_name as doctorFirstName,
             doctors.last_name as doctorLastName,
+            doctors.profile_picture as doctorProfilePicture,
             rooms.name as roomName,
             appointments.date as date,
             appointments.reason_for_visit as reason,
@@ -122,6 +123,8 @@ class AppointmentModel extends Model
         $this->join('patients', 'patients.id = appointments.patient_id');
         $this->join('doctors', 'doctors.id = appointments.doctor_id');
 
+
+
         // if (Roles::PATIENT) {
         //     $this->join('patients', 'patients.id = appointments.patient_id');
         // }
@@ -130,13 +133,25 @@ class AppointmentModel extends Model
         //     $this->join('doctors', 'doctors.id = appointments.doctor_id');
         // }
 
+        if (empty($params->sort)) {
+            $params->sort = 'date';
+        }
+        if (empty($params->order)) {
+            $params->order = 'desc';
+        }
+
         if (!empty($params->doctor)) {
             $this->where('doctors.id', $params->doctor);
         }
 
         if (!empty($params->search)) {
-            $this->where('CAST(id AS TEXT) LIKE', "%$params->search%");
+            $this->groupStart()
+                ->like('patients.first_name', $params->search, 'both', null, true)
+                ->orLike('patients.last_name', $params->search, 'both', null, true)
+                ->orLike('appointments.status', $params->search, 'both', null, true)
+                ->groupEnd();
         }
+
 
         if (!empty($params->date)) {
             $this->where("TO_CHAR(date, 'YYYY-MM-DD') LIKE", "%{$params->date}%");
@@ -150,8 +165,8 @@ class AppointmentModel extends Model
             'date',
         ];
 
-        $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'id';
-        $order = ($params->order === 'desc') ? 'DESC' : 'ASC';
+        $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'date';
+        $order = $params->sort ? (($params->order === 'desc') ? 'DESC' : 'ASC') : 'DESC';
 
         $this->orderBy($sort, $order);
 

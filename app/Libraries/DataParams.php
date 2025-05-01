@@ -38,7 +38,7 @@ class DataParams
         $this->doctor = $params['doctor'] ?? '';
 
         $this->sort = $params['sort'] ?? 'id';
-        $this->order = $params['order'] ?? 'asc';
+        $this->order = $params['order'] ?? 'desc';
         $this->page = (int) ($params['page'] ?? 1);
         $this->perPage = (int) ($params['perPage'] ?? 10);
     }

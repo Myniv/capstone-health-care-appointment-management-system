@@ -19,6 +19,45 @@
         </div>
     </div>
 
+        <div class="card border md:col-span-2">
+            <div class="card-body">
+                <div class="flex justify-between">
+                    <h3 class="card-title">Upcoming Appointment</h3>
+                    <a class="btn btn-sm btn-primary" href="<?= base_url('appointment'); ?>">View All</a>
+                </div>
+                <?php if (!empty($appointments)): ?>
+                    <ul class="list rounded-box border">
+                        <?php foreach ($appointments as $appointment): ?>
+                            <li class="list-row">
+                                <div class="flex flex-col items-center gap-2">
+                                    <!-- <div class="badge badge-soft badge-warning text-xs mt-2">
+                                        <?= ucwords($appointment->status); ?>
+                                    </div> -->
+                                    <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $appointment->status]) ?>
+                                    <p class="text-primary font-semibold">
+                                        <?= date('g:i A', strtotime($appointment->startTime)) ?> -
+                                        <?= date('g:i A', strtotime($appointment->endTime)) ?>
+                                    </p>
+                                </div>
+                                <div class="flex flex-col gap-1">
+                                    <h3 class="font-semibold">
+                                        <?= $appointment->patientFirstName . ' ' . $appointment->patientLastName; ?>
+                                    </h3>
+                                    <span class="text-gray-700">Reason:
+                                        <span class="text-gray-500">
+                                            <?= $appointment->reason; ?>
+                                        </span>
+                                    </span>
+                                    <p class="text-gray-700 flex gap-2 items-center"><i class="fa-solid fa-calendar text-lg"></i>
+                                        <span><?= date('F j, Y', strtotime($appointment->date)) ?></span>
+                                    </p>
+                                </div>
+                                <a class="btn btn-ghost btn-sm" href="#modal-form-history" data-id="<?= $appointment->id; ?>">
+                                    Manage
+                                </a>
+                            </li>
+                        <?php endforeach; ?>
+                    </ul>
     <div class="card md:col-span-2 bg-base-100 shadow-md h-full">
         <div class="card-body">
             <div class="flex justify-between">
@@ -70,15 +109,18 @@
                         <li class="list-row bg-base-100 mb-2">
                             <div class="text-lg font-thin opacity-30 tabular-nums"><?= $count++; ?>.</div>
                             <div class="list-col-grow">
-                                <h3 class="font-semibold">
+                                <h3 class="font-semibold text-lg">
                                     <?= $appointment->roomName; ?>
                                 </h3>
-                                <p>
-                                    <?= date('g:i A', strtotime($appointment->startTime)) ?> -
-                                    <?= date('g:i A', strtotime($appointment->endTime)) ?>
-                                </p>
+                                <span class="flex gap-2 items-center">
+                                    <i class="fa-solid fa-clock"></i>
+                                        <span><?= date('g:i A', strtotime($appointment->startTime)) ?> -
+                                        <?= date('g:i A', strtotime($appointment->endTime)) ?></span>
+                                </span>
 
-                                <p class="text-gray-700"><?= date('F j, Y', strtotime($appointment->date)) ?></p>
+                                <span class="flex gap-2 items-center">
+                                        <i class="fa-solid fa-calendar"></i>
+                                        <?= date('F j, Y', strtotime($appointment->date)) ?></span>
                             </div>
                         </li>
                     <?php endforeach; ?>
