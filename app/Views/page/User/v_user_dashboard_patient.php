@@ -14,7 +14,7 @@
 
     <div class="card shadow-md bg-base-100">
         <div class="card-body">
-            <a href="appointment/create" class="btn btn-soft btn-success">+ Create Appointment</a>
+            <a href="/find-doctor" class="btn btn-soft btn-success">+ Create Appointment</a>
         </div>
     </div>
 

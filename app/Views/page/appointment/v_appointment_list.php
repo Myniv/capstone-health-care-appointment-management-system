@@ -19,7 +19,7 @@ use Config\Roles; ?>
   <?php if (in_groups(Roles::PATIENT)): ?>
     <!-- Add Button -->
     <div class="flex gap-4 mb-4">
-      <a href="/appointment/create" class="btn btn-outline btn-success">Create Appointment</a>
+      <a href="/find-doctor" class="btn btn-outline btn-success">Create Appointment</a>
     </div>
   <?php endif; ?>
 
@@ -87,7 +87,7 @@ use Config\Roles; ?>
                   <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $row->status]) ?>
                 </td>
                 <td>
-                  <a href="appointment/detail/<?= $row->id ?>" class="btn btn-primary btn-sm">Details</a>
+                  <a href="appointment/detail/<?= $row->id ?>" class="btn btn-soft btn-sm">Details</a>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -100,7 +100,6 @@ use Config\Roles; ?>
       <?php foreach ($appointment as $row): ?>
         <div class="card border bg-base-100 w-full">
           <div class="card-body">
-
             <div class="flex gap-4 items-center">
               <div class="avatar">
                 <div class="w-24 rounded-full">
@@ -125,22 +124,20 @@ use Config\Roles; ?>
                     <?= date('g:i A', strtotime($row->endTime)) ?></span>
                 </p>
                 <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $row->status]) ?>
-
               </div>
             </div>
 
-
-
             <div class="card-actions justify-end">
-              <?php if (in_groups(Roles::PATIENT)): ?>
-                <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-primary btn-sm">
-                  Details
-                </a>
-              <?php elseif (in_groups(Roles::DOCTOR)): ?>
-                <a href="#modal-form-history" data-id="<?= $row->id; ?>" class="btn btn-primary btn-sm">
-                  Manage
-                </a>
+              <?php if (in_groups(Roles::DOCTOR)): ?>
+                <?php if ($row->status == 'booking'): ?>
+                  <a href="#modal-form-history" data-id="<?= $row->id; ?>" class="btn btn-primary btn-sm">
+                    Manage
+                  </a>
+                <?php endif; ?>
               <?php endif; ?>
+              <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-soft btn-sm">
+                Details
+              </a>
             </div>
           </div>
         </div>

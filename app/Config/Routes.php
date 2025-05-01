@@ -131,6 +131,10 @@ $routes->group('', ['filter' => 'role:' . Roles::PATIENT], function ($routes) {
     $routes->get('profile/history/document/(:num)', [PatientController::class, 'viewMedicalDocument/$1']);
 });
 
+$routes->get('find-doctor', [AppointmentController::class, 'createAppointment']);
+
+$routes->get('appointment/detail/(:num)', [AppointmentController::class, 'detail'], ['filter' => 'role:' . Roles::ADMIN . ',' . Roles::DOCTOR . ',' . Roles::PATIENT]);
+
 //Auth routes
 $routes->group('', ['namespace' => 'App\Controllers'], function ($routes) {
     // Registrasi

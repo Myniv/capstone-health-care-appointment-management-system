@@ -132,7 +132,7 @@ class AppointmentController extends BaseController
                 'pager' => $result['pager'],
                 'total' => $result['total'],
                 'params' => $params,
-                'baseUrl' => base_url('appointment/create'),
+                'baseUrl' => base_url('/find-doctor'),
             ];
 
             return view('page/appointment/v_appointment_doctor_list', $data);

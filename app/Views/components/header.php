@@ -3,6 +3,7 @@
 use App\Models\DoctorModel;
 use App\Models\PatientModel;
 use Config\Roles;
+use PhpOffice\PhpSpreadsheet\Worksheet\Row;
 
 $patientModel = new PatientModel();
 $doctorModel = new DoctorModel();
@@ -18,15 +19,25 @@ if (in_groups(Roles::DOCTOR)) {
 } ?>
 
 <header class="navbar bg-base-100 shadow-sm">
-    <div class="md:hidden flex-none">
-        <button class="btn btn-square btn-ghost">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-5 w-5 stroke-current">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-        </button>
-    </div>
+    <?php if (in_groups(Roles::ADMIN) || in_groups(Roles::DOCTOR)): ?>
+        <div class="md:hidden flex-none">
+            <button class="btn btn-square btn-ghost">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-5 w-5 stroke-current">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    <?php endif; ?>
     <div class="flex-1">
-        <a href="/dashboard" class="btn btn-ghost normal-case font-black text-3xl text-primary">HealthCare</a>
+        <?php if (in_groups(Roles::PATIENT)): ?>
+            <a href="/dashboard" class="btn btn-ghost normal-case font-black text-3xl text-primary">HealthCare</a>
+        <?php elseif (in_groups(Roles::DOCTOR)): ?>
+            <a href="/doctor/dashboard" class="btn btn-ghost normal-case font-black text-3xl text-primary">HealthCare</a>
+        <?php elseif (in_groups(Roles::DOCTOR)): ?>
+            <a href="/admin/dashboard" class="btn btn-ghost normal-case font-black text-3xl text-primary">HealthCare</a>
+        <?php else: ?>
+            <a href="/" class="btn btn-ghost normal-case font-black text-3xl text-primary">HealthCare</a>
+        <?php endif; ?>
     </div>
     <div class="flex-none flex px-4">
         <ul class="menu menu-horizontal gap-4">
@@ -81,12 +92,16 @@ if (in_groups(Roles::DOCTOR)) {
                             </div>
                         </div>
                         <ul tabindex="0" class="menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow-lg">
-                            <li>
-                                <a href="<?= base_url('profile/detail'); ?>">Profile</a>
-                            </li>
                             <?php if (in_groups(Roles::PATIENT)): ?>
                                 <li>
-                                    <a href="<?= base_url('profile/history'); ?>">History</a>
+                                    <a href="<?= base_url('profile/detail'); ?>">Profile</a>
+                                </li>
+                                <li>
+                                    <a href="<?= base_url('profile/history'); ?>">Medical History</a>
+                                </li>
+                            <?php elseif (in_groups(Roles::DOCTOR)): ?>
+                                <li>
+                                    <a href="<?= base_url('doctor/profile/detail'); ?>">Profile</a>
                                 </li>
                             <?php endif; ?>
                             <li class="mt-2">
