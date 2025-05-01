@@ -1,14 +1,13 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
+<div class="container mt-4">
   <div class="flex gap-4 items-center mb-4">
     <h2 class="text-2xl font-bold">Appointment Details</h2>
     <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $appointment->status]) ?>
   </div>
   <?php
 
-  use App\Entities\Room;
   use Config\Roles;
 
   if (session('message')): ?>
@@ -21,6 +20,7 @@
       <?= session('success') ?>
     </div>
   <?php endif ?>
+
   <div class="card card-border bg-base-100 my-4 text-xl">
     <div class="card-body">
       <div class="grid grid-cols-3 gap-4">

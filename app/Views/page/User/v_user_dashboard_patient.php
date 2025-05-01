@@ -39,12 +39,15 @@
                             <div>
                                 <h3 class="text-lg font-semibold">
                                     <?= $appointment->doctorFirstName . ' ' . $appointment->doctorLastName; ?></h3>
-                                <p class="col-start-2"><?= ucwords($appointment->doctorCategoryName); ?></p>
-                                <p class="col-start-2">
-                                    <?= date('g:i A', strtotime($appointment->startTime)) ?> -
-                                    <?= date('g:i A', strtotime($appointment->endTime)) ?>
+                                <p class="col-start-2 text-gray-500"><?= ucwords($appointment->doctorCategoryName); ?></p>
+                                <p class="col-start-2 flex gap-2 items-center">
+                                    <i class="fa-solid fa-clock"></i>
+                                    <span><?= date('g:i A', strtotime($appointment->startTime)) ?> -
+                                        <?= date('g:i A', strtotime($appointment->endTime)) ?></span>
                                 </p>
-                                <p class="col-start-2"><?= date('F j, Y', strtotime($appointment->date)) ?></p>
+                                <p class="col-start-2 flex gap-2 items-center"><i class="fa-solid fa-calendar"></i>
+                                    <span><?= date('F j, Y', strtotime($appointment->date)) ?></span>
+                                </p>
                             </div>
                         </div>
                         <div class="card-actions self-center">

@@ -26,7 +26,7 @@ if (in_groups(Roles::DOCTOR)) {
         </button>
     </div>
     <div class="flex-1">
-        <a href="/" class="btn btn-ghost normal-case font-black text-3xl text-primary">HealthCare</a>
+        <a href="/dashboard" class="btn btn-ghost normal-case font-black text-3xl text-primary">HealthCare</a>
     </div>
     <div class="flex-none flex px-4">
         <ul class="menu menu-horizontal gap-4">

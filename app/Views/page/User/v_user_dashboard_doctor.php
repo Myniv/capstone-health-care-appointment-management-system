@@ -19,45 +19,6 @@
         </div>
     </div>
 
-        <div class="card border md:col-span-2">
-            <div class="card-body">
-                <div class="flex justify-between">
-                    <h3 class="card-title">Upcoming Appointment</h3>
-                    <a class="btn btn-sm btn-primary" href="<?= base_url('appointment'); ?>">View All</a>
-                </div>
-                <?php if (!empty($appointments)): ?>
-                    <ul class="list rounded-box border">
-                        <?php foreach ($appointments as $appointment): ?>
-                            <li class="list-row">
-                                <div class="flex flex-col items-center gap-2">
-                                    <!-- <div class="badge badge-soft badge-warning text-xs mt-2">
-                                        <?= ucwords($appointment->status); ?>
-                                    </div> -->
-                                    <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $appointment->status]) ?>
-                                    <p class="text-primary font-semibold">
-                                        <?= date('g:i A', strtotime($appointment->startTime)) ?> -
-                                        <?= date('g:i A', strtotime($appointment->endTime)) ?>
-                                    </p>
-                                </div>
-                                <div class="flex flex-col gap-1">
-                                    <h3 class="font-semibold">
-                                        <?= $appointment->patientFirstName . ' ' . $appointment->patientLastName; ?>
-                                    </h3>
-                                    <span class="text-gray-700">Reason:
-                                        <span class="text-gray-500">
-                                            <?= $appointment->reason; ?>
-                                        </span>
-                                    </span>
-                                    <p class="text-gray-700 flex gap-2 items-center"><i class="fa-solid fa-calendar text-lg"></i>
-                                        <span><?= date('F j, Y', strtotime($appointment->date)) ?></span>
-                                    </p>
-                                </div>
-                                <a class="btn btn-ghost btn-sm" href="#modal-form-history" data-id="<?= $appointment->id; ?>">
-                                    Manage
-                                </a>
-                            </li>
-                        <?php endforeach; ?>
-                    </ul>
     <div class="card md:col-span-2 bg-base-100 shadow-md h-full">
         <div class="card-body">
             <div class="flex justify-between">
@@ -68,7 +29,7 @@
                 <ul class="list rounded-box border">
                     <?php foreach ($appointments as $appointment): ?>
                         <li class="list-row">
-                            <div class="flex flex-col items-center">
+                            <div class="flex flex-col items-center gap-2">
                                 <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $appointment->status]) ?>
                                 <p class="text-primary font-semibold">
                                     <?= date('g:i A', strtotime($appointment->startTime)) ?> -
@@ -114,13 +75,13 @@
                                 </h3>
                                 <span class="flex gap-2 items-center">
                                     <i class="fa-solid fa-clock"></i>
-                                        <span><?= date('g:i A', strtotime($appointment->startTime)) ?> -
+                                    <span><?= date('g:i A', strtotime($appointment->startTime)) ?> -
                                         <?= date('g:i A', strtotime($appointment->endTime)) ?></span>
                                 </span>
 
                                 <span class="flex gap-2 items-center">
-                                        <i class="fa-solid fa-calendar"></i>
-                                        <?= date('F j, Y', strtotime($appointment->date)) ?></span>
+                                    <i class="fa-solid fa-calendar"></i>
+                                    <?= date('F j, Y', strtotime($appointment->date)) ?></span>
                             </div>
                         </li>
                     <?php endforeach; ?>
@@ -131,64 +92,64 @@
             <?php endif; ?>
         </div>
     </div>
-</div>
 
-<div class="modal" role="dialog" id="modal-form-history">
-    <div class="modal-box md:max-w-5xl">
-        <form
-            action="<?= base_url('doctor/history/create') ?>"
-            method="post" enctype="multipart/form-data" id="formData" novalidate>
-            <?= csrf_field() ?>
+    <div class="modal" role="dialog" id="modal-form-history">
+        <div class="modal-box md:max-w-5xl">
+            <form
+                action="<?= base_url('doctor/history/create') ?>"
+                method="post" enctype="multipart/form-data" id="formData" novalidate>
+                <?= csrf_field() ?>
 
-            <?php if (isset($history)): ?>
-                <input type="hidden" name="_method" value="PUT">
-            <?php endif; ?>
+                <?php if (isset($history)): ?>
+                    <input type="hidden" name="_method" value="PUT">
+                <?php endif; ?>
 
-            <input type="hidden" name="appointment_id" id="appointmentId">
+                <input type="hidden" name="appointment_id" id="appointmentId">
 
-            <!-- Notes -->
-            <div class="mb-2">
-                <label for="notes" class="label">
-                    <span class="label-text">Notes</span>
-                </label>
-                <textarea
-                    name="notes"
-                    class="textarea textarea-bordered w-full"
-                    rows="2"><?= old('notes') ?></textarea>
-                <div class="text-error text-sm"><?= session('errors.notes') ?? '' ?></div>
-            </div>
+                <!-- Notes -->
+                <div class="mb-2">
+                    <label for="notes" class="label">
+                        <span class="label-text">Notes</span>
+                    </label>
+                    <textarea
+                        name="notes"
+                        class="textarea textarea-bordered w-full"
+                        rows="2"><?= old('notes') ?></textarea>
+                    <div class="text-error text-sm"><?= session('errors.notes') ?? '' ?></div>
+                </div>
 
-            <!-- Prescriptions -->
-            <div class="mb-2">
-                <label for="prescriptions" class="label">
-                    <span class="label-text">Prescriptions</span>
-                </label>
-                <textarea
-                    name="prescriptions"
-                    class="textarea textarea-bordered w-full"
-                    rows="2"><?= old('prescriptions') ?></textarea>
-                <div class="text-error text-sm"><?= session('errors.prescriptions') ?? '' ?></div>
-            </div>
+                <!-- Prescriptions -->
+                <div class="mb-2">
+                    <label for="prescriptions" class="label">
+                        <span class="label-text">Prescriptions</span>
+                    </label>
+                    <textarea
+                        name="prescriptions"
+                        class="textarea textarea-bordered w-full"
+                        rows="2"><?= old('prescriptions') ?></textarea>
+                    <div class="text-error text-sm"><?= session('errors.prescriptions') ?? '' ?></div>
+                </div>
 
-            <!-- Input Documents -->
-            <div class="mb-2">
-                <label for="documents" class="label">
-                    <span class="label-text">Medical Documents</span>
-                </label>
-                <input
-                    type="file"
-                    name="documents"
-                    class="file-input file-input-bordered w-full">
-                <div class="text-error text-sm mt-1"><?= session('errors.documents') ?></div>
-            </div>
+                <!-- Input Documents -->
+                <div class="mb-2">
+                    <label for="documents" class="label">
+                        <span class="label-text">Medical Documents</span>
+                    </label>
+                    <input
+                        type="file"
+                        name="documents"
+                        class="file-input file-input-bordered w-full">
+                    <div class="text-error text-sm mt-1"><?= session('errors.documents') ?></div>
+                </div>
 
-            <div class="modal-action">
-                <a href="#" class="btn">Cancel</a>
-                <button type="submit" class="btn btn-primary">
-                    Save & Mark as Done
-                </button>
-            </div>
-        </form>
+                <div class="modal-action">
+                    <a href="#" class="btn">Cancel</a>
+                    <button type="submit" class="btn btn-primary">
+                        Save & Mark as Done
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 <?= $this->endSection(); ?>
