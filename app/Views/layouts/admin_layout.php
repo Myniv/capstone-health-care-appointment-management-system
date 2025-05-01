@@ -31,12 +31,15 @@ use Config\Roles; ?>
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 flex flex-grow gap-6 h-full">
-        <?php if (in_groups(Roles::ADMIN) || in_groups(Roles::DOCTOR)): ?>
+        <?php if (in_groups(Roles::ADMIN) || in_groups(Roles::DOCTOR)):  ?>
             <!-- Sidebar -->
-            <aside class="hidden md:block bg-base-100 w-1/5">
+            <aside class="bg-base-100 md:w-1/5 md:block md:relative md:translate-x-0 w-1/2 fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-200 ease-in-out">
                 <?= $this->include('components/sidebar'); ?>
             </aside>
         <?php endif; ?>
+
+        <!-- overlay -->
+        <div class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden md:hidden" id="sidebar-overlay"></div>
 
         <!-- Page Content -->
         <section class="w-full bg-base-200 p-4 rounded-lg">
@@ -51,6 +54,23 @@ use Config\Roles; ?>
 
     <!-- Additional Scripts -->
     <?= $this->renderSection('scripts'); ?>
+    <script>
+        const aside = document.querySelector('aside')
+        const menuToggle = document.getElementById('sidebar-toggle')
+        const overlay = document.getElementById('sidebar-overlay')
+
+        console.log(overlay)
+
+        menuToggle.addEventListener('click', () => {
+            aside.classList.toggle('-translate-x-full'); // Tampilkan/hilangkan sidebar
+            overlay.classList.toggle('hidden'); // Tampilkan/hilangkan overlay
+        });
+
+        overlay.addEventListener('click', () => {
+            aside.classList.add('-translate-x-full'); // Sembunyikan sidebar
+            overlay.classList.add('hidden'); // Sembunyikan overlay
+        });
+    </script>
 </body>
 
 </html>

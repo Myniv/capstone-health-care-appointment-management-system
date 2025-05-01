@@ -20,7 +20,7 @@ if (in_groups(Roles::DOCTOR)) {
 
 <header class="navbar bg-base-100 shadow-sm">
     <?php if (in_groups(Roles::ADMIN) || in_groups(Roles::DOCTOR)): ?>
-        <div class="md:hidden flex-none">
+        <div class="md:hidden flex-none" id="sidebar-toggle">
             <button class="btn btn-square btn-ghost">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="inline-block h-5 w-5 stroke-current">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
