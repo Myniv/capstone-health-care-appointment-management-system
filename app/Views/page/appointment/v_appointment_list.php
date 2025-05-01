@@ -3,7 +3,11 @@
 <?= $this->section('content'); ?>
 <div class="container mx-auto mt-4">
   <h2 class="text-2xl font-bold mb-4">Appointment List</h2>
-
+  <?php if (session('success')): ?>
+    <div class="alert alert-success alert-soft mb-4">
+      <?= session('success') ?>
+    </div>
+  <?php endif ?>
   <!-- Add Button -->
   <div class="flex gap-4 mb-4">
     <a href="/appointment/create" class="btn btn-outline btn-success">Create Appointment</a>
@@ -24,10 +28,10 @@
 
     <div class="form-control w-full md:w-1/4">
       <select name="perPage" class="select select-bordered" onchange="this.form.submit()">
-        <option value="3" <?= ($params->perPage == 3) ? 'selected' : '' ?>>3 per Page</option>
-        <option value="6" <?= ($params->perPage == 6) ? 'selected' : '' ?>>6 per Page</option>
-        <option value="12" <?= ($params->perPage == 12) ? 'selected' : '' ?>>12 per Page</option>
-        <option value="24" <?= ($params->perPage == 24) ? 'selected' : '' ?>>24 per Page</option>
+        <option value="2" <?= ($params->perPage == 2) ? 'selected' : '' ?>>2 per Page</option>
+        <option value="5" <?= ($params->perPage == 5) ? 'selected' : '' ?>>5 per Page</option>
+        <option value="10" <?= ($params->perPage == 10) ? 'selected' : '' ?>>10 per Page</option>
+        <option value="25" <?= ($params->perPage == 25) ? 'selected' : '' ?>>25 per Page</option>
       </select>
     </div>
 
@@ -36,7 +40,7 @@
       <a href="<?= $params->getResetUrl($baseUrl) ?>" class="btn btn-primary">Reset</a>
     </div>
 
-    <input type="hidden" name="sort" value="<?= $params->sort; ?>">
+    <input type="hidden" name="sort" value="<?= $params->sort ?>">
     <input type="hidden" name="order" value="<?= $params->order; ?>">
   </form>
 
@@ -99,17 +103,35 @@
       <?php foreach ($appointment as $row): ?>
         <div class="card border bg-base-100 w-full">
           <div class="card-body">
-            <h2 class="card-title">
-              <?php if (in_groups(Roles::PATIENT)): ?>
-                <p><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></p>
-              <?php else: ?>
-                <p><?= $row->patientFirstName ?> <?= $row->patientLastName ?></p>
-              <?php endif; ?>
-            </h2>
-            <p><?= date('g:i A', strtotime($row->startTime)) ?> -
-              <?= date('g:i A', strtotime($row->endTime)) ?></p>
-            <p><?= date('F j, Y', strtotime($row->date)) ?></p>
-            <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $row->status]) ?>
+
+            <div class="flex gap-4 items-center">
+              <div class="avatar">
+                <div class="w-24 rounded-full">
+                  <img src="<?= base_url('profile-picture?path=' . $row->doctorProfilePicture); ?>"
+                    alt="Profile Picture <?= $row->doctorFirstName . ' ' . $row->doctorLastName; ?>">
+                </div>
+              </div>
+              <div class="grid gap-2">
+                <h2 class="card-title">
+                  <?php if (in_groups(Roles::PATIENT)): ?>
+                    <p><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></p>
+                  <?php else: ?>
+                    <p><?= $row->patientFirstName ?> <?= $row->patientLastName ?></p>
+                  <?php endif; ?>
+                </h2>
+                <p class="flex gap-2 items-center"><i class="fa-solid fa-calendar"></i>
+                  <span><?= date('F j, Y', strtotime($row->date)) ?></span>
+                </p>
+                <p class="flex gap-2 items-center">
+                  <i class="fa-solid fa-clock"></i>
+                  <span><?= date('g:i A', strtotime($row->startTime)) ?> -
+                    <?= date('g:i A', strtotime($row->endTime)) ?></span>
+                </p>
+                <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $row->status]) ?>
+
+              </div>
+            </div>
+
 
 
             <div class="card-actions justify-end">

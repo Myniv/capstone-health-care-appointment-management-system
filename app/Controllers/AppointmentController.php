@@ -35,7 +35,7 @@ class AppointmentController extends BaseController
         $params = new DataParams([
             "search" => $this->request->getGet("search"),
             "date" => $this->request->getGet("date"),
-            "sort" => $this->request->getGet("sort"),
+            "sort" => 'date',
             "order" => $this->request->getGet("order"),
             "perPage" => $this->request->getGet("perPage"),
             "page" => $this->request->getGet("page_appointment"),
@@ -197,7 +197,7 @@ class AppointmentController extends BaseController
                 ->withInput();
         }
 
-        return redirect()->to(base_url('appointment'))->with('success', 'Data Berhasil Ditambahkan');
+        return redirect()->to(base_url('appointment'))->with('success', 'Appointment created successfully');
     }
 
     private function sendEmail($doctor, $patient, $appointment)
@@ -219,6 +219,12 @@ class AppointmentController extends BaseController
             'appointment_time' => $appointment_time,
         ];
         $email->setMessage(view('email/email_appointment_booking', $data));
+
+        $filePath = WRITEPATH . 'uploads/' . 'patients/' . $patient->user_id . '/' . 'documents' . '/' . $appointment->documents;
+        if (file_exists($filePath)) {
+            $email->attach($filePath);
+        }
+
 
         if ($email->send()) {
             return true;

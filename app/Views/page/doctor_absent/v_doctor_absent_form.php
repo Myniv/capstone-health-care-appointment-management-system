@@ -27,6 +27,7 @@
           name="date"
           class="input input-bordered w-full <?= session('errors.date') ? 'input-error' : '' ?>"
           required
+          min="<?= date('Y-m-d') ?>"
           value="<?= old('date', $doctor_absent->date ?? '') ?>" />
       </div>
 
@@ -43,7 +44,7 @@
 
     <!-- Submit Button -->
     <div class="text-end">
-      <button type="submit" class="btn btn-primary"><?= 'Request' ?> Absent</button>
+      <button type="submit" class="btn btn-primary">Add Absent</button>
       <a href="/doctor/absent" class="btn btn-secondary">Cancel</a>
     </div>
   </form>

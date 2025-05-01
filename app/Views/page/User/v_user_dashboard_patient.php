@@ -29,9 +29,14 @@
                     <?php foreach ($appointments as $appointment): ?>
                         <div class="p-4 border rounded-lg flex flex-wrap justify-between">
                             <div class="grid grid-cols-[auto,1fr]">
-                                <img class="size-16 rounded-full mr-4"
-                                    src="<?= base_url('profile-picture?path=' . $appointment->doctorProfilePicture); ?>"
-                                    alt="Profile Picture <?= $appointment->doctorFirstName . ' ' . $appointment->doctorLastName; ?>" />
+                                <div class="avatar">
+                                    <div class="w-24 rounded-full mr-4">
+                                        <img class=""
+                                            src="<?= base_url('profile-picture?path=' . $appointment->doctorProfilePicture); ?>"
+                                            alt="Profile Picture <?= $appointment->doctorFirstName . ' ' . $appointment->doctorLastName; ?>" />
+                                    </div>
+                                </div>
+
                                 <div>
                                     <h3 class="text-lg font-semibold">
                                         <?= $appointment->doctorFirstName . ' ' . $appointment->doctorLastName; ?></h3>

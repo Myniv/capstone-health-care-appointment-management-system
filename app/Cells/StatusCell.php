@@ -17,6 +17,7 @@ class StatusCell extends Cell
     {
         $color = '';
         $statusLower = strtolower($this->status);
+        $statusUpper = ucfirst($this->status);
 
         if ($statusLower == 'booking' || $statusLower == 'inuse'  || $statusLower == 'pending') {
             $color =  'warning';
@@ -31,6 +32,6 @@ class StatusCell extends Cell
             $color =  'info';
         }
 
-        return "<div class=\"badge badge-{$color}\">{$this->status}</div>";
+        return "<div class=\"badge badge-soft badge-{$color}\">{$statusUpper}</div>";
     }
 }

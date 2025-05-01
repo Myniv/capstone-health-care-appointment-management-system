@@ -14,11 +14,6 @@
     <div class="flex flex-grow items-center gap-2">
       <input type="text" class="input input-bordered w-full md:w-auto flex-grow" name="search" value="<?= $params->search ?>"
         placeholder="Search...">
-      <input type="date"
-        name="date"
-        class="input input-bordered <?= session('errors.date') ? 'input-error' : '' ?>"
-        value="<?= $params->date ?>"
-        placeholder="Select Date" />
       <button type="submit" class="btn btn-primary ml-2">Search</button>
     </div>
 
@@ -46,34 +41,19 @@
       <thead>
         <tr>
           <th>
-            <a href="<?= $params->getSortUrl('id', $baseUrl) ?>" class="link link-hover">
-              ID <?= $params->isSortedBy('id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
-            </a>
-          </th>
-
-          <th>
-            <a href="<?= $params->getSortUrl('doctor_id', $baseUrl) ?>" class="link link-hover">
-              Doctor ID <?= $params->isSortedBy('doctor_id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
-            </a>
-          </th>
-          <th>
             <a href="<?= $params->getSortUrl('date', $baseUrl) ?>" class="link link-hover">
               Date <?= $params->isSortedBy('date') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
             </a>
           </th>
           <th>Reason</th>
-          <th>Status</th>
           <!-- <th>Action</th> -->
         </tr>
       </thead>
       <tbody>
         <?php foreach ($doctor_absent as $absent): ?>
           <tr>
-            <td><?= $absent->id ?></td>
-            <td><?= $absent->doctor_id ?></td>
-            <td><?= $absent->date ?></td>
-            <td><?= $absent->reason ?></td>
-            <td><?= $absent->status ?></td>
+            <td><?= date('F j, Y', strtotime($absent->date)) ?></td>
+            <td class="w-2/3"><?= $absent->reason ?></td>
             <!-- <td> <a href="" class="btn btn-warning btn-sm">Button</a>
               <form action="" method="post" class="inline">
                 <input type="hidden" name="_method" value="DELETE">

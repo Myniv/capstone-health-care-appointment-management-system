@@ -68,14 +68,12 @@ class DoctorAbsentModel extends Model
         }
         $this->select('doctor_absents.*');
         if (!empty($params->search)) {
-            $this->where('CAST(id AS TEXT) LIKE', "%$params->search%")
-                ->orWhere('CAST(doctor_id AS TEXT) LIKE', "%$params->search%");
+            $this->where('CAST(reason AS TEXT) LIKE', "%$params->search%");
         }
 
-
-        if (!empty($params->date)) {
-            $this->where("TO_CHAR(date, 'YYYY-MM-DD') LIKE", "%{$params->date}%");
-        }
+        // if (!empty($params->date)) {
+        //     $this->where("TO_CHAR(date, 'YYYY-MM-DD') LIKE", "%{$params->date}%");
+        // }
 
         $allowedSort = [
             'id',

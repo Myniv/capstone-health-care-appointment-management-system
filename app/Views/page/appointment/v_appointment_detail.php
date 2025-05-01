@@ -4,7 +4,7 @@
 <div class="container mx-auto mt-4">
   <div class="flex gap-4 items-center mb-4">
     <h2 class="text-2xl font-bold">Appointment Details</h2>
-    <div class="badge badge-warning"><?= $appointment->status; ?></div>
+    <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $appointment->status]) ?>
   </div>
   <?php
 
@@ -20,7 +20,7 @@
       <?= session('success') ?>
     </div>
   <?php endif ?>
-  <div class="card card-border bg-base-100 my-4">
+  <div class="card card-border bg-base-100 my-4 text-xl">
     <div class="card-body">
       <div class="grid grid-cols-3 gap-4">
         <div class="col-span-2">
@@ -102,23 +102,42 @@
       <div role="alert" class="alert alert-info alert-soft">
         <span>Please reach 10-15 minutes before the appointment starts.</span>
       </div>
-      <p class="font-bold">Date, Time & Room</p>
-      <span><?= date('F j, Y', strtotime($appointment->date)) ?></span>
-      <span>
-        <?= date('g:i A', strtotime($appointment->start_time)) ?> -
-        <?= date('g:i A', strtotime($appointment->end_time)) ?>
+      <p class="font-bold">Details</p>
+      <span class="flex gap-2 items-center">
+        <i class="fa-solid fa-calendar"></i>
+        <?= date('F j, Y', strtotime($appointment->date)) ?></span>
+      <span class="flex gap-2 items-center">
+        <i class="fa-solid fa-clock"></i>
+        <span><?= date('g:i A', strtotime($appointment->start_time)) ?> -
+          <?= date('g:i A', strtotime($appointment->end_time)) ?></span>
       </span>
-      <span><?= $appointment->roomName ?></span>
+      <span class="flex gap-2 items-center">
+        <i class="fa-solid fa-door-open"></i>
+        <span>
+          <?= $appointment->roomName ?>
+        </span>
+      </span>
 
-      <p class="font-bold">Address</p>
-      <span>Rumah Sakit HealthCare
-        Jl. Melati Raya No. 27
-        Kelurahan Sukamaju, Kecamatan Serpong
-        Tangerang Selatan, Banten 15310 </span>
-      <span>Telepon: (021) 555-7283</span>
+      <span class="flex gap-2 items-center">
+        <i class="fa-solid fa-location-dot text-lg"></i>
+        <span>
+          Rumah Sakit HealthCare
+          Jl. Melati Raya No. 27
+          Kelurahan Sukamaju, Kecamatan Serpong
+          Tangerang Selatan, Banten 15310
+        </span>
+      </span>
+
+      <span class="flex gap-2 items-center">
+        <i class="fa-solid fa-phone"></i>
+        <span>
+          Telepon: (021) 555-7283</span>
+      </span>
+
       <?php if (!empty($appointment->documents)): ?>
         <a href="<?= site_url('documents/' . $appointment->documents . '/' . $appointment->patientUserId) ?>"
           target="_blank" class="btn btn-outline btn-info w-fit">
+          <i class="fa-solid fa-file"></i>
           Preview Document
         </a>
       <?php endif ?>
