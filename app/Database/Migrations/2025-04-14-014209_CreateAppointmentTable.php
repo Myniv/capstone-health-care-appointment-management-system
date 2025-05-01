@@ -49,6 +49,11 @@ class CreateAppointmentTable extends Migration
                 'constraint' => '100',
                 'null' => true
             ],
+            'is_reschedule' => [
+                'type' => 'VARCHAR',
+                'constraint' => '50',
+                'null' => true
+            ],
             'created_at' => [
                 'type' => 'DATETIME',
                 'null' => true

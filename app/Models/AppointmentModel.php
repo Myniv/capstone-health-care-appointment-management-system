@@ -24,6 +24,7 @@ class AppointmentModel extends Model
         'date',
         'status',
         'reason_for_visit',
+        'is_reschedule',
         'documents'
     ];
 
@@ -116,7 +117,8 @@ class AppointmentModel extends Model
             rooms.name as roomName,
             appointments.date as date,
             appointments.reason_for_visit as reason,
-            appointments.status as status');
+            appointments.status as status,
+            appointments.is_reschedule as is_reschedule');
 
         $this->join('doctor_schedules', 'doctor_schedules.id = appointments.doctor_schedule_id');
         $this->join('rooms', 'rooms.id = doctor_schedules.room_id');
