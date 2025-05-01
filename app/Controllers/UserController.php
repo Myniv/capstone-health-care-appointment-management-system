@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Controllers\BaseController;
 use App\Libraries\DataParams;
+use App\Models\AppointmentModel;
 use App\Models\DoctorCategoryModel;
 use App\Models\DoctorModel;
 use App\Models\EducationModel;
@@ -20,9 +21,9 @@ class UserController extends BaseController
     protected $patientModel;
     protected $doctorModel;
     protected $doctorCategoryModel;
+    protected $appointmentModel;
     protected $educationModel;
     protected $config;
-
 
     public function __construct()
     {
@@ -32,6 +33,7 @@ class UserController extends BaseController
         $this->doctorModel = new DoctorModel();
         $this->doctorCategoryModel = new DoctorCategoryModel();
         $this->educationModel = new EducationModel();
+        $this->appointmentModel = new AppointmentModel();
 
         $this->config = config('Auth');
         helper('auth');
@@ -78,11 +80,16 @@ class UserController extends BaseController
         $doctors = $this->doctorModel->countAllResults();
         $patients = $this->patientModel->countAllResults();
 
+        $appointmentChartData = $this->getAppointmentPerDay();
+        $patientDistributionChartData = $this->getPatientDistributionByDoctorCategory();
+
         $data = [
             'title' => 'Dashboard Admin',
             'users' => $users,
             'doctors' => $doctors,
-            'patients' => $patients
+            'patients' => $patients,
+            'appointmentChartData' => $appointmentChartData,
+            'patientDistributionChartData' => $patientDistributionChartData
         ];
 
         return view('page/user/v_user_dashboard_admin', $data);
@@ -700,5 +707,102 @@ class UserController extends BaseController
         }
 
         rmdir($folderPath);
+    }
+
+    private function getAppointmentPerDay()
+    {
+        // Ambil tanggal hari ini
+        $today = date('Y-m-d');
+
+        // Ambil tanggal 7 hari yang lalu
+        $lastWeek = date('Y-m-d', strtotime('-6 days', strtotime($today)));
+
+        // Query untuk menghitung jumlah appointment per hari
+        $appointments = $this->appointmentModel
+            ->select("DATE(date) as appointment_date, COUNT(*) as appointment_count")
+            ->where("DATE(date) BETWEEN '$lastWeek' AND '$today'")
+            ->groupBy("DATE(date)")
+            ->orderBy("appointment_date", "ASC")
+            ->findAll();
+
+        // Siapkan data untuk Chart.js
+        $labels = [];
+        $data = [];
+
+        // Buat array tanggal untuk 7 hari terakhir
+        $dates = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $dates[] = date('Y-m-d', strtotime("-$i days", strtotime($today)));
+        }
+
+        // Map data appointment ke tanggal
+        $appointmentMap = [];
+        foreach ($appointments as $appointment) {
+            $appointmentMap[$appointment->appointment_date] = (int) $appointment->appointment_count;
+        }
+
+        // Isi data untuk setiap tanggal
+        foreach ($dates as $date) {
+            $labels[] = date('D, M j', strtotime($date)); // Format label (contoh: Mon, Jan 1)
+            $data[] = $appointmentMap[$date] ?? 0; // Jika tidak ada data, isi dengan 0
+        }
+
+        return [
+            'labels' => $labels,
+            'datasets' => [
+                [
+                    'label' => 'Appointments',
+                    'data' => $data,
+                    'backgroundColor' => 'rgba(75, 192, 192, 0.5)',
+                    'borderColor' => 'rgba(75, 192, 192, 1)',
+                    'borderWidth' => 1,
+                ]
+            ]
+        ];
+    }
+
+    private function getPatientDistributionByDoctorCategory()
+    {
+        // Query untuk menghitung jumlah pasien per kategori dokter
+        $patientDistribution = $this->appointmentModel
+            ->select("doctor_category.name as category_name, COUNT(appointments.patient_id) as patient_count")
+            ->join('doctors', 'doctors.id = appointments.doctor_id', 'left')
+            ->join('doctor_category', 'doctor_category.id = doctors.doctor_category_id', 'left')
+            ->groupBy("doctor_category.name")
+            ->orderBy("patient_count", "DESC")
+            ->findAll();
+
+        // Siapkan data untuk Chart.js
+        $labels = [];
+        $data = [];
+        $backgroundColors = [];
+
+        foreach ($patientDistribution as $row) {
+            $labels[] = $row->category_name;
+            $data[] = (int) $row->patient_count;
+
+            // Generate warna random untuk setiap kategori
+            $backgroundColors[] = sprintf(
+                'rgba(%d, %d, %d, 0.5)',
+                rand(0, 255),
+                rand(0, 255),
+                rand(0, 255)
+            );
+        }
+
+        return [
+            'labels' => $labels,
+            'datasets' => [
+                [
+                    'label' => 'Patient Distribution',
+                    'data' => $data,
+                    'backgroundColor' => $backgroundColors,
+                    'borderColor' => array_map(function ($color) {
+                        return str_replace('0.5', '1', $color); // Ubah opacity menjadi 1 untuk border
+                    }, $backgroundColors),
+                    'borderWidth' => 1,
+                ]
+            ]
+        ];
     }
 }

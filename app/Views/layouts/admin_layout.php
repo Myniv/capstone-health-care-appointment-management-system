@@ -29,6 +29,9 @@ use Config\Roles; ?>
 
     <!-- Pristine.js -->
     <script src="<?= base_url('assets/js/pristine/dist/pristine.js') ?>" type="text/javascript"></script>
+
+    <!-- ChartJS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body class="flex flex-col min-h-screen bg-base-100" data-theme="light">
