@@ -68,6 +68,7 @@ use Config\Roles; ?>
             <th>Doctor</th>
             <th>Patient</th>
             <th>Room</th>
+            <th>Date</th>
             <th>Time</th>
             <th>Status</th>
             <th>Action</th>
@@ -80,11 +81,13 @@ use Config\Roles; ?>
                 <td><?= $row->id ?></td>
                 <td><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></td>
                 <td><?= $row->patientFirstName ?> <?= $row->patientLastName ?></td>
+                <td><?= date('F j, Y', strtotime($row->date)) ?></td>
                 <td><?= $row->roomName ?></td>
                 <td><?= date('g:i A', strtotime($row->startTime)) ?> -
                   <?= date('g:i A', strtotime($row->endTime)) ?></td>
                 <td>
                   <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $row->status]) ?>
+                  <?= view_cell('\App\Cells\StatusRescheduleCell::getStatusReschedule', ['is_reschedule' => $row->is_reschedule]) ?>
                 </td>
                 <td>
                   <a href="appointment/detail/<?= $row->id ?>" class="btn btn-primary btn-sm">Details</a>

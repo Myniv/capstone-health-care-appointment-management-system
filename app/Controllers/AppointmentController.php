@@ -96,7 +96,8 @@ class AppointmentController extends BaseController
                 rooms.name as roomName,
                 appointments.documents,
                 appointments.id as id,
-                appointments.status as status')
+                appointments.status as status,
+                appointments.is_reschedule as is_reschedule')
             ->join('doctors', 'appointments.doctor_id = doctors.id')
             ->join('doctor_schedules', 'appointments.doctor_schedule_id = doctor_schedules.id')
             ->join('patients', 'patients.id = appointments.patient_id')
@@ -243,8 +244,17 @@ class AppointmentController extends BaseController
             $room_id = $this->doctorScheduleModel->find($this->request->getVar('schedule'))->room_id;
         }
 
+        $patientId = null;
+        if (!$patient) {
+            $patientId = $appointment->patient_id;
+        } else {
+            $patientId = $patient->id;
+        }
+
+
+
         $data = [
-            'patient_id' => $patient->id,
+            'patient_id' => $patientId,
             'doctor_schedule_id' => $this->request->getVar('schedule'),
             'doctor_id' => $this->request->getVar('id'),
             'date' => $this->request->getVar('date'),
@@ -322,8 +332,25 @@ class AppointmentController extends BaseController
         $appointmentId = $this->request->getVar('appointmentId');
         $doctorId = $this->request->getVar('id');
 
+
+        $appointment = $this->appointmentModel->find($appointmentId);
+
         $doctor = $this->doctorModel->getDoctorWithCategoryName($doctorId);
         $education = $this->educationModel->where('doctor_id', $doctorId)->findAll();
+
+        $datePicked = '';
+        if ($this->request->getVar('date')) {
+            $datePicked = $this->request->getVar('date');
+        } else {
+            $datePicked = (new DateTime($appointment->date))->format('Y-m-d');
+        }
+
+        $reason = '';
+        if ($this->request->getVar('reason')) {
+            $reason = $this->request->getVar('reason');
+        } else {
+            $reason = $appointment->reason_for_visit;
+        }
 
         $data = [
             'type' => 'reschedule',
@@ -331,8 +358,8 @@ class AppointmentController extends BaseController
             'appointmentId' => $appointmentId,
             'education' => $education,
             'schedule' => $this->request->getVar('schedule') ?? 0,
-            'date' => $this->request->getVar('date') ?? (new DateTime())->format('Y-m-d'),
-            'reason' => $this->request->getVar('reason') ?? '',
+            'date' => $datePicked  ?? (new DateTime())->format('Y-m-d'),
+            'reason' => $reason ?? '',
         ];
 
         $schedules = $this->doctorScheduleModel

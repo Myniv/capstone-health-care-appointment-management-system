@@ -13,7 +13,7 @@ use Config\Roles; ?>
 <div class="mb-4">
   <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
 </div>
-<h2 class="text-2xl font-bold mb-4">Create Appointment</h2>
+<h2 class="text-2xl font-bold mb-4"><?= $type == 'reschedule' ? 'Reschedule' : 'Create' ?> Appointment</h2>
 
 <?php if (session('errors')) : ?>
   <div class="alert alert-error mb-4">
@@ -80,7 +80,7 @@ use Config\Roles; ?>
 
 
   <form
-    action="<?= $type == 'create' ? base_url('appointment/create/form') : base_url('appointment/reschedule/form') ?>"
+    action="<?= $type == 'create' ? base_url('appointment/create/form') : base_url(Roles::ADMIN ? 'admin/appointment/reschedule/form' : 'appointment/reschedule/form') ?>"
     method="get"
     enctype="multipart/form-data"
     id="appointmentForm"
@@ -159,8 +159,14 @@ use Config\Roles; ?>
 
         <!-- Submit Button -->
         <div class="text-end mt-4">
-          <button type="submit" formaction="<?= $type == 'create' ? base_url('appointment/create/submit') :  base_url('appointment/reschedule/submit') ?>" formmethod="post" class="btn btn-primary"><?= $type == 'create' ? 'Create' : 'Reschedule' ?></button>
-          <a href="/appointment/create" class="btn btn-secondary">Cancel</a>
+          <button type="submit" formaction="<?= $type == 'create' ?
+                                              base_url('appointment/create/submit') :
+                                              base_url(Roles::ADMIN ? 'admin/appointment/reschedule/submit' : 'appointment/reschedule/submit') ?>"
+            formmethod="post"
+            class="btn btn-primary">
+            <?= $type == 'create' ? 'Create' : 'Reschedule' ?>
+          </button>
+          <a href="<?= Roles::ADMIN ? '/admin/appointment/detail/' . $appointmentId : '/appointment/create' ?>" class="btn btn-secondary">Cancel</a>
           <input type="hidden" name="appointmentId" value="<?= $type == 'create' ? '' : $appointmentId ?>" />
         </div>
       </div>
