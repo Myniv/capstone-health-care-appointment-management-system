@@ -5,6 +5,7 @@
   <div class="flex gap-4 items-center mb-4">
     <h2 class="text-2xl font-bold">Appointment Details</h2>
     <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $appointment->status]) ?>
+    <?= view_cell('\App\Cells\StatusRescheduleCell::getStatusReschedule', ['is_reschedule' => $appointment->is_reschedule]) ?>
   </div>
   <?php
 
@@ -21,6 +22,7 @@
       <?= session('success') ?>
     </div>
   <?php endif ?>
+
 
   <div class="card card-border bg-base-100 my-4 text-xl">
     <div class="card-body">
@@ -66,8 +68,6 @@
         </div>
 
         <?php if ($appointment->status != 'cancel' && in_groups(Roles::PATIENT)): ?>
-
-
           <div class="col-span-1">
             <div class="card card-border alert alert-warning alert-soft w-full h-full">
               <div class="card-body items-center text-center">
@@ -108,6 +108,15 @@
               </div>
             </div>
           </div>
+        <?php endif; ?>
+        <?php if (in_groups(Roles::ADMIN)): ?>
+          <form action="/admin/appointment/reschedule/form" method="get">
+            <div class="card-actions justify-end">
+              <button type="submit" class="btn btn-info btn-soft">Reschedule</button>
+            </div>
+            <input type="text" name="id" hidden value="<?= $appointment->doctorId ?>">
+            <input type="text" name="appointmentId" hidden value="<?= $appointment->id ?>">
+          </form>
         <?php endif; ?>
       </div>
 

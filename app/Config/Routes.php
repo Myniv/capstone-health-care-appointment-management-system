@@ -72,6 +72,10 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
 
     $routes->get('appointment', [AppointmentController::class, 'index']);
     $routes->get('appointment/detail/(:num)', [AppointmentController::class, 'detail']);
+
+    //reschedule
+    $routes->get('appointment/reschedule/form', [AppointmentController::class, 'appointmentRescheduleForm']);
+    $routes->post('appointment/reschedule/submit', [AppointmentController::class, 'rescheduleAppointmentSubmit']);
 });
 
 // Doctor Routes
