@@ -1,9 +1,9 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-  <h2 class="text-2xl font-bold mb-4">Doctor Absent List</h2>
+<h2 class="text-2xl font-bold mb-4">Doctor Absent List</h2>
 
+<div class="bg-base-100 p-6 rounded-md shadow-md mb-4">
   <!-- Add Button -->
   <div class="flex gap-4 mb-4">
     <a href="/doctor/absent/create" class="btn btn-outline btn-success">Add Doctor Absent</a>
@@ -39,7 +39,9 @@
     <input type="hidden" name="sort" value="<?= $params->sort; ?>">
     <input type="hidden" name="order" value="<?= $params->order; ?>">
   </form>
+</div>
 
+<div class="bg-base-100 p-6 rounded-md shadow-md">
   <!-- Table -->
   <div class="overflow-x-auto">
     <table class="table table-zebra w-full">

@@ -1,9 +1,9 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-    <h2 class="text-2xl font-bold mb-4">Inventory List</h2>
+<h2 class="text-2xl font-bold mb-4">Inventory List</h2>
 
+<div class="bg-base-100 p-6 rounded-md shadow-md">
     <!-- Add Button -->
     <div class="flex gap-4 mb-4">
         <a href="/admin/inventory/create" class="btn btn-outline btn-success">Add inventory</a>

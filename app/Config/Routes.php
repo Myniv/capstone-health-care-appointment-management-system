@@ -71,6 +71,7 @@ $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes)
     $routes->delete('setting/delete/(:num)', [SettingController::class, 'delete/$1']);
 
     $routes->get('appointment', [AppointmentController::class, 'index']);
+    $routes->get('appointment/detail/(:num)', [AppointmentController::class, 'detail']);
 });
 
 // Doctor Routes

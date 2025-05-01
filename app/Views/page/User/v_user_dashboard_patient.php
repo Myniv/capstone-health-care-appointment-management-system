@@ -1,145 +1,143 @@
 <?= $this->extend('layouts/public_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4 px-4">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="card md:col-span-2">
-            <div class="card-body">
-                <?php if (!empty(user())): ?>
-                    <span class="card-title text-3xl font-bold">
-                        Hello, <span class="text-primary"><?= user()->username; ?></span> 👋🏼
-                    </span>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <div class="card border">
-            <div class="card-body">
-                <a href="appointment/create" class="btn btn-soft btn-success">+ Create Appointment</a>
-            </div>
-        </div>
-
-        <div class="card border md:col-span-2">
-            <div class="card-body">
-                <div class="flex justify-between">
-                    <h3 class="card-title">Upcoming Appointment</h3>
-                    <a class="p-2 rounded-md text-sm text-primary duration-300 hover:bg-primary hover:text-base-100" href="appointment">View All</a>
-                </div>
-                <?php if (!empty($appointments)): ?>
-                    <?php foreach ($appointments as $appointment): ?>
-                        <div class="p-4 border rounded-lg flex flex-wrap justify-between">
-                            <div class="grid grid-cols-[auto,1fr]">
-                                <img class="size-16 rounded-full mr-4"
-                                    src="<?= base_url('profile-picture?path=' . $appointment->doctorProfilePicture); ?>"
-                                    alt="Profile Picture <?= $appointment->doctorFirstName . ' ' . $appointment->doctorLastName; ?>" />
-                                <div>
-                                    <h3 class="text-lg font-semibold">
-                                        <?= $appointment->doctorFirstName . ' ' . $appointment->doctorLastName; ?></h3>
-                                    <p class="col-start-2"><?= ucwords($appointment->doctorCategoryName); ?></p>
-                                    <p class="col-start-2">
-                                        <?= date('g:i A', strtotime($appointment->startTime)) ?> -
-                                        <?= date('g:i A', strtotime($appointment->endTime)) ?>
-                                    </p>
-                                    <p class="col-start-2"><?= date('F j, Y', strtotime($appointment->date)) ?></p>
-                                </div>
-                            </div>
-                            <div class="card-actions self-center">
-                                <a class="btn btn-ghost btn-sm" href="/appointment/detail/<?= $appointment->id ?>">
-                                    Details
-                                </a>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-
-                <?php else: ?>
-                    <p>There is no data appointment.</p>
-                <?php endif; ?>
-            </div>
-        </div>
-
-        <div class="card border bg-primary-content">
-            <div class="card-body">
-                <div class="flex justify-between">
-                    <h3 class="card-title">Medical History</h3>
-                    <a class="p-2 rounded-md text-sm text-primary duration-300 hover:bg-primary hover:text-base-100" href="profile/history">View All</a>
-                </div>
-                <?php if (!empty($histories)): ?>
-                    <?php foreach ($histories as $history): ?>
-                        <ul class="menu border rounded-box bg-base-100 w-full">
-                            <li class="flex flex-wrap justify-between">
-                                <button
-                                    id="btn-modal-medical-history"
-                                    class="pointer w-full"
-                                    data-id="<?= htmlspecialchars($history->historyId); ?>"
-                                    data-reason="<?= htmlspecialchars($history->reason); ?>"
-                                    data-notes="<?= htmlspecialchars($history->notes); ?>"
-                                    data-prescriptions="<?= htmlspecialchars($history->prescriptions); ?>"
-                                    data-firstName="<?= htmlspecialchars($history->doctorFirstName); ?>"
-                                    data-lastName="<?= htmlspecialchars($history->doctorLastName); ?>"
-                                    data-date="<?= htmlspecialchars($history->date); ?>"
-                                    data-status="<?= htmlspecialchars($history->status); ?>"
-                                    data-documents="<?= htmlspecialchars($history->documents); ?>">
-                                    <?= strlen($history->notes) >= 40 ? substr($history->notes, 0, 40) . '...' : $history->notes; ?>
-
-                                    <p class="text-gray-700 md:justify-self-end"><?= date('F j, Y', strtotime($history->date)) ?></p>
-                                </button>
-                            </li>
-                        </ul>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <p>There is no history.</p>
-                <?php endif; ?>
-            </div>
+<div class="grid grid-cols-1 md:grid-cols-3 md:grid-rows-[auto_1fr] gap-4 h-full">
+    <div class="card md:col-span-2">
+        <div class="card-body">
+            <?php if (!empty(user())): ?>
+                <span class="card-title text-3xl font-bold">
+                    Hello, <span class="text-primary"><?= user()->username; ?></span> 👋🏼
+                </span>
+            <?php endif; ?>
         </div>
     </div>
 
-    <dialog class="modal" id="modal-medical-history">
-        <div class="modal-box md:max-w-xl">
-            <form method="dialog">
-                <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
-            </form>
-            <div class="card">
-                <div class="card-body grid gap-2 p-4 rounded-md">
-                    <div>
-                        <h3 class="font-semibold">Treatment</h3>
-                        <div>
-                            <span>Complaint: </span>
-                            <span class="text-gray-700 modal-reason"></span>
+    <div class="card shadow-md bg-base-100">
+        <div class="card-body">
+            <a href="appointment/create" class="btn btn-soft btn-success">+ Create Appointment</a>
+        </div>
+    </div>
+
+    <div class="card shadow-md bg-base-100 md:col-span-2 h-full">
+        <div class="card-body">
+            <div class="flex justify-between">
+                <h3 class="card-title">Upcoming Appointment</h3>
+                <a class="p-2 rounded-md text-sm text-primary duration-300 hover:bg-primary hover:text-base-100" href="appointment">View All</a>
+            </div>
+            <?php if (!empty($appointments)): ?>
+                <?php foreach ($appointments as $appointment): ?>
+                    <div class="p-4 border rounded-lg flex flex-wrap justify-between">
+                        <div class="grid grid-cols-[auto,1fr]">
+                            <img class="size-16 rounded-full mr-4"
+                                src="<?= base_url('profile-picture?path=' . $appointment->doctorProfilePicture); ?>"
+                                alt="Profile Picture <?= $appointment->doctorFirstName . ' ' . $appointment->doctorLastName; ?>" />
+                            <div>
+                                <h3 class="text-lg font-semibold">
+                                    <?= $appointment->doctorFirstName . ' ' . $appointment->doctorLastName; ?></h3>
+                                <p class="col-start-2"><?= ucwords($appointment->doctorCategoryName); ?></p>
+                                <p class="col-start-2">
+                                    <?= date('g:i A', strtotime($appointment->startTime)) ?> -
+                                    <?= date('g:i A', strtotime($appointment->endTime)) ?>
+                                </p>
+                                <p class="col-start-2"><?= date('F j, Y', strtotime($appointment->date)) ?></p>
+                            </div>
                         </div>
-                        <div>
-                            <span>Notes: </span>
-                            <span class="text-gray-700 modal-notes"></span>
-                        </div>
-                        <div>
-                            <span>Prescriptions: </span>
-                            <span class="text-gray-700 modal-prescriptions"></span>
+                        <div class="card-actions self-center">
+                            <a class="btn btn-ghost btn-sm" href="/appointment/detail/<?= $appointment->id ?>">
+                                Details
+                            </a>
                         </div>
                     </div>
+                <?php endforeach; ?>
+
+            <?php else: ?>
+                <p>There is no data appointment.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="card shadow-md bg-base-100 h-full">
+        <div class="card-body">
+            <div class="flex justify-between">
+                <h3 class="card-title">Medical History</h3>
+                <a class="p-2 rounded-md text-sm text-primary duration-300 hover:bg-primary hover:text-base-100" href="profile/history">View All</a>
+            </div>
+            <?php if (!empty($histories)): ?>
+                <?php foreach ($histories as $history): ?>
+                    <ul class="menu border rounded-box bg-base-100 w-full">
+                        <li class="flex flex-wrap justify-between">
+                            <button
+                                id="btn-modal-medical-history"
+                                class="pointer w-full"
+                                data-id="<?= htmlspecialchars($history->historyId); ?>"
+                                data-reason="<?= htmlspecialchars($history->reason); ?>"
+                                data-notes="<?= htmlspecialchars($history->notes); ?>"
+                                data-prescriptions="<?= htmlspecialchars($history->prescriptions); ?>"
+                                data-firstName="<?= htmlspecialchars($history->doctorFirstName); ?>"
+                                data-lastName="<?= htmlspecialchars($history->doctorLastName); ?>"
+                                data-date="<?= htmlspecialchars($history->date); ?>"
+                                data-status="<?= htmlspecialchars($history->status); ?>"
+                                data-documents="<?= htmlspecialchars($history->documents); ?>">
+                                <?= strlen($history->notes) >= 40 ? substr($history->notes, 0, 40) . '...' : $history->notes; ?>
+
+                                <p class="text-gray-700 md:justify-self-end"><?= date('F j, Y', strtotime($history->date)) ?></p>
+                            </button>
+                        </li>
+                    </ul>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>There is no history.</p>
+            <?php endif; ?>
+        </div>
+    </div>
+</div>
+
+<dialog class="modal" id="modal-medical-history">
+    <div class="modal-box md:max-w-xl">
+        <form method="dialog">
+            <button class="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">✕</button>
+        </form>
+        <div class="card">
+            <div class="card-body grid gap-2 p-4 rounded-md">
+                <div>
+                    <h3 class="font-semibold">Treatment</h3>
                     <div>
-                        <h3 class="font-semibold">Appointment</h3>
-                        <div>
-                            <span>Doctor: </span>
-                            <span class="text-gray-700 modal-doctor-name"></span>
-                        </div>
-                        <div>
-                            <span>Date: </span>
-                            <span class="text-gray-700 modal-date"></span>
-                        </div>
+                        <span>Complaint: </span>
+                        <span class="text-gray-700 modal-reason"></span>
                     </div>
                     <div>
-                        <h3 class="font-semibold">Status</h3>
-                        <div class="badge badge-soft badge-success mt-2 modal-status"></div>
+                        <span>Notes: </span>
+                        <span class="text-gray-700 modal-notes"></span>
+                    </div>
+                    <div>
+                        <span>Prescriptions: </span>
+                        <span class="text-gray-700 modal-prescriptions"></span>
                     </div>
                 </div>
-                <div class="card-actions flex justify-end mt-4">
-                    <a href="" target="_blank" class="btn btn-primary modal-id">
-                        Preview Document
-                    </a>
+                <div>
+                    <h3 class="font-semibold">Appointment</h3>
+                    <div>
+                        <span>Doctor: </span>
+                        <span class="text-gray-700 modal-doctor-name"></span>
+                    </div>
+                    <div>
+                        <span>Date: </span>
+                        <span class="text-gray-700 modal-date"></span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="font-semibold">Status</h3>
+                    <div class="badge badge-soft badge-success mt-2 modal-status"></div>
                 </div>
             </div>
+            <div class="card-actions flex justify-end mt-4">
+                <a href="" target="_blank" class="btn btn-primary modal-id">
+                    Preview Document
+                </a>
+            </div>
         </div>
-    </dialog>
-</div>
+    </div>
+</dialog>
 <?= $this->endSection(); ?>
 
 <?= $this->section('scripts'); ?>

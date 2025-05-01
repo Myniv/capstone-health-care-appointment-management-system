@@ -1,9 +1,9 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-    <h2 class="text-2xl font-bold mb-4">Doctor Schedule List</h2>
+<h2 class="text-2xl font-bold mb-4">Doctor Schedule List</h2>
 
+<div class="bg-base-100 p-6 rounded-md shadow-md">
     <!-- Add Button -->
     <div class="flex gap-4 mb-4">
         <a href="/admin/doctor-schedule/create" class="btn btn-outline btn-success">Add Doctor Schedule</a>
@@ -113,7 +113,7 @@
                 <?php foreach ($doctor_schedule as $schedule): ?>
                     <tr>
                         <td><?= $schedule->id ?></td>
-                        <td><?= $schedule->doctor_first_name ?>     <?= $schedule->doctor_last_name ?></td>
+                        <td><?= $schedule->doctor_first_name ?> <?= $schedule->doctor_last_name ?></td>
                         <td><?= $schedule->doctor_email ?></td>
                         <td><?= $schedule->doctor_category_name ?></td>
                         <td><?= $schedule->room_name ?></td>

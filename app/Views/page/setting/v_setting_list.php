@@ -2,9 +2,9 @@
 
 <?= $this->section('content'); ?>
 
-<div class="container mx-auto mt-4">
-    <h2 class="text-2xl font-bold mb-4">Setting List</h2>
+<h2 class="text-2xl font-bold mb-4">Setting List</h2>
 
+<div class="bg-base-100 p-6 rounded-md shadow-md">
     <div class="flex gap-4 mb-4">
         <a href="/admin/setting/create" class="btn btn-outline btn-success">Add Setting</a>
     </div>

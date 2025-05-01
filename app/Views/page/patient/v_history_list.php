@@ -2,7 +2,7 @@
 
 <?= $this->section('content'); ?>
 <div class="flex flex-wrap gap-4 h-full">
-    <aside class="flex-grow md:flex-grow-0 border p-4 rounded-lg flex flex-col justify-between">
+    <aside class="flex-grow lg:flex-grow-0 p-6 rounded-lg flex flex-col justify-between bg-base-100 shadow-md">
         <div class="flex gap-2 items-center justify-center">
             <div class="avatar">
                 <div class="w-20 rounded-full">
@@ -29,9 +29,9 @@
         <a href="logout" class="btn btn-error text-base-100 w-full mt-auto">Logout</a>
     </aside>
 
-    <section class="flex-grow border p-4 rounded-lg flex flex-col">
-        <h1 class="font-bold text-2xl mb-6">Medical History</h1>
 
+    <section class="flex-grow p-6 rounded-lg flex flex-col bg-base-100 shadow-md">
+        <h1 class="font-bold text-2xl mb-4">Medical History</h1>
         <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap items-center gap-4 mb-4">
             <div class="flex flex-grow items-center gap-2">
                 <input

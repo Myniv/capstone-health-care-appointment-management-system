@@ -1,15 +1,19 @@
 <?= $this->extend('layouts/admin_layout'); ?>
+
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-    <div class="mb-4">
-        <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+<div class="mb-4">
+    <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+</div>
+
+<h2 class="text-2xl font-bold mb-4"><?= isset($schedule) ? 'Edit Doctor Schedule' : 'Add Doctor Schedule'; ?></h2>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-error mb-4">
+        <?= esc(session()->getFlashdata('error')) ?>
     </div>
-    <h2 class="text-2xl font-bold mb-4"><?= isset($schedule) ? 'Edit Doctor Schedule' : 'Add Doctor Schedule'; ?></h2>
-    <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-error mb-4">
-            <?= esc(session()->getFlashdata('error')) ?>
-        </div>
-    <?php endif; ?>
+<?php endif; ?>
+
+<div class="bg-base-100 p-6 rounded-md shadow-md">
     <form
         action="<?= isset($schedule) ? base_url('admin/doctor-schedule/update/' . $schedule->id) : base_url('admin/doctor-schedule/create') ?>"
         method="post" id="formData" novalidate>
@@ -121,7 +125,7 @@
 </div>
 <!-- Room Schedule Validation Script -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const roomSelect = document.querySelector('select[name="room_id"]');
         const startTimeInput = document.querySelector('input[name="start_time"]');
         const endTimeInput = document.querySelector('input[name="end_time"]');
@@ -132,7 +136,7 @@
         let existingSchedules = [];
 
         // Check for conflicts when room, start or end time changes
-        roomSelect.addEventListener('change', function () {
+        roomSelect.addEventListener('change', function() {
             fetchRoomSchedule(roomSelect.value);
             checkForConflicts();
         });
@@ -141,7 +145,7 @@
 
         // Check conflicts on page load if values are already set (edit mode)
         if (roomSelect.value) {
-            setTimeout(function () {
+            setTimeout(function() {
                 fetchRoomSchedule(roomSelect.value);
                 checkForConflicts();
             }, 500); // Small delay to ensure DOM is ready
@@ -157,12 +161,12 @@
             roomScheduleContainer.innerHTML = '<p class="text-sm">Loading schedules...</p>';
 
             fetch(`<?= base_url('admin/doctor-schedule/get-room-schedules') ?>/${roomId}`, {
-                method: 'GET',
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': document.querySelector('input[name="<?= csrf_token() ?>"]').value
-                }
-            })
+                    method: 'GET',
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="<?= csrf_token() ?>"]').value
+                    }
+                })
                 .then(response => response.json())
                 .then(data => {
                     if (data.schedules && data.schedules.length > 0) {
@@ -238,19 +242,19 @@
             if (!roomId || !startTime || !endTime) return;
 
             fetch(`<?= base_url('admin/doctor-schedule/check-availability') ?>`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': document.querySelector('input[name="<?= csrf_token() ?>"]').value
-                },
-                body: JSON.stringify({
-                    room_id: roomId,
-                    start_time: startTime,
-                    end_time: endTime,
-                    schedule_id: scheduleId // Used for edit mode to exclude current schedule
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': document.querySelector('input[name="<?= csrf_token() ?>"]').value
+                    },
+                    body: JSON.stringify({
+                        room_id: roomId,
+                        start_time: startTime,
+                        end_time: endTime,
+                        schedule_id: scheduleId // Used for edit mode to exclude current schedule
+                    })
                 })
-            })
                 .then(response => response.json())
                 .then(data => {
                     if (data.conflict) {
@@ -277,7 +281,7 @@
         }
 
         // Form validation before submit
-        document.getElementById('formData').addEventListener('submit', function (e) {
+        document.getElementById('formData').addEventListener('submit', function(e) {
             const roomId = roomSelect.value;
             const startTime = startTimeInput.value;
             const endTime = endTimeInput.value;

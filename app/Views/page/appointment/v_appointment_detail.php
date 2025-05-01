@@ -8,6 +8,7 @@
   </div>
   <?php
 
+  use App\Entities\Room;
   use Config\Roles;
 
   if (session('message')): ?>
@@ -98,10 +99,12 @@
         <?php endif; ?>
       </div>
 
+      <?php if (!in_groups(Roles::ADMIN)): ?>
+        <div role="alert" class="alert alert-info alert-soft">
+          <span>Please reach 10-15 minutes before the appointment starts.</span>
+        </div>
+      <?php endif; ?>
 
-      <div role="alert" class="alert alert-info alert-soft">
-        <span>Please reach 10-15 minutes before the appointment starts.</span>
-      </div>
       <p class="font-bold">Date, Time & Room</p>
       <span><?= date('F j, Y', strtotime($appointment->date)) ?></span>
       <span>
@@ -126,7 +129,11 @@
 
   </div>
   <div class="flex justify-end">
-    <a href="/appointment" class="btn btn-primary">Back</a>
+    <?php if (in_groups(Roles::PATIENT)): ?>
+      <a href="/appointment" class="btn btn-primary">Back</a>
+    <?php elseif (in_groups(Roles::ADMIN)): ?>
+      <a href="<?= base_url('admin/appointment'); ?>" class="btn btn-primary">Back</a>
+    <?php endif; ?>
   </div>
 </div>
 <?= $this->endSection(); ?>

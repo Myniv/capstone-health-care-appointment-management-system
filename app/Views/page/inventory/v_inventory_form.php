@@ -1,12 +1,19 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
 <div class="mb-4">
-        <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
-    </div>
-    <h2 class="text-2xl font-bold mb-4"><?= isset($inventory) ? 'Edit Inventory' : 'Add Inventory'; ?></h2>
+    <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+</div>
 
+<h2 class="text-2xl font-bold mb-4"><?= isset($inventory) ? 'Edit Inventory' : 'Add Inventory'; ?></h2>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-error mb-3">
+        <?= esc(session()->getFlashdata('error')) ?>
+    </div>
+<?php endif; ?>
+
+<div class="bg-base-100 p-6 rounded-md shadow-md">
     <form
         action="<?= isset($inventory) ? base_url('admin/inventory/update/' . $inventory->id) : base_url('admin/inventory/create') ?>"
         method="post" enctype="multipart/form-data" id="formData" novalidate>
@@ -71,12 +78,12 @@
 <!-- PristineJS -->
 <script>
     // Custom validator for in_list rule
-    Pristine.addValidator("in-list", function (value, list) {
+    Pristine.addValidator("in-list", function(value, list) {
         const allowed = list.split(',').map(item => item.trim());
         return allowed.includes(value);
     });
 
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const form = document.getElementById('formData');
         const pristine = new Pristine(form, {
             classTo: 'mb-4',
@@ -87,7 +94,7 @@
             errorTextClass: 'text-error text-sm'
         });
 
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             if (!pristine.validate()) {
                 e.preventDefault();
             }

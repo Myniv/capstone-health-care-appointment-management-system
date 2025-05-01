@@ -1,12 +1,19 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-    <div class="mb-4">
-        <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
-    </div>
-    <h2 class="text-2xl font-bold mb-4"><?= isset($setting) ? 'Edit Setting' : 'Add Setting'; ?></h2>
+<div class="mb-4">
+    <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+</div>
 
+<h2 class="text-2xl font-bold mb-4"><?= isset($setting) ? 'Edit Setting' : 'Add Setting'; ?></h2>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-error mb-3">
+        <?= esc(session()->getFlashdata('error')) ?>
+    </div>
+<?php endif; ?>
+
+<div class="bg-base-100 p-6 rounded-md shadow-md">
     <form
         action="<?= isset($setting) ? base_url('admin/setting/update/' . $setting->id) : base_url('admin/setting/create') ?>"
         method="post" enctype="multipart/form-data" id="formData" novalidate>
@@ -70,7 +77,7 @@
 <script src="<?= base_url('public/assets/js/pristine/pristine.min.js') ?>"></script>
 
 <script>
-    window.onload = function () {
+    window.onload = function() {
         const form = document.getElementById("formData");
 
         const pristine = new Pristine(form, {
@@ -82,7 +89,7 @@
             errorTextClass: 'text-error text-sm'
         });
 
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             if (!pristine.validate()) {
                 e.preventDefault();
             }

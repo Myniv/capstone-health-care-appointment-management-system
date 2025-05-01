@@ -1,9 +1,15 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-    <h2 class="text-2xl font-bold mb-4">Equipment List</h2>
+<h2 class="text-2xl font-bold mb-4">Equipment List</h2>
 
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-error mb-3">
+        <?= esc(session()->getFlashdata('error')) ?>
+    </div>
+<?php endif; ?>
+
+<div class="bg-base-100 p-6 rounded-md shadow-md">
     <!-- Add Button -->
     <div class="flex gap-4 mb-4">
         <a href="/admin/equipment/create" class="btn btn-outline btn-success">Add Equipment</a>

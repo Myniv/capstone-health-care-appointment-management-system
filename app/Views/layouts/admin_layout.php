@@ -23,31 +23,29 @@ use Config\Roles; ?>
     <script src="<?= base_url('assets/js/pristine/dist/pristine.js') ?>" type="text/javascript"></script>
 </head>
 
-<body class="flex flex-col min-h-screen bg-base-200" data-theme="light">
+<body class="flex flex-col min-h-screen bg-base-100" data-theme="light">
     <!-- Header -->
     <header class="mb-4">
         <?= $this->include('components/header'); ?>
     </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto px-4 flex flex-grow gap-4">
-        <?php if (logged_in()): ?>
-            <?php if (in_groups(Roles::ADMIN) || in_groups(Roles::DOCTOR)): ?>
-                <!-- Sidebar -->
-                <aside class="hidden lg:block bg-base-100 p-4 rounded-lg shadow-md">
-                    <?= $this->include('components/sidebar'); ?>
-                </aside>
-            <?php endif; ?>
+    <main class="container mx-auto px-4 flex flex-grow gap-6 h-full">
+        <?php if (in_groups(Roles::ADMIN) || in_groups(Roles::DOCTOR)): ?>
+            <!-- Sidebar -->
+            <aside class="hidden md:block bg-base-100 w-1/5">
+                <?= $this->include('components/sidebar'); ?>
+            </aside>
         <?php endif; ?>
 
         <!-- Page Content -->
-        <section class="w-full bg-base-100 p-4 rounded-lg shadow-md">
+        <section class="w-full bg-base-200 p-4 rounded-lg">
             <?= $this->renderSection('content'); ?>
         </section>
     </main>
 
     <!-- Footer -->
-    <footer class="text-base-content mt-4">
+    <footer class="mt-4">
         <?= $this->include('components/footer'); ?>
     </footer>
 

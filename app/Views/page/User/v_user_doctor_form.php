@@ -1,18 +1,19 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-    <div class="mb-4">
-        <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+<div class="mb-4">
+    <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+</div>
+
+<h2 class="text-2xl font-bold mb-3"><?= isset($user) ? 'Edit Doctor' : 'Add Doctor'; ?></h2>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-error mb-3">
+        <?= esc(session()->getFlashdata('error')) ?>
     </div>
-    <h2 class="text-2xl font-bold mb-3"><?= isset($user) ? 'Edit Doctor' : 'Add Doctor'; ?></h2>
+<?php endif; ?>
 
-    <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-error mb-3">
-            <?= esc(session()->getFlashdata('error')) ?>
-        </div>
-    <?php endif; ?>
-
+<div class="bg-base-100 p-6 rounded-md shadow-md">
     <form
         action="<?= isset($user) ? base_url('admin/users/doctor/update/' . $user->user_id) : base_url('admin/users/doctor/create') ?>"
         method="post" enctype="multipart/form-data" id="formData" novalidate>
@@ -252,7 +253,7 @@
 <script>
     let eduIndex = 1;
 
-    window.onload = function () {
+    window.onload = function() {
         const form = document.getElementById("formData");
 
         const pristine = new Pristine(form, {
@@ -264,7 +265,7 @@
             errorTextClass: 'text-error text-sm'
         });
 
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             if (!pristine.validate()) {
                 e.preventDefault();
             }
@@ -319,7 +320,7 @@
         eduIndex++;
     });
 
-    document.getElementById('education-container').addEventListener('click', function (e) {
+    document.getElementById('education-container').addEventListener('click', function(e) {
         if (e.target.classList.contains('remove-education')) {
             const group = e.target.closest('.education-group');
             group.remove();

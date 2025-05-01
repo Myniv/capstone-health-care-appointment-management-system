@@ -1,10 +1,18 @@
-<?= $this->extend('layouts/admin_layout'); ?>
+<?php
+
+use Config\Roles; ?>
+
+<?php if (in_groups(Roles::PATIENT)): ?>
+  <?= $this->extend('layouts/public_layout'); ?>
+<?php else: ?>
+  <?= $this->extend('layouts/admin_layout'); ?>
+<?php endif; ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-  <!-- <h2 class="text-2xl font-bold mb-4"></h2> -->
-  <h2 class="text-2xl font-bold mb-4"><?= 'Find Doctor'; ?></h2>
+<!-- <h2 class="text-2xl font-bold mb-4"></h2> -->
+<h2 class="text-2xl font-bold mb-4"><?= 'Find Doctor'; ?></h2>
 
+<div class="bg-base-100 p-6 rounded-md shadow-md">
   <!-- Search and Filters -->
   <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap items-center gap-4 mb-4">
     <div class="flex flex-grow items-center gap-2">
@@ -22,7 +30,6 @@
       </select>
     </div>
 
-
     <div class="form-control w-full md:w-auto">
       <a href="<?= $params->getResetUrl($baseUrl) ?>" class="btn btn-primary">Reset</a>
     </div>
@@ -31,12 +38,10 @@
     <input type="hidden" name="order" value="<?= $params->order; ?>">
   </form>
 
-
-
   <p class="text-gray-500/75 font-semibold mb-4">Doctor List</p>
   <div class="grid grid-cols-3">
     <?php foreach ($doctors as $row): ?>
-      <div class="card card-border bg-base-100 w-full">
+      <div class="card border bg-base-100 w-full">
         <div class="card-body">
           <div class="flex gap-4">
             <div class="avatar">
@@ -62,7 +67,6 @@
     <?php endforeach; ?>
 
   </div>
-
 
   <!-- Pagination -->
   <div class="mt-8 text-center">

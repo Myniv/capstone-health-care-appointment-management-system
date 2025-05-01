@@ -3,10 +3,10 @@
 use Config\Roles; ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-    <h2 class="text-2xl font-bold mb-4">Report History</h2>
+<h2 class="text-2xl font-bold mb-4">Report History</h2>
 
-    <form action="<?= $baseUrl ?>" method="get" class="">
+<div class="bg-base-100 p-6 rounded-md shadow-md mb-4">
+    <form action="<?= $baseUrl ?>" method="get">
         <?php if (in_groups(Roles::ADMIN)): ?>
             <div class="flex flex-wrap items-center gap-4 w-full">
                 <div class="form-control w-full md:w-1/3">
@@ -36,7 +36,7 @@ use Config\Roles; ?>
         <?php endif; ?>
         <?php if (in_groups(Roles::DOCTOR)): ?>
             <div class="flex flex-wrap items-center gap-4 w-full">
-                <a href="<?= base_url('report/history/pdf') ?>" class="btn btn-success whitespace-nowrap mt-4 px-4"
+                <a href="<?= base_url('report/history/pdf') ?>" class="btn btn-success whitespace-nowrap px-4"
                     target="_blank">
                     <i class="bi bi-file-earmark-pdf-fill me-1"></i> Export PDF
                 </a>
@@ -46,8 +46,10 @@ use Config\Roles; ?>
         <input type="hidden" name="sort" value="<?= $params->sort; ?>">
         <input type="hidden" name="order" value="<?= $params->order; ?>">
     </form>
+</div>
 
-    <div class="col-auto mt-4">
+<div class="bg-base-100 p-6 rounded-md shadow-md">
+    <div class="col-auto">
         <h4>Preview :</h4>
     </div>
 

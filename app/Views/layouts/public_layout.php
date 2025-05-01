@@ -24,13 +24,13 @@
     <!-- Main Content -->
     <main class="container mx-auto px-4 flex flex-grow gap-4">
         <!-- Page Content -->
-        <section class="w-full bg-base-100 p-4 rounded-lg shadow-md">
+        <section class="w-full bg-base-200 p-4">
             <?= $this->renderSection('content'); ?>
         </section>
     </main>
 
     <!-- Footer -->
-    <footer class="bg-base-300 text-base-content mt-4">
+    <footer class="mt-4">
         <?= $this->include('components/footer'); ?>
     </footer>
 

@@ -1,10 +1,18 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-    <div class="mb-4">
-        <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+<div class="mb-4">
+    <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+</div>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-error mb-3">
+        <?= esc(session()->getFlashdata('error')) ?>
     </div>
+<?php endif; ?>
+
+
+<div class="bg-base-100 p-6 rounded-md shadow-md">
     <h2 class="text-2xl font-bold mb-4"><?= isset($room) ? 'Edit Room' : 'Add Room'; ?></h2>
 
     <form action="<?= isset($room) ? base_url('admin/room/update/' . $room->id) : base_url('admin/room/create') ?>"
@@ -75,7 +83,7 @@
 
 <?= $this->section('scripts') ?>
 <script>
-    window.onload = function () {
+    window.onload = function() {
         const form = document.getElementById("formData");
 
         const pristine = new Pristine(form, {
@@ -87,7 +95,7 @@
             errorTextClass: 'text-error text-sm'
         });
 
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             if (!pristine.validate()) {
                 e.preventDefault();
             }

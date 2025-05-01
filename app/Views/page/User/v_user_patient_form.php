@@ -1,12 +1,19 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-    <div class="mb-4">
-        <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
-    </div>
-    <h2 class="text-2xl font-bold mb-4"><?= isset($user) ? 'Edit Patient' : 'Add Patient'; ?></h2>
+<div class="mb-4">
+    <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+</div>
 
+<h2 class="text-2xl font-bold mb-4"><?= isset($user) ? 'Edit Patient' : 'Add Patient'; ?></h2>
+
+<?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-error mb-3">
+        <?= esc(session()->getFlashdata('error')) ?>
+    </div>
+<?php endif; ?>
+
+<div class="bg-base-100 p-6 rounded-md shadow-md">
     <form
         action="<?= isset($user) ? base_url('admin/users/patient/update/' . $user->user_id) : base_url('admin/users/patient/create') ?>"
         method="post" enctype="multipart/form-data" id="formData" novalidate>
@@ -196,7 +203,7 @@
 
 <?= $this->section('scripts') ?>
 <script>
-    window.onload = function () {
+    window.onload = function() {
         const form = document.getElementById("formData");
 
         const pristine = new Pristine(form, {
@@ -208,7 +215,7 @@
             errorTextClass: 'text-error text-sm'
         });
 
-        form.addEventListener('submit', function (e) {
+        form.addEventListener('submit', function(e) {
             if (!pristine.validate()) {
                 e.preventDefault();
             }

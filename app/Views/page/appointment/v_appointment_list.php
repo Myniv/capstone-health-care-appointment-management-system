@@ -1,13 +1,23 @@
-<?= $this->extend('layouts/admin_layout'); ?>
+<?php
+
+use Config\Roles; ?>
+
+<?php if (in_groups(Roles::PATIENT)): ?>
+  <?= $this->extend('layouts/public_layout'); ?>
+<?php else: ?>
+  <?= $this->extend('layouts/admin_layout'); ?>
+<?php endif; ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-  <h2 class="text-2xl font-bold mb-4">Appointment List</h2>
+<h2 class="text-2xl font-bold mb-4">Appointment List</h2>
 
-  <!-- Add Button -->
-  <div class="flex gap-4 mb-4">
-    <a href="/appointment/create" class="btn btn-outline btn-success">Create Appointment</a>
-  </div>
+<div class="bg-base-100 p-6 rounded-md shadow-md">
+  <?php if (in_groups(Roles::PATIENT)): ?>
+    <!-- Add Button -->
+    <div class="flex gap-4 mb-4">
+      <a href="/appointment/create" class="btn btn-outline btn-success">Create Appointment</a>
+    </div>
+  <?php endif; ?>
 
   <!-- Search and Filters -->
   <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap items-center gap-4 mb-4">
@@ -41,12 +51,7 @@
   </form>
 
   <!-- Table -->
-  <?php
-
-  use Config\Roles;
-
-  if (in_groups(Roles::ADMIN)):
-  ?>
+  <?php if (in_groups(Roles::ADMIN)): ?>
     <div class="overflow-x-auto">
       <table class="table table-zebra w-full">
         <thead>
@@ -61,6 +66,7 @@
             <th>Room</th>
             <th>Time</th>
             <th>Status</th>
+            <th>Action</th>
           </tr>
         </thead>
         <tbody>
@@ -77,7 +83,7 @@
                   <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $row->status]) ?>
                 </td>
                 <td>
-                  <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-primary btn-sm">Details</a>
+                  <a href="appointment/detail/<?= $row->id ?>" class="btn btn-primary btn-sm">Details</a>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -86,10 +92,10 @@
       </table>
     </div>
   <?php else: ?>
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
       <?php if (!empty($appointment)): ?>
         <?php foreach ($appointment as $row): ?>
-          <div class="card border bg-base-100 w-full">
+          <div class="card bg-base-100 w-full border">
             <div class="card-body">
               <h2 class="card-title">
                 <?php if (in_groups(Roles::PATIENT)): ?>
@@ -119,61 +125,6 @@
         <?php endforeach; ?>
       <?php endif; ?>
     </div>
-
-    <div class="modal" role="dialog" id="modal-form-history">
-      <div class="modal-box md:max-w-5xl">
-        <form
-          action="<?= base_url('doctor/history/create') ?>"
-          method="post" enctype="multipart/form-data" id="formData" novalidate>
-          <?= csrf_field() ?>
-
-          <input type="hidden" name="appointment_id" id="appointmentId">
-
-          <!-- Notes -->
-          <div class="mb-2">
-            <label for="notes" class="label">
-              <span class="label-text">Notes</span>
-            </label>
-            <textarea
-              name="notes"
-              class="textarea textarea-bordered w-full"
-              rows="2"><?= old('notes') ?></textarea>
-            <div class="text-error text-sm"><?= session('errors.notes') ?? '' ?></div>
-          </div>
-
-          <!-- Prescriptions -->
-          <div class="mb-2">
-            <label for="prescriptions" class="label">
-              <span class="label-text">Prescriptions</span>
-            </label>
-            <textarea
-              name="prescriptions"
-              class="textarea textarea-bordered w-full"
-              rows="2"><?= old('prescriptions') ?></textarea>
-            <div class="text-error text-sm"><?= session('errors.prescriptions') ?? '' ?></div>
-          </div>
-
-          <!-- Input Documents -->
-          <div class="mb-2">
-            <label for="documents" class="label">
-              <span class="label-text">Medical Documents</span>
-            </label>
-            <input
-              type="file"
-              name="documents"
-              class="file-input file-input-bordered w-full">
-            <div class="text-error text-sm mt-1"><?= session('errors.documents') ?></div>
-          </div>
-
-          <div class="modal-action">
-            <a href="#" class="btn">Cancel</a>
-            <button type="submit" class="btn btn-primary">
-              Save & Mark as Done
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
   <?php endif; ?>
 
   <!-- Pagination -->
@@ -182,6 +133,62 @@
     <div class="mt-2">
       <small>Show <?= count($appointment) ?> of <?= $total ?> total data (Page <?= $params->page ?>)</small>
     </div>
+  </div>
+</div>
+
+<!-- Modal Form History -->
+<div class="modal" role="dialog" id="modal-form-history">
+  <div class="modal-box md:max-w-5xl">
+    <form
+      action="<?= base_url('doctor/history/create') ?>"
+      method="post" enctype="multipart/form-data" id="formData" novalidate>
+      <?= csrf_field() ?>
+
+      <input type="hidden" name="appointment_id" id="appointmentId">
+
+      <!-- Notes -->
+      <div class="mb-2">
+        <label for="notes" class="label">
+          <span class="label-text">Notes</span>
+        </label>
+        <textarea
+          name="notes"
+          class="textarea textarea-bordered w-full"
+          rows="2"><?= old('notes') ?></textarea>
+        <div class="text-error text-sm"><?= session('errors.notes') ?? '' ?></div>
+      </div>
+
+      <!-- Prescriptions -->
+      <div class="mb-2">
+        <label for="prescriptions" class="label">
+          <span class="label-text">Prescriptions</span>
+        </label>
+        <textarea
+          name="prescriptions"
+          class="textarea textarea-bordered w-full"
+          rows="2"><?= old('prescriptions') ?></textarea>
+        <div class="text-error text-sm"><?= session('errors.prescriptions') ?? '' ?></div>
+      </div>
+
+      <!-- Input Documents -->
+      <div class="mb-2">
+        <label for="documents" class="label">
+          <span class="label-text">Medical Documents</span>
+        </label>
+        <input
+          type="file"
+          name="documents"
+          class="file-input file-input-bordered w-full">
+        <div class="text-error text-sm mt-1"><?= session('errors.documents') ?></div>
+      </div>
+
+      <div class="modal-action">
+        <a href="#" class="btn">Cancel</a>
+        <button type="submit" class="btn btn-primary">
+          Save & Mark as Done
+        </button>
+      </div>
+    </form>
   </div>
 </div>
 <?= $this->endSection(); ?>

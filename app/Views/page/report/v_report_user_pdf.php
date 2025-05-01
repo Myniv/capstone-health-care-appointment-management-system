@@ -1,9 +1,9 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4">
-    <h2 class="text-2xl font-bold mb-4">Report User</h2>
+<h2 class="text-2xl font-bold mb-4">Report User</h2>
 
+<div class="bg-base-100 p-6 rounded-md shadow-md">
     <form action="<?= $baseUrl ?>" method="get" class="">
         <div class="flex flex-wrap items-center gap-4 w-full">
             <div class="form-control w-full md:w-1/3">
@@ -25,12 +25,11 @@
             </div>
 
             <a href="<?= base_url('report/user/pdf') . '?' . http_build_query([
-                'role' => $params->role,
-            ]) ?>" class="btn btn-success whitespace-nowrap mt-4 px-4" target="_blank">
+                            'role' => $params->role,
+                        ]) ?>" class="btn btn-success whitespace-nowrap mt-4 px-4" target="_blank">
                 <i class="bi bi-file-earmark-pdf-fill me-1"></i> Export PDF
             </a>
         </div>
-
 
         <input type="hidden" name="sort" value="<?= $params->sort; ?>">
         <input type="hidden" name="order" value="<?= $params->order; ?>">
