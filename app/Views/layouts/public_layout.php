@@ -8,8 +8,16 @@
 
     <!-- Tailwind CSS & DaisyUI -->
     <link rel="stylesheet" href="<?= base_url('assets/css/tailwind.css') ?>">
+
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- DaisyUI CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" />
+
     <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Pristine.js -->
     <script src="<?= base_url('assets/js/pristine/dist/pristine.js') ?>" type="text/javascript"></script>
