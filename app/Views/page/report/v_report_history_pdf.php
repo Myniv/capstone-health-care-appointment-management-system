@@ -6,7 +6,7 @@ use Config\Roles; ?>
 <h2 class="text-2xl font-bold mb-4">Report History</h2>
 
 <div class="bg-base-100 p-6 rounded-md shadow-md mb-4">
-    <form action="<?= $baseUrl ?>" method="get">
+    <form action="<?= $baseUrl ?>" method="get" class="mb-4">
         <?php if (in_groups(Roles::ADMIN)): ?>
             <div class="flex flex-wrap items-center gap-4 w-full">
                 <div class="form-control w-full md:w-1/3">
@@ -46,9 +46,7 @@ use Config\Roles; ?>
         <input type="hidden" name="sort" value="<?= $params->sort; ?>">
         <input type="hidden" name="order" value="<?= $params->order; ?>">
     </form>
-</div>
 
-<div class="bg-base-100 p-6 rounded-md shadow-md">
     <div class="col-auto">
         <h4>Preview :</h4>
     </div>

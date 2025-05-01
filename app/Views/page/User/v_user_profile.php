@@ -1,25 +1,24 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="container mx-auto mt-4 px-4">
+<div class="flex gap-4">
     <div class="mb-4">
         <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
     </div>
-
-    <h2 class="text-2xl font-bold mb-4">
+    <h3 class="text-2xl font-bold mb-4">
         <?= $title . ' ' . ucfirst($user->role); ?>
-    </h2>
+    </h3>
+</div>
 
-    <?php if (session()->getFlashdata('success')): ?>
+<?php if (session()->getFlashdata('success')): ?>
+    <div class="alert alert-success mb-4">
+        <?= session()->getFlashdata('success'); ?>
+    </div>
+<?php endif; ?>
 
-        <div class="alert alert-success mb-4">
-            <?= session()->getFlashdata('success'); ?>
-        </div>
-    <?php endif; ?>
-
-
+<div class="bg-base-100 p-6 rounded-md shadow-md">
     <div class="flex flex-col">
-        <div class="flex gap-6">
+        <div class="flex items-center gap-6">
             <div class="avatar">
                 <div class="w-24 rounded-full">
                     <img src="<?= base_url('profile-picture?path=' . $user->profile_picture); ?>"
@@ -34,11 +33,9 @@
                         <?= $user->first_name . ' ' . $user->last_name ?>
                     <?php endif; ?>
                 </p>
-                <?php if ($user->role == 'doctor'): ?>
-                    <p class="text-gray-500 font-semibold">
-                        <?= ucfirst($user->doctor_category); ?>
-                    </p>
-                <?php endif; ?>
+                <p class="text-gray-500 font-semibold">
+                    <?= ucfirst($user->doctor_category); ?>
+                </p>
             </div>
         </div>
 
@@ -61,7 +58,6 @@
                 </div>
             </div>
 
-
             <div>
                 <h3 class="text-lg font-bold mb-2">Information</h3>
                 <div>
@@ -76,11 +72,15 @@
                     <span class="font-semibold">Sex: </span>
                     <span class="text-gray-700"><?= $user->sex; ?></span>
                 </div>
+                <div>
+                    <span class="font-semibold">Category: </span>
+                    <span class="text-gray-700"><?= $user->doctor_category; ?></span>
+                </div>
             </div>
         </div>
 
-
         <div class="divider"></div>
+
         <?php if ($user->role == 'doctor'): ?>
             <form action="/doctor/education/create" method="get">
                 <input type="text" hidden name="d_id" value="<?= $user->doctor_id ?>">
@@ -125,10 +125,8 @@
                         </li>
                     <?php endforeach; ?>
                 </ul>
-
             </div>
         <?php endif; ?>
-
     </div>
 </div>
 <?= $this->endSection(); ?>
