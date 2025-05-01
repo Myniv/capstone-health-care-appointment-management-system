@@ -8,6 +8,7 @@
   </div>
   <?php
 
+  use CodeIgniter\I18n\Time;
   use Config\Roles;
 
   if (session('message')): ?>
@@ -65,6 +66,8 @@
         </div>
 
         <?php if ($appointment->status != 'cancel' && in_groups(Roles::PATIENT)): ?>
+
+
           <div class="col-span-1">
             <div class="card card-border alert alert-warning alert-soft w-full h-full">
               <div class="card-body items-center text-center">
@@ -73,26 +76,35 @@
                   before</span> the scheduled date.
                 <br>
                 Cancellations are not allowed within 3 days of the appointment.
-                <div class="card-actions justify-end">
-                  <form action="/appointment/cancel" method="post" novalidate id="cancelForm" name="cancelForm">
-                    <?= csrf_field() ?>
-                    <input type="hidden" name="_method" value="POST">
-                    <input type="text" name="appointmentId" hidden value="<?= $appointment->id ?>">
-                    <button form="cancelForm" type="submit" class="btn btn-error btn-sm"
-                      onclick="return confirm('Are you sure want to cancel appointment?');">
-                      Cancel Appointment
-                    </button>
-                  </form>
 
-                  <form action="/appointment/reschedule/form" method="get">
-                    <div class="card-actions justify-end">
-                      <button type="submit" class="btn btn-info btn-sm ">Reschedule</button>
-                    </div>
-                    <input type="text" name="id" hidden value="<?= $appointment->doctorId ?>">
-                    <input type="text" name="appointmentId" hidden value="<?= $appointment->id ?>">
-                  </form>
+                <?php
+                $targetDate = date('Y-m-d', strtotime("-3 days"));
+                $today = Time::parse('today');
+                $diff = $today->difference($appointment->date)->getDays();
+                if ($diff > 3):
+                ?>
+                  <div class="card-actions justify-end">
+                    <form action="/appointment/cancel" method="post" novalidate id="cancelForm" name="cancelForm">
+                      <?= csrf_field() ?>
+                      <input type="hidden" name="_method" value="POST">
+                      <input type="text" name="appointmentId" hidden value="<?= $appointment->id ?>">
+                      <button form="cancelForm" type="submit" class="btn btn-error btn-sm"
+                        onclick="return confirm('Are you sure want to cancel appointment?');">
+                        Cancel Appointment
+                      </button>
+                    </form>
 
-                </div>
+                    <form action="/appointment/reschedule/form" method="get">
+                      <div class="card-actions justify-end">
+                        <button type="submit" class="btn btn-info btn-sm ">Reschedule</button>
+                      </div>
+                      <input type="text" name="id" hidden value="<?= $appointment->doctorId ?>">
+                      <input type="text" name="appointmentId" hidden value="<?= $appointment->id ?>">
+                    </form>
+
+                  </div>
+                <?php endif; ?>
+
               </div>
             </div>
           </div>

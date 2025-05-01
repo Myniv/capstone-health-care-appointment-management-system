@@ -17,6 +17,7 @@ class Appointment extends Entity
         'documents' => null,
         'status' => null,
         'reason_for_visit' => null,
+        'is_reschedule' => null,
         'createdAt' => null,
         'updatedAt' => null,
     ];

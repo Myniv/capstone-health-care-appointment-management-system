@@ -177,7 +177,8 @@ class AppointmentController extends BaseController
             'room_id' => $room_id,
             'status' => 'booking',
             'documents' => $docName,
-            'reason_for_visit' => $this->request->getVar('reason')
+            'reason_for_visit' => $this->request->getVar('reason'),
+            'is_reschedule' => 'false'
         ];
 
         $result = $this->appointmentModel->addAppointment($data);
@@ -235,7 +236,6 @@ class AppointmentController extends BaseController
 
     public function rescheduleAppointmentSubmit()
     {
-
         $appointment = $this->appointmentModel->find($this->request->getPost('appointmentId'));
         $patient = $this->patientModel->where('user_id', user_id())->first();
         $room_id = null;
@@ -250,7 +250,8 @@ class AppointmentController extends BaseController
             'date' => $this->request->getVar('date'),
             'room_id' => $room_id,
             'status' => 'booking',
-            'reason_for_visit' => $this->request->getVar('reason')
+            'reason_for_visit' => $this->request->getVar('reason'),
+            'is_reschedule' => 'true'
         ];
 
         //update

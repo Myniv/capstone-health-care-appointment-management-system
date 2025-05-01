@@ -124,7 +124,12 @@ use Config\Roles; ?>
                   <span><?= date('g:i A', strtotime($row->startTime)) ?> -
                     <?= date('g:i A', strtotime($row->endTime)) ?></span>
                 </p>
-                <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $row->status]) ?>
+
+                <span class="flex gap-2">
+                  <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $row->status]) ?>
+                  <?= view_cell('\App\Cells\StatusRescheduleCell::getStatusReschedule', ['is_reschedule' => $row->is_reschedule]) ?>
+                </span>
+
 
               </div>
             </div>
