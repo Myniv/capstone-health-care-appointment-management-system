@@ -73,7 +73,8 @@
             <div class="card card-border alert alert-warning alert-soft w-full h-full">
               <div class="card-body items-center text-center">
                 <h2 class="card-title font-bold">Notice</h2>
-                You can CANCEL or RESCHEDULE your appointment up to <span class="font-bold text-xl text-red-700"><?= $cancelDue ?> days
+                You can CANCEL or RESCHEDULE your appointment up to <span
+                  class="font-bold text-xl text-red-700"><?= $cancelDue ?> days
                   before</span> the scheduled date.
                 <br>
                 Cancellations are not allowed within <?= $cancelDue ?> days of the appointment.
@@ -82,7 +83,7 @@
                 $targetDate = date('Y-m-d', strtotime("-3 days"));
                 $today = Time::parse('today');
                 $diff = $today->difference($appointment->date)->getDays();
-                if ($diff > $cancelDue):
+                if ($diff >= $cancelDue):
                   ?>
                   <div class="card-actions justify-end">
                     <form action="/appointment/cancel" method="post" novalidate id="cancelForm" name="cancelForm">

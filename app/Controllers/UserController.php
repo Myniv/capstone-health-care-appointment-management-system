@@ -728,7 +728,7 @@ class UserController extends BaseController
             ->groupBy("DATE(date)")
             ->orderBy("appointment_date", "ASC")
             ->findAll();
-            // dd($appointments);
+        // dd($appointments);
 
         $labels = [];
         $data = [];
@@ -746,11 +746,12 @@ class UserController extends BaseController
         }
         // dd($appointmentMap);
 
-        // Isi data untuk setiap tanggal
+        $data = [];
         foreach ($dates as $date) {
             $labels[] = date('D, M j', strtotime($date)); // Format label (contoh: Mon, Jan 1)
+            $data[] = isset($appointmentMap[$date]) ? $appointmentMap[$date] : 0;
         }
-        // dd($dates);
+        // dd($data);
 
         return [
             'labels' => $labels,

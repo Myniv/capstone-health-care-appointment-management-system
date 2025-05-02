@@ -47,6 +47,8 @@ class AppointmentController extends BaseController
                 "page" => $this->request->getGet("page_appointment"),
                 "doctor" => $doctorId,
             ]);
+
+            $baseUrl = base_url('doctor/appointment');
         } else if (in_groups(Roles::PATIENT)) {
             $patientId = $this->patientModel->getPatientByUserId(user_id())->id;
             $params = new DataParams([
@@ -58,6 +60,7 @@ class AppointmentController extends BaseController
                 "page" => $this->request->getGet("page_appointment"),
                 "patient" => $patientId,
             ]);
+            $baseUrl = base_url('appointment');
         } else { //Admin
             $params = new DataParams([
                 "search" => $this->request->getGet("search"),
@@ -67,8 +70,9 @@ class AppointmentController extends BaseController
                 "perPage" => $this->request->getGet("perPage"),
                 "page" => $this->request->getGet("page_appointment"),
             ]);
+            $baseUrl = base_url('admin/appointment');
         }
-
+        
         $result = $this->appointmentModel->getSortedAppointment($params);
 
         $data = [
@@ -76,7 +80,7 @@ class AppointmentController extends BaseController
             'pager' => $result['pager'],
             'total' => $result['total'],
             'params' => $params,
-            'baseUrl' => base_url('appointment'),
+            'baseUrl' => $baseUrl,
         ];
         return view('page/appointment/v_appointment_list', $data);
     }

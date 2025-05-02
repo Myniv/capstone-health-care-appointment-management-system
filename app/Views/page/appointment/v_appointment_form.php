@@ -15,10 +15,10 @@ use Config\Roles; ?>
 </div>
 <h2 class="text-2xl font-bold mb-4"><?= $type == 'reschedule' ? 'Reschedule' : 'Create' ?> Appointment</h2>
 
-<?php if (session('errors')) : ?>
+<?php if (session('errors')): ?>
   <div class="alert alert-error mb-4">
     <ul>
-      <?php foreach (session('errors') as $error) : ?>
+      <?php foreach (session('errors') as $error): ?>
         <li><?= $error ?></li>
       <?php endforeach ?>
     </ul>
@@ -34,7 +34,8 @@ use Config\Roles; ?>
         <div class="flex gap-4">
           <div class="avatar">
             <div class="w-24 rounded-full">
-              <img src="<?= base_url('profile-picture?path=' . $doctor->profile_picture); ?>" alt="Profile Picture <?= $doctor->first_name . ' ' . $doctor->last_name; ?>">
+              <img src="<?= base_url('profile-picture?path=' . $doctor->profile_picture); ?>"
+                alt="Profile Picture <?= $doctor->first_name . ' ' . $doctor->last_name; ?>">
             </div>
           </div>
           <div class="">
@@ -50,13 +51,8 @@ use Config\Roles; ?>
             <?php foreach ($education as $row): ?>
               <li class="flex items-center space-x-4">
                 <div class="timeline-start self-center flex items-center justify-center">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    class="h-5 w-5">
-                    <path
-                      fill-rule="evenodd"
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="h-5 w-5">
+                    <path fill-rule="evenodd"
                       d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
                       clip-rule="evenodd" />
                   </svg>
@@ -77,10 +73,7 @@ use Config\Roles; ?>
   </div>
   <form
     action="<?= $type == 'create' ? base_url('appointment/create/form') : base_url(in_groups(Roles::ADMIN) ? 'admin/appointment/reschedule/form' : 'appointment/reschedule/form') ?>"
-    method="get"
-    enctype="multipart/form-data"
-    id="appointmentForm"
-    novalidate>
+    method="get" enctype="multipart/form-data" id="appointmentForm" novalidate>
 
     <input type="hidden" name="id" value="<?= $doctor->id; ?>">
     <input type="hidden" name="schedule" id="scheduleInput" value="<?= old('schedule', $schedule ?? '') ?>">
@@ -94,14 +87,8 @@ use Config\Roles; ?>
             <label for="dateDisplay" class="label">
               <span class="label-text">Date</span>
             </label>
-            <input
-              type="date"
-              id="dateDisplay"
-              name="date"
-              class="input input-bordered w-full"
-              value="<?= old('date', $date ?? '') ?>"
-              min="<?= date('Y-m-d'); ?>"
-              onchange="this.form.submit()" />
+            <input type="date" id="dateDisplay" name="date" class="input input-bordered w-full"
+              value="<?= old('date', $date ?? '') ?>" min="<?= date('Y-m-d') ?>" onchange="this.form.submit()" />
           </div>
 
           <div class="grid gap-2">
@@ -114,12 +101,8 @@ use Config\Roles; ?>
                 <?php foreach ($doctor_schedule as $row): ?>
                   <?php $isSelected = old('schedule', $schedule ?? '') == $row->id; ?>
                   <?php $isFull = $row->full == 1; ?>
-                  <button
-                    type="button"
-                    class="btn <?= $isSelected ? 'btn-primary text-white' : 'btn-outline' ?> time-btn"
-                    data-id="<?= $row->id ?>"
-                    <?= $isFull ? 'disabled' : '' ?>
-                    onclick="selectSchedule(this)">
+                  <button type="button" class="btn <?= $isSelected ? 'btn-primary text-white' : 'btn-outline' ?> time-btn"
+                    data-id="<?= $row->id ?>" <?= $isFull ? 'disabled' : '' ?> onclick="selectSchedule(this)">
                     <?= date('g:i A', strtotime($row->start_time)) ?> -
                     <?= date('g:i A', strtotime($row->end_time)) ?>
                   </button>
@@ -132,11 +115,8 @@ use Config\Roles; ?>
             <label for="description" class="label">
               <span class="label-text">Needs</span>
             </label>
-            <textarea
-              class="textarea w-full <?= session('errors.reason') ? 'input-error' : '' ?>"
-              name="reason"
-              placeholder="headache, etc"
-              required><?= old('reason', $reason ?? '') ?></textarea>
+            <textarea class="textarea w-full <?= session('errors.reason') ? 'input-error' : '' ?>" name="reason"
+              placeholder="headache, etc" required><?= old('reason', $reason ?? '') ?></textarea>
             <div class="text-error text-sm"><?= session('errors.reason') ?? '' ?></div>
           </div>
 
@@ -155,14 +135,15 @@ use Config\Roles; ?>
 
         <!-- Submit Button -->
         <div class="text-end mt-4">
-          <button type="submit" formaction="<?= $type == 'create' ?
-                                              base_url('appointment/create/submit') :
-                                              base_url(in_groups(Roles::ADMIN) ? 'admin/appointment/reschedule/submit' : 'appointment/reschedule/submit') ?>"
-            formmethod="post"
-            class="btn btn-primary">
+          <button type="submit"
+            formaction="<?= $type == 'create' ?
+              base_url('appointment/create/submit') :
+              base_url(in_groups(Roles::ADMIN) ? 'admin/appointment/reschedule/submit' : 'appointment/reschedule/submit') ?>"
+            formmethod="post" class="btn btn-primary">
             <?= $type == 'create' ? 'Create' : 'Reschedule' ?>
           </button>
-          <a href="<?= in_groups(Roles::ADMIN) ? '/admin/appointment/detail/' . $appointmentId : base_url('find-doctor') ?>" class="btn btn-secondary">Cancel</a>
+          <a href="<?= in_groups(Roles::ADMIN) ? '/admin/appointment/detail/' . $appointmentId : base_url('find-doctor') ?>"
+            class="btn btn-secondary">Cancel</a>
           <input type="hidden" name="appointmentId" value="<?= $type == 'create' ? '' : $appointmentId ?>" />
         </div>
       </div>

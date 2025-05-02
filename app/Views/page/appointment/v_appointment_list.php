@@ -79,10 +79,10 @@ use Config\Roles; ?>
             <?php foreach ($appointment as $row): ?>
               <tr>
                 <td><?= $row->id ?></td>
-                <td><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></td>
-                <td><?= $row->patientFirstName ?> <?= $row->patientLastName ?></td>
-                <td><?= date('F j, Y', strtotime($row->date)) ?></td>
+                <td><?= $row->doctorFirstName ?>       <?= $row->doctorLastName ?></td>
+                <td><?= $row->patientFirstName ?>       <?= $row->patientLastName ?></td>
                 <td><?= $row->roomName ?></td>
+                <td><?= date('F j, Y', strtotime($row->date)) ?></td>
                 <td><?= date('g:i A', strtotime($row->startTime)) ?> -
                   <?= date('g:i A', strtotime($row->endTime)) ?>
                 </td>
@@ -143,9 +143,12 @@ use Config\Roles; ?>
             <div class="card-actions justify-end">
               <?php if (in_groups(Roles::DOCTOR)): ?>
                 <?php if ($row->status == 'booking'): ?>
-                  <a href="#modal-form-history" data-id="<?= $row->id; ?>" class="btn btn-primary btn-sm">
+                  <a href="#modal-form-history" data-id="<?= $row->id; ?>"
+                    class="btn btn-primary btn-sm <?= ($row->date == date('Y-m-d')) ? 'pointer-events-none opacity-50' : '' ?>"
+                    disabled="<?php ($row->date == date('Y-m-d')) ? 'true' : 'false' ?>">
                     Manage
                   </a>
+
                 <?php endif; ?>
               <?php endif; ?>
               <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-soft btn-sm">
