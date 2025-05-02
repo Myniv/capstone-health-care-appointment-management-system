@@ -10,6 +10,7 @@ use App\Models\DoctorScheduleModel;
 use App\Models\EducationModel;
 use App\Models\PatientModel;
 use CodeIgniter\HTTP\ResponseInterface;
+use Config\Roles;
 use DateTime;
 
 class AppointmentController extends BaseController
@@ -277,7 +278,11 @@ class AppointmentController extends BaseController
                 ->withInput();
         }
 
-        return redirect()->to(base_url('appointment'))->with('success', 'Reschedule success');
+        if (in_groups(Roles::ADMIN)) {
+            return redirect()->to(base_url('admin/appointment'))->with('success', 'Reschedule success');
+        } else {
+            return redirect()->to(base_url('appointment'))->with('success', 'Reschedule success');
+        }
     }
 
     public function appointmentForm()

@@ -19,7 +19,9 @@ use Config\Roles;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/', 'Home::index');
+$routes->get('/', function () {
+    return redirect()->to('find-doctor');
+});
 
 $routes->group('admin', ['filter' => 'role:' . Roles::ADMIN], function ($routes) {
     $routes->get('dashboard', [UserController::class, 'dashboard']);
