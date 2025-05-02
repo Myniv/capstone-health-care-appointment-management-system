@@ -10,12 +10,15 @@ use Config\Roles; ?>
 
 <?= $this->section('content'); ?>
 <h2 class="text-2xl font-bold mb-4">Appointment List</h2>
-<?php if (session('success')): ?>
-  <div class="alert alert-success alert-soft mb-4">
-    <?= session('success') ?>
-  </div>
-<?php endif ?>
+
 <div class="bg-base-100 p-6 rounded-md shadow-md">
+
+  <?php if (session('success')): ?>
+    <div class="alert alert-success alert-soft mb-4">
+      <?= session('success') ?>
+    </div>
+  <?php endif ?>
+
   <?php if (in_groups(Roles::PATIENT)): ?>
     <!-- Add Button -->
     <div class="flex gap-4 mb-4">

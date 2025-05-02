@@ -7,13 +7,13 @@
 
 <h2 class="text-2xl font-bold mb-4"><?= isset($schedule) ? 'Edit Doctor Schedule' : 'Add Doctor Schedule'; ?></h2>
 
-<?php if (session()->getFlashdata('error')): ?>
-    <div class="alert alert-error mb-4">
-        <?= esc(session()->getFlashdata('error')) ?>
-    </div>
-<?php endif; ?>
-
 <div class="bg-base-100 p-6 rounded-md shadow-md">
+    <?php if (session()->getFlashdata('error')): ?>
+        <div class="alert alert-error mb-4">
+            <?= esc(session()->getFlashdata('error')) ?>
+        </div>
+    <?php endif; ?>
+
     <form
         action="<?= isset($schedule) ? base_url('admin/doctor-schedule/update/' . $schedule->id) : base_url('admin/doctor-schedule/create') ?>"
         method="post" id="formData" novalidate>

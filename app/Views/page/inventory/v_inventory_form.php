@@ -7,13 +7,13 @@
 
 <h2 class="text-2xl font-bold mb-4"><?= isset($inventory) ? 'Edit Inventory' : 'Add Inventory'; ?></h2>
 
-<?php if (session()->getFlashdata('error')): ?>
-    <div class="alert alert-error mb-3">
-        <?= esc(session()->getFlashdata('error')) ?>
-    </div>
-<?php endif; ?>
-
 <div class="bg-base-100 p-6 rounded-md shadow-md">
+    <?php if (session()->getFlashdata('error')): ?>
+        <div class="alert alert-error mb-3">
+            <?= esc(session()->getFlashdata('error')) ?>
+        </div>
+    <?php endif; ?>
+
     <form
         action="<?= isset($inventory) ? base_url('admin/inventory/update/' . $inventory->id) : base_url('admin/inventory/create') ?>"
         method="post" enctype="multipart/form-data" id="formData" novalidate>
