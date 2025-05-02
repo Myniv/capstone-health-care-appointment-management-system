@@ -39,33 +39,39 @@ use Config\Roles; ?>
   </form>
 
   <p class="text-gray-500/75 font-semibold mb-4">Doctor List</p>
-  <div class="grid grid-cols-3">
+
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
     <?php foreach ($doctors as $row): ?>
       <div class="card border bg-base-100 w-full">
         <div class="card-body">
-          <div class="flex gap-4">
-            <div class="avatar">
-              <div class="w-24 rounded-full">
-                <img src="<?= base_url('profile-picture?path=' . $row->profile_picture); ?>" alt="Profile Picture <?= $row->first_name . ' ' . $row->last_name; ?>">
+          <div class="flex flex-col md:flex-row gap-4 items-center">
+            <!-- Avatar -->
+            <div class="avatar flex-shrink-0">
+              <div class="w-16 h-16 lg:w-24 lg:h-24 rounded-full overflow-hidden">
+                <img src="<?= base_url('profile-picture?path=' . $row->profile_picture); ?>"
+                  alt="Profile Picture <?= $row->first_name . ' ' . $row->last_name; ?>"
+                  class="object-cover w-full h-full">
               </div>
             </div>
-            <div class="">
-              <h2 class="card-title"><?= $row->first_name ?> <?= $row->last_name ?></h2>
+
+            <!-- Doctor Info -->
+            <div class="text-center md:text-left flex-grow">
+              <h2 class="card-title lg:text-xl"><?= $row->first_name ?> <?= $row->last_name ?></h2>
               <p class="text-gray-500/75"><?= ucfirst($row->categoryName) ?></p>
               <p class="text-gray-500/75">HealthCare Hospital</p>
             </div>
           </div>
 
+          <!-- Appointment Button -->
           <form action="/appointment/create/form">
-            <div class="card-actions justify-end">
-              <button type="submit" class="btn btn-primary w-full">Create Appointment</button>
+            <div class="card-actions justify-end mt-4">
+              <button type="submit" class="btn btn-primary w-full md:w-auto">Create Appointment</button>
             </div>
             <input type="text" name="id" hidden value="<?= $row->id ?>">
           </form>
         </div>
       </div>
     <?php endforeach; ?>
-
   </div>
 
   <!-- Pagination -->
