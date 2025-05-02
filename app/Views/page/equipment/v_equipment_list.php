@@ -24,7 +24,7 @@
         </div>
 
         <div class="form-control w-full md:w-1/6">
-            <select class="select select-bordered" name="status" id="role" required onchange="this.form.submit()">
+            <select class="select select-bordered" name="status" id="role" onchange="this.form.submit()">
                 <option value="">Status</option>
                 <option value="Available" <?= ($params->status == 'Available') ? 'selected' : '' ?>>Available</option>
                 <option value="Out Of Stock" <?= ($params->status == 'Out Of Stock') ? 'selected' : '' ?>>Out Of Stock

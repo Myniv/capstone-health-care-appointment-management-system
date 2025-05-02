@@ -217,7 +217,7 @@ class DoctorController extends BaseController
 
         // Attach documents if they exist
         if (!empty($history->documents)) {
-            $filePath = WRITEPATH . $history->documents; // Adjust if stored in public path
+            $filePath = WRITEPATH . $history->documents;
             if (file_exists($filePath)) {
                 $email->attach($filePath);
             }

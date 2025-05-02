@@ -2,6 +2,7 @@
 
 <?= $this->section('content'); ?>
 <div class="container mt-4">
+  <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
   <div class="flex gap-4 items-center mb-4">
     <h2 class="text-2xl font-bold">Appointment Details</h2>
     <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $appointment->status]) ?>
@@ -72,17 +73,17 @@
             <div class="card card-border alert alert-warning alert-soft w-full h-full">
               <div class="card-body items-center text-center">
                 <h2 class="card-title font-bold">Notice</h2>
-                You can CANCEL or RESCHEDULE your appointment up to <span class="font-bold text-xl text-red-700">3 days
+                You can CANCEL or RESCHEDULE your appointment up to <span class="font-bold text-xl text-red-700"><?= $cancelDue ?> days
                   before</span> the scheduled date.
                 <br>
-                Cancellations are not allowed within 3 days of the appointment.
+                Cancellations are not allowed within <?= $cancelDue ?> days of the appointment.
 
                 <?php
                 $targetDate = date('Y-m-d', strtotime("-3 days"));
                 $today = Time::parse('today');
                 $diff = $today->difference($appointment->date)->getDays();
-                if ($diff > 3):
-                ?>
+                if ($diff > $cancelDue):
+                  ?>
                   <div class="card-actions justify-end">
                     <form action="/appointment/cancel" method="post" novalidate id="cancelForm" name="cancelForm">
                       <?= csrf_field() ?>
@@ -137,9 +138,15 @@
       </span>
       <span class="flex gap-2 items-center">
         <i class="fa-solid fa-door-open"></i>
-        <span>
-          <?= $appointment->roomName ?>
-        </span>
+        <?php if (!in_groups(Roles::PATIENT)): ?>
+          <a href="/room/detail/<?= $appointment->roomId ?>" class="text-blue-500 hover:text-blue-700">
+            <?= $appointment->roomName ?>
+          </a>
+        <?php else: ?>
+          <span>
+            <?= $appointment->roomName ?>
+          </span>
+        <?php endif; ?>
       </span>
 
       <span class="flex gap-2 items-center">

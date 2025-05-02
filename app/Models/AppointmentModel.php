@@ -114,6 +114,7 @@ class AppointmentModel extends Model
             doctors.first_name as doctorFirstName,
             doctors.last_name as doctorLastName,
             doctors.profile_picture as doctorProfilePicture,
+            patients.profile_picture as patientProfilePicture,
             rooms.name as roomName,
             appointments.date as date,
             appointments.reason_for_visit as reason,
@@ -144,6 +145,10 @@ class AppointmentModel extends Model
 
         if (!empty($params->doctor)) {
             $this->where('doctors.id', $params->doctor);
+        }
+
+        if(!empty($params->patient)) {
+            $this->where('patients.id', $params->patient);
         }
 
         if (!empty($params->search)) {
@@ -235,7 +240,7 @@ class AppointmentModel extends Model
             ->orderBy('doctor_schedules.start_time', 'ASC')
             ->where('appointments.status', 'booking')
             ->where('appointments.doctor_id', $doctorId)
-            ->where('DATE(appointments.date)', date('Y-m-d'))
+            // ->where('DATE(appointments.date)', date('Y-m-d'))
             ->findAll(3);
     }
 }

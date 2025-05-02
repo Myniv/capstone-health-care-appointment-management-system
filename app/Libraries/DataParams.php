@@ -20,6 +20,8 @@ class DataParams
 
     public $doctor = '';
 
+    public $patient = '';
+
 
     public $sort = 'id';
     public $order = 'asc';
@@ -36,6 +38,8 @@ class DataParams
         $this->status = $params['status'] ?? '';
 
         $this->doctor = $params['doctor'] ?? '';
+
+        $this->patient = $params['patient'] ?? '';
 
         $this->sort = $params['sort'] ?? 'id';
         $this->order = $params['order'] ?? 'desc';
@@ -55,6 +59,8 @@ class DataParams
             'status' => $this->status,
 
             'doctor' => $this->doctor,
+
+            'patient' => $this->patient,
 
             'sort' => $this->sort,
             'order' => $this->order,

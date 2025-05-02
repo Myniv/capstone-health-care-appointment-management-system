@@ -29,13 +29,10 @@ use Config\Roles; ?>
   <!-- Search and Filters -->
   <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap items-center gap-4 mb-4">
     <div class="flex flex-grow items-center gap-2">
-      <input type="text" class="input input-bordered w-full md:w-auto flex-grow" name="search" value="<?= $params->search ?>"
-        placeholder="Search...">
-      <input type="date"
-        name="date"
-        class="input input-bordered <?= session('errors.date') ? 'input-error' : '' ?>"
-        value="<?= $params->date ?>"
-        placeholder="Select Date" />
+      <input type="text" class="input input-bordered w-full md:w-auto flex-grow" name="search"
+        value="<?= $params->search ?>" placeholder="Search...">
+      <input type="date" name="date" class="input input-bordered <?= session('errors.date') ? 'input-error' : '' ?>"
+        value="<?= $params->date ?>" placeholder="Select Date" />
       <button type="submit" class="btn btn-primary ml-2">Search</button>
     </div>
 
@@ -87,7 +84,8 @@ use Config\Roles; ?>
                 <td><?= date('F j, Y', strtotime($row->date)) ?></td>
                 <td><?= $row->roomName ?></td>
                 <td><?= date('g:i A', strtotime($row->startTime)) ?> -
-                  <?= date('g:i A', strtotime($row->endTime)) ?></td>
+                  <?= date('g:i A', strtotime($row->endTime)) ?>
+                </td>
                 <td>
                   <?= view_cell('\App\Cells\StatusCell::getStatus', ['status' => $row->status]) ?>
                   <?= view_cell('\App\Cells\StatusRescheduleCell::getStatusReschedule', ['is_reschedule' => $row->is_reschedule]) ?>
@@ -109,16 +107,21 @@ use Config\Roles; ?>
             <div class="flex gap-4 items-center">
               <div class="avatar">
                 <div class="w-24 rounded-full">
-                  <img src="<?= base_url('profile-picture?path=' . $row->doctorProfilePicture); ?>"
-                    alt="Profile Picture <?= $row->doctorFirstName . ' ' . $row->doctorLastName; ?>">
+                  <?php if (in_groups(Roles::PATIENT)): ?>
+                    <img src="<?= base_url('profile-picture?path=' . $row->doctorProfilePicture); ?>"
+                      alt="Profile Picture <?= $row->doctorFirstName . ' ' . $row->doctorLastName; ?>">
+                  <?php elseif (in_groups(Roles::DOCTOR)): ?>
+                    <img src="<?= base_url('profile-picture?path=' . $row->patientProfilePicture); ?>"
+                      alt="Profile Picture <?= $row->patientFirstName . ' ' . $row->patientLastName; ?>">
+                  <?php endif; ?>
                 </div>
               </div>
               <div class="grid gap-2">
                 <h2 class="card-title">
                   <?php if (in_groups(Roles::PATIENT)): ?>
-                    <p><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></p>
+                    <p><?= $row->doctorFirstName ?>       <?= $row->doctorLastName ?></p>
                   <?php else: ?>
-                    <p><?= $row->patientFirstName ?> <?= $row->patientLastName ?></p>
+                    <p><?= $row->patientFirstName ?>       <?= $row->patientLastName ?></p>
                   <?php endif; ?>
                 </h2>
                 <p class="flex gap-2 items-center"><i class="fa-solid fa-calendar"></i>
@@ -168,9 +171,8 @@ use Config\Roles; ?>
   <!-- Modal Form History -->
   <div class="modal" role="dialog" id="modal-form-history">
     <div class="modal-box md:max-w-5xl">
-      <form
-        action="<?= base_url('doctor/history/create') ?>"
-        method="post" enctype="multipart/form-data" id="formData" novalidate>
+      <form action="<?= base_url('doctor/history/create') ?>" method="post" enctype="multipart/form-data" id="formData"
+        novalidate>
         <?= csrf_field() ?>
 
         <input type="hidden" name="appointment_id" id="appointmentId">
@@ -180,10 +182,7 @@ use Config\Roles; ?>
           <label for="notes" class="label">
             <span class="label-text">Notes</span>
           </label>
-          <textarea
-            name="notes"
-            class="textarea textarea-bordered w-full"
-            rows="2"><?= old('notes') ?></textarea>
+          <textarea name="notes" class="textarea textarea-bordered w-full" rows="2"><?= old('notes') ?></textarea>
           <div class="text-error text-sm"><?= session('errors.notes') ?? '' ?></div>
         </div>
 
@@ -192,9 +191,7 @@ use Config\Roles; ?>
           <label for="prescriptions" class="label">
             <span class="label-text">Prescriptions</span>
           </label>
-          <textarea
-            name="prescriptions"
-            class="textarea textarea-bordered w-full"
+          <textarea name="prescriptions" class="textarea textarea-bordered w-full"
             rows="2"><?= old('prescriptions') ?></textarea>
           <div class="text-error text-sm"><?= session('errors.prescriptions') ?? '' ?></div>
         </div>
@@ -204,10 +201,7 @@ use Config\Roles; ?>
           <label for="documents" class="label">
             <span class="label-text">Medical Documents</span>
           </label>
-          <input
-            type="file"
-            name="documents"
-            class="file-input file-input-bordered w-full">
+          <input type="file" name="documents" class="file-input file-input-bordered w-full">
           <div class="text-error text-sm mt-1"><?= session('errors.documents') ?></div>
         </div>
 
@@ -225,12 +219,12 @@ use Config\Roles; ?>
 
 <?= $this->section('scripts'); ?>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const buttons = document.querySelectorAll('[href="#modal-form-history"]');
     const appointmentIdInput = document.getElementById('appointmentId');
 
     buttons.forEach(button => {
-      button.addEventListener('click', function() {
+      button.addEventListener('click', function () {
         // Ambil appointment ID dari atribut data-id
         const appointmentId = button.getAttribute('data-id');
 

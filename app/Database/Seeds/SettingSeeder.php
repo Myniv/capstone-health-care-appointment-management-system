@@ -14,6 +14,11 @@ class SettingSeeder extends Seeder
                 'value' => '7,3,1',
                 'description' => 'Reminder For Appointment',
             ],
+            [
+                'key' => 'cancel_due',
+                'value' => '3',
+                'description' => 'For due cancelation appointment',
+            ],
         ];
 
         $db = \Config\Database::connect();

@@ -9,6 +9,7 @@ use App\Models\DoctorModel;
 use App\Models\DoctorScheduleModel;
 use App\Models\EducationModel;
 use App\Models\PatientModel;
+use App\Models\SettingModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Roles;
 use DateTime;
@@ -20,6 +21,7 @@ class AppointmentController extends BaseController
     protected $doctorScheduleModel;
     protected $patientModel;
     protected $educationModel;
+    protected $settingModel;
 
 
     public function __construct()
@@ -29,18 +31,43 @@ class AppointmentController extends BaseController
         $this->doctorScheduleModel = new DoctorScheduleModel();
         $this->patientModel = new PatientModel();
         $this->educationModel = new EducationModel();
+        $this->settingModel = new SettingModel();
     }
 
     public function index()
     {
-        $params = new DataParams([
-            "search" => $this->request->getGet("search"),
-            "date" => $this->request->getGet("date"),
-            "sort" => 'date',
-            "order" => $this->request->getGet("order"),
-            "perPage" => $this->request->getGet("perPage"),
-            "page" => $this->request->getGet("page_appointment"),
-        ]);
+        if (in_groups(Roles::DOCTOR)) {
+            $doctorId = $this->doctorModel->getDoctorByUserId(user_id())->id;
+            $params = new DataParams([
+                "search" => $this->request->getGet("search"),
+                "date" => $this->request->getGet("date"),
+                "sort" => 'date',
+                "order" => $this->request->getGet("order"),
+                "perPage" => $this->request->getGet("perPage"),
+                "page" => $this->request->getGet("page_appointment"),
+                "doctor" => $doctorId,
+            ]);
+        } else if (in_groups(Roles::PATIENT)) {
+            $patientId = $this->patientModel->getPatientByUserId(user_id())->id;
+            $params = new DataParams([
+                "search" => $this->request->getGet("search"),
+                "date" => $this->request->getGet("date"),
+                "sort" => 'date',
+                "order" => $this->request->getGet("order"),
+                "perPage" => $this->request->getGet("perPage"),
+                "page" => $this->request->getGet("page_appointment"),
+                "patient" => $patientId,
+            ]);
+        } else { //Admin
+            $params = new DataParams([
+                "search" => $this->request->getGet("search"),
+                "date" => $this->request->getGet("date"),
+                "sort" => 'date',
+                "order" => $this->request->getGet("order"),
+                "perPage" => $this->request->getGet("perPage"),
+                "page" => $this->request->getGet("page_appointment"),
+            ]);
+        }
 
         $result = $this->appointmentModel->getSortedAppointment($params);
 
@@ -95,6 +122,7 @@ class AppointmentController extends BaseController
                 doctor_schedules.end_time,
                 appointments.date,
                 rooms.name as roomName,
+                rooms.id as roomId,
                 appointments.documents,
                 appointments.id as id,
                 appointments.status as status,
@@ -107,10 +135,20 @@ class AppointmentController extends BaseController
             ->first();
         $education = $this->educationModel->where('doctor_id', $appointment->doctorId)->findAll();
         $doctor = $this->doctorModel->getDoctorWithCategoryName($appointment->doctorId);
+
+        $rawValue = $this->settingModel->where('key', 'cancel_due')->first()->value;
+
+        if (empty($rawValue) || !ctype_digit($rawValue)) {
+            $cancelDue = 3;
+        } else {
+            $cancelDue = (int) $rawValue;
+        }
+
         $data = [
             'appointment' => $appointment,
             'doctor' => $doctor,
             'education' => $education,
+            'cancelDue' => $cancelDue
         ];
         return view('page/appointment/v_appointment_detail', $data);
     }

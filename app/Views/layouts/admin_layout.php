@@ -15,10 +15,17 @@ use Config\Roles; ?>
     <!-- <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" /> -->
 
     <!-- Tailwind CSS & DaisyUI -->
-    <link rel="stylesheet" href="<?= base_url('assets/css/tailwind.css') ?>">
+        <link rel="stylesheet" href="<?= base_url('assets/css/tailwind.css') ?>">
+        
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- DaisyUI CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" />
 
     <!-- Font Awesome CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+        integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- Pristine.js -->
     <script src="<?= base_url('assets/js/pristine/dist/pristine.js') ?>" type="text/javascript"></script>
@@ -35,9 +42,10 @@ use Config\Roles; ?>
 
     <!-- Main Content -->
     <main class="container mx-auto px-4 flex flex-grow gap-6 h-full">
-        <?php if (in_groups(Roles::ADMIN) || in_groups(Roles::DOCTOR)):  ?>
+        <?php if (in_groups(Roles::ADMIN) || in_groups(Roles::DOCTOR)): ?>
             <!-- Sidebar -->
-            <aside class="bg-base-100 md:w-1/5 md:block md:relative md:translate-x-0 w-1/2 fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-200 ease-in-out">
+            <aside
+                class="bg-base-100 md:w-1/5 md:block md:relative md:translate-x-0 w-1/2 fixed inset-y-0 left-0 z-50 transform -translate-x-full transition-transform duration-200 ease-in-out">
                 <?= $this->include('components/sidebar'); ?>
             </aside>
         <?php endif; ?>
