@@ -9,6 +9,7 @@ use App\Models\DoctorCategoryModel;
 use App\Models\DoctorModel;
 use App\Models\EducationModel;
 use App\Models\PatientModel;
+use App\Models\RoomModel;
 use App\Models\UserModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Roles;
@@ -23,6 +24,7 @@ class UserController extends BaseController
     protected $doctorCategoryModel;
     protected $appointmentModel;
     protected $educationModel;
+    protected $roomModel;
     protected $config;
 
     public function __construct()
@@ -34,6 +36,7 @@ class UserController extends BaseController
         $this->doctorCategoryModel = new DoctorCategoryModel();
         $this->educationModel = new EducationModel();
         $this->appointmentModel = new AppointmentModel();
+        $this->roomModel = new RoomModel();
 
         $this->config = config('Auth');
         helper('auth');
@@ -79,6 +82,7 @@ class UserController extends BaseController
         $users = $this->userModel->countAllResults();
         $doctors = $this->doctorModel->countAllResults();
         $patients = $this->patientModel->countAllResults();
+        $rooms = $this->roomModel->countAllResults();
 
         $appointmentChartData = $this->getAppointmentPerDay();
         $patientDistributionChartData = $this->getPatientDistributionByDoctorCategory();
@@ -88,6 +92,7 @@ class UserController extends BaseController
             'users' => $users,
             'doctors' => $doctors,
             'patients' => $patients,
+            'rooms' => $rooms,
             'appointmentChartData' => $appointmentChartData,
             'patientDistributionChartData' => $patientDistributionChartData
         ];
@@ -714,25 +719,23 @@ class UserController extends BaseController
         // Ambil tanggal hari ini
         $today = date('Y-m-d');
 
-        // Ambil tanggal 7 hari yang lalu
-        $lastWeek = date('Y-m-d', strtotime('-6 days', strtotime($today)));
+        // Ambil tanggal 7 hari ke depan
+        $nextWeek = date('Y-m-d', strtotime('+6 days', strtotime($today)));
 
-        // Query untuk menghitung jumlah appointment per hari
         $appointments = $this->appointmentModel
             ->select("DATE(date) as appointment_date, COUNT(*) as appointment_count")
-            ->where("DATE(date) BETWEEN '$lastWeek' AND '$today'")
+            ->where("DATE(date) BETWEEN '$today' AND '$nextWeek'")
             ->groupBy("DATE(date)")
             ->orderBy("appointment_date", "ASC")
             ->findAll();
 
-        // Siapkan data untuk Chart.js
         $labels = [];
         $data = [];
 
-        // Buat array tanggal untuk 7 hari terakhir
+        // Buat array tanggal untuk 7 hari ke depan
         $dates = [];
-        for ($i = 6; $i >= 0; $i--) {
-            $dates[] = date('Y-m-d', strtotime("-$i days", strtotime($today)));
+        for ($i = 0; $i <= 6; $i++) {
+            $dates[] = date('Y-m-d', strtotime("+$i days", strtotime($today)));
         }
 
         // Map data appointment ke tanggal
@@ -753,8 +756,8 @@ class UserController extends BaseController
                 [
                     'label' => 'Appointments',
                     'data' => $data,
-                    'backgroundColor' => 'rgba(75, 192, 192, 0.5)',
-                    'borderColor' => 'rgba(75, 192, 192, 1)',
+                    'backgroundColor' => 'oklch(77% 0.152 181.912)',
+                    'borderColor' => 'oklch(38% 0.063 188.416)',
                     'borderWidth' => 1,
                 ]
             ]
@@ -763,7 +766,6 @@ class UserController extends BaseController
 
     private function getPatientDistributionByDoctorCategory()
     {
-        // Query untuk menghitung jumlah pasien per kategori dokter
         $patientDistribution = $this->appointmentModel
             ->select("doctor_category.name as category_name, COUNT(appointments.patient_id) as patient_count")
             ->join('doctors', 'doctors.id = appointments.doctor_id', 'left')
@@ -772,22 +774,32 @@ class UserController extends BaseController
             ->orderBy("patient_count", "DESC")
             ->findAll();
 
-        // Siapkan data untuk Chart.js
         $labels = [];
         $data = [];
         $backgroundColors = [];
 
-        foreach ($patientDistribution as $row) {
+        $presetColors = [
+            'rgb(66, 42, 213)', // primary
+            'rgb(244, 48, 152)', // secondary
+            'rgb(0, 211, 187)',   // accent
+            'rgb(0, 186, 254)',   // info
+            'rgb(252, 183, 0)',   // error
+        ];
+
+        foreach ($patientDistribution as $i => $row) {
             $labels[] = $row->category_name;
             $data[] = (int) $row->patient_count;
 
-            // Generate warna random untuk setiap kategori
-            $backgroundColors[] = sprintf(
-                'rgba(%d, %d, %d, 0.5)',
-                rand(0, 255),
-                rand(0, 255),
-                rand(0, 255)
-            );
+            if ($i < count($presetColors)) {
+                $backgroundColors[] = $presetColors[$i];
+            } else {
+                $backgroundColors[] = sprintf(
+                    'rgb(%d, %d, %d)',
+                    rand(0, 255),
+                    rand(0, 255),
+                    rand(0, 255)
+                );
+            }
         }
 
         return [

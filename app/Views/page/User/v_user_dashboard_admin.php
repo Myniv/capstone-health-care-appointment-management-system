@@ -1,8 +1,24 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 
 <?= $this->section('content'); ?>
-<div class="grid grid-cols-1 md:grid-cols-2 md:grid-rows-[auto_1fr] gap-4 h-full">
-    <div class="stats shadow-md bg-base-100">
+<div class="grid grid-cols-1 md:grid-cols-4 md:grid-rows-[auto_1fr] gap-4 h-full">
+    <div class="stats shadow-md bg-base-100 text-secondary">
+        <div class="stat">
+            <div class="stat-title">Total Users</div>
+            <div class="stat-value"><?= $users; ?></div>
+            <div class="stat-desc"></div>
+        </div>
+    </div>
+
+    <div class="stats shadow-md bg-base-100 text-secondary">
+        <div class="stat">
+            <div class="stat-title">Total Rooms Available</div>
+            <div class="stat-value"><?= $rooms; ?></div>
+            <div class="stat-desc"></div>
+        </div>
+    </div>
+
+    <div class="stats shadow-md bg-base-100 text-primary">
         <div class="stat">
             <div class="stat-title">Total Doctors</div>
             <div class="stat-value"><?= $doctors; ?></div>
@@ -10,7 +26,7 @@
         </div>
     </div>
 
-    <div class="stats shadow-md bg-base-100">
+    <div class="stats shadow-md bg-base-100 text-primary">
         <div class="stat">
             <div class="stat-title">Total Patients</div>
             <div class="stat-value"><?= $patients; ?></div>
@@ -18,14 +34,14 @@
         </div>
     </div>
 
-    <div class="card bg-base-100 shadow-md p-4">
-        <h3 class="card-title mb-4">Appointments in the Last 7 Days</h3>
-        <canvas id="appointmentChart" height="200"></canvas>
+    <div class="col-span-2 card bg-base-100 shadow-md p-4">
+        <h3 class="card-title mb-4">Appointments in the Next 7 Days</h3>
+        <canvas id="appointmentChart" class="h-full"></canvas>
     </div>
 
-    <div class="card bg-base-100 shadow-md p-4">
+    <div class="col-span-2 card bg-base-100 shadow-md p-4">
         <h3 class="card-title mb-4">Patient Distribution by Doctor Category</h3>
-        <canvas id="patientDistributionChart" height="100"></canvas>
+        <canvas id="patientDistributionChart" class="h-full"></canvas>
     </div>
 </div>
 <?= $this->endSection(); ?>
@@ -34,9 +50,10 @@
 <script>
     const appointmentChartData = <?= json_encode($appointmentChartData); ?>;
     const patientDistributionChartData = <?= json_encode($patientDistributionChartData); ?>;
+    console.table(patientDistributionChartData);
 
     // Bar Chart
-    const barChart = document.getElementById('appointmentChart').getContext('2d');
+    const barChart = document.getElementById('appointmentChart');
     new Chart(barChart, {
         type: 'bar',
         data: {
@@ -53,7 +70,23 @@
             },
             scales: {
                 y: {
-                    beginAtZero: true
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Total Appointments'
+                    },
+                    ticks: {
+                        callback: function(value) {
+                            return Number.isInteger(value) ? value : null; // Hanya tampilkan bilangan bulat
+                        },
+                        stepSize: 1
+                    }
+                },
+                x: {
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
                 }
             }
         }
@@ -69,12 +102,11 @@
         },
         options: {
             responsive: true,
-            maintainAspectRatio: true, // Pastikan rasio aspek dipertahankan
-            aspectRatio: 2, // Atur rasio aspek (contoh: 2 berarti lebar 2x tinggi)
+            maintainAspectRatio: true,
+            aspectRatio: 2,
             plugins: {
                 legend: {
-                    display: true,
-                    position: 'top'
+                    position: 'right'
                 }
             }
         }
