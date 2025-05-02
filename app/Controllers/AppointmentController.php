@@ -9,6 +9,7 @@ use App\Models\DoctorModel;
 use App\Models\DoctorScheduleModel;
 use App\Models\EducationModel;
 use App\Models\PatientModel;
+use App\Models\SettingModel;
 use CodeIgniter\HTTP\ResponseInterface;
 use Config\Roles;
 use DateTime;
@@ -20,6 +21,7 @@ class AppointmentController extends BaseController
     protected $doctorScheduleModel;
     protected $patientModel;
     protected $educationModel;
+    protected $settingModel;
 
 
     public function __construct()
@@ -29,6 +31,7 @@ class AppointmentController extends BaseController
         $this->doctorScheduleModel = new DoctorScheduleModel();
         $this->patientModel = new PatientModel();
         $this->educationModel = new EducationModel();
+        $this->settingModel = new SettingModel();
     }
 
     public function index()
@@ -132,10 +135,17 @@ class AppointmentController extends BaseController
             ->first();
         $education = $this->educationModel->where('doctor_id', $appointment->doctorId)->findAll();
         $doctor = $this->doctorModel->getDoctorWithCategoryName($appointment->doctorId);
+
+        $cancelDue = (int) $this->settingModel->where('key', 'cancel_due')->first()->value;
+        if (!empty($cancelDue) || $cancelDue != null || !ctype_digit($cancelDue)) {
+            $cancelDue = 3;
+        }
+
         $data = [
             'appointment' => $appointment,
             'doctor' => $doctor,
             'education' => $education,
+            'cancelDue' => $cancelDue
         ];
         return view('page/appointment/v_appointment_detail', $data);
     }
