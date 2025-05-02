@@ -136,9 +136,12 @@ class AppointmentController extends BaseController
         $education = $this->educationModel->where('doctor_id', $appointment->doctorId)->findAll();
         $doctor = $this->doctorModel->getDoctorWithCategoryName($appointment->doctorId);
 
-        $cancelDue = (int) $this->settingModel->where('key', 'cancel_due')->first()->value;
-        if (!empty($cancelDue) || $cancelDue != null || !ctype_digit($cancelDue)) {
+        $rawValue = $this->settingModel->where('key', 'cancel_due')->first()->value;
+
+        if (empty($rawValue) || !ctype_digit($rawValue)) {
             $cancelDue = 3;
+        } else {
+            $cancelDue = (int) $rawValue;
         }
 
         $data = [
