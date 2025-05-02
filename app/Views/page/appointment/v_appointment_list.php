@@ -145,11 +145,10 @@ use Config\Roles; ?>
                 <?php if ($row->status == 'booking'): ?>
                   <a href="#modal-form-history" data-id="<?= $row->id; ?>"
                     class="btn btn-primary btn-sm <?= ($row->date == date('Y-m-d')) ? 'pointer-events-none opacity-50' : '' ?>"
-                    disabled="<?php ($row->date == date('Y-m-d')) ? 'true' : 'false' ?>">
-                    Manage
+                    <?= date('Y-m-d', strtotime($row->date)) != date('Y-m-d') ? 'disabled' : '' ?>> Manage
                   </a>
 
-                <?php endif; ?>
+                <?php endif; ?> 
               <?php endif; ?>
               <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-soft btn-sm">
                 Details

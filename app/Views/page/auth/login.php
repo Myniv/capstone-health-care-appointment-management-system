@@ -40,8 +40,7 @@
             </label>
             <input type="password" name="password" placeholder="<?= lang('Auth.password') ?>"
                 class="input input-bordered w-full <?= session('errors.password') ? 'input-error' : '' ?>" required
-                data-pristine-required-message="The password field is required." data-pristine-minlength="8"
-                data-pristine-minlength-message="Password minimal 8 characters.">
+                data-pristine-required-message="The password field is required.">
             <div class="text-error text-sm mt-1"><?= session('errors.password') ?></div>
         </div>
 
