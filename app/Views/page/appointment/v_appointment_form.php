@@ -162,7 +162,7 @@ use Config\Roles; ?>
             class="btn btn-primary">
             <?= $type == 'create' ? 'Create' : 'Reschedule' ?>
           </button>
-          <a href="<?= in_groups(Roles::ADMIN) ? '/admin/appointment/detail/' . $appointmentId : '/appointment/create' ?>" class="btn btn-secondary">Cancel</a>
+          <a href="<?= in_groups(Roles::ADMIN) ? '/admin/appointment/detail/' . $appointmentId : base_url('find-doctor') ?>" class="btn btn-secondary">Cancel</a>
           <input type="hidden" name="appointmentId" value="<?= $type == 'create' ? '' : $appointmentId ?>" />
         </div>
       </div>

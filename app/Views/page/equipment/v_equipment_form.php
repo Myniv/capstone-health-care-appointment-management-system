@@ -7,13 +7,13 @@
 
 <h2 class="text-2xl font-bold mb-4"><?= isset($equipment) ? 'Edit Equipment' : 'Add Equipment'; ?></h2>
 
-<?php if (session()->getFlashdata('error')): ?>
-    <div class="alert alert-error mb-3">
-        <?= esc(session()->getFlashdata('error')) ?>
-    </div>
-<?php endif; ?>
-
 <div class="bg-base-100 p-6 rounded-md shadow-md">
+    <?php if (session()->getFlashdata('error')): ?>
+        <div class="alert alert-error mb-3">
+            <?= esc(session()->getFlashdata('error')) ?>
+        </div>
+    <?php endif; ?>
+
     <form
         action="<?= isset($equipment) ? base_url('admin/equipment/update/' . $equipment->id) : base_url('admin/equipment/create') ?>"
         method="post" enctype="multipart/form-data" id="formData" novalidate>

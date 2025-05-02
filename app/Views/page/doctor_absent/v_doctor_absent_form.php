@@ -6,13 +6,13 @@
 </div>
 <h2 class="text-2xl font-bold mb-4"><?= 'Add Absent'; ?></h2>
 
-<?php if (session()->getFlashdata('error')): ?>
-  <div class="alert alert-error mb-4">
-    <?= esc(session()->getFlashdata('error')) ?>
-  </div>
-<?php endif; ?>
-
 <div class="bg-base-100 p-6 rounded-md shadow-md">
+  <?php if (session()->getFlashdata('error')): ?>
+    <div class="alert alert-error mb-4">
+      <?= esc(session()->getFlashdata('error')) ?>
+    </div>
+  <?php endif; ?>
+
   <form action="<?= base_url('doctor/absent/create') ?>" method="post" enctype="multipart/form-data" id="formData"
     novalidate>
     <?= csrf_field() ?>

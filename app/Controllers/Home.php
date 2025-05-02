@@ -6,6 +6,6 @@ class Home extends BaseController
 {
     public function index()
     {
-        return redirect('find-doctor');
+        // return redirect('find-doctor');
     }
 }

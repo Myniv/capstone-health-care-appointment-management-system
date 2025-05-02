@@ -9,13 +9,13 @@
     <?= isset($doctor_category) ? 'Edit Category' : 'Add Category'; ?>
 </h2>
 
-<?php if (session()->getFlashdata('error')): ?>
-    <div class="alert alert-error mb-3">
-        <?= esc(session()->getFlashdata('error')) ?>
-    </div>
-<?php endif; ?>
-
 <div class="bg-base-100 p-6 rounded-md shadow-md">
+    <?php if (session()->getFlashdata('error')): ?>
+        <div class="alert alert-error mb-3">
+            <?= esc(session()->getFlashdata('error')) ?>
+        </div>
+    <?php endif; ?>
+
     <form
         action="<?= isset($doctor_category) ? base_url('admin/doctor-category/update/' . $doctor_category->id) : base_url('admin/doctor-category/create') ?>"
         method="post" enctype="multipart/form-data" id="formData" novalidate>
