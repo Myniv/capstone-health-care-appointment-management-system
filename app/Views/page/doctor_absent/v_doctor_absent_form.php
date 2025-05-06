@@ -17,6 +17,11 @@
     novalidate>
     <?= csrf_field() ?>
     <input type="hidden" name="_method" value="POST">
+    <input type="text" name="date" id="date"
+      class="hidden"
+      value="<?= old('date', $doctor_absent->date ?? '') ?>"
+      data-pristine-required
+      data-pristine-required-message="The date field is required.">
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <!-- Date -->
@@ -24,11 +29,15 @@
         <label for="date" class="label">
           <span class="label-text">Date</span>
         </label>
-        <input type="date" name="date" id="date"
+        <!-- <input type="date" name="date" id="date"
           class="input input-bordered w-full <?= session('errors.date') ? 'input-error' : '' ?>"
           min="<?= date('Y-m-d') ?>"
-          value="<?= old('date', $doctor_absent->date ?? '') ?>" data-pristine-required
-          data-pristine-required-message="The date field is required.">
+          value="<?= old('date', $doctor_absent->date ?? '') ?>"
+          autocomplete="off" data-pristine-required
+          data-pristine-required-message="The date field is required."> -->
+
+        <input type="text" id="dateDisplay" class="input input-bordered w-full"
+          autocomplete="off" readonly>
         <div class="text-error text-sm"><?= session('errors.date') ?? '' ?></div>
       </div>
 
@@ -60,6 +69,8 @@
   window.onload = function() {
     const form = document.getElementById("formData");
 
+
+
     const pristine = new Pristine(form, {
       classTo: 'mb-3',
       errorClass: 'input-error',
@@ -73,6 +84,33 @@
       const valid = pristine.validate();
       if (!valid) {
         e.preventDefault();
+      }
+    });
+
+    // Load existing value into display
+    const realDate = document.getElementById("date");
+    const dateDisplay = document.getElementById("dateDisplay");
+
+    if (realDate.value) {
+      try {
+        const parsed = $.datepicker.parseDate("yy-mm-dd", realDate.value);
+        const pretty = $.datepicker.formatDate("DD, dd MM yy", parsed);
+        dateDisplay.value = pretty;
+      } catch (e) {
+        console.warn("Invalid initial date format:", e);
+      }
+    }
+
+    // jQuery UI Datepicker
+    $("#dateDisplay").datepicker({
+      dateFormat: "DD, dd MM yy", // What user sees
+      minDate: 0,
+      altField: "#date", // Hidden ISO field to submit
+      altFormat: "yy-mm-dd", // What gets submitted
+      onSelect: function(dateText, inst) {
+        const dateObj = $(this).datepicker("getDate");
+        const isoDate = $.datepicker.formatDate("yy-mm-dd", dateObj);
+        $("#date").val(isoDate);
       }
     });
   };

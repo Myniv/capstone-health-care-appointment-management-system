@@ -81,7 +81,7 @@
       </div>
 
       <div class="mb-3">
-        <label for="year" class="label"><span class="label-text">Year</span></label>
+        <label for="year" class="label"><span class="label-text">Graduate Year</span></label>
         <input
           type="text"
           name="year"

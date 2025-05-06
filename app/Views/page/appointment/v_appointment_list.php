@@ -79,10 +79,10 @@ use Config\Roles; ?>
             <?php foreach ($appointment as $row): ?>
               <tr>
                 <td><?= $row->id ?></td>
-                <td><?= $row->doctorFirstName ?>       <?= $row->doctorLastName ?></td>
-                <td><?= $row->patientFirstName ?>       <?= $row->patientLastName ?></td>
+                <td><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></td>
+                <td><?= $row->patientFirstName ?> <?= $row->patientLastName ?></td>
                 <td><?= $row->roomName ?></td>
-                <td><?= date('F j, Y', strtotime($row->date)) ?></td>
+                <td><?= date('l, F j, Y', strtotime($row->date)) ?></td>
                 <td><?= date('g:i A', strtotime($row->startTime)) ?> -
                   <?= date('g:i A', strtotime($row->endTime)) ?>
                 </td>
@@ -119,13 +119,13 @@ use Config\Roles; ?>
               <div class="grid gap-2">
                 <h2 class="card-title">
                   <?php if (in_groups(Roles::PATIENT)): ?>
-                    <p><?= $row->doctorFirstName ?>       <?= $row->doctorLastName ?></p>
+                    <p><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></p>
                   <?php else: ?>
-                    <p><?= $row->patientFirstName ?>       <?= $row->patientLastName ?></p>
+                    <p><?= $row->patientFirstName ?> <?= $row->patientLastName ?></p>
                   <?php endif; ?>
                 </h2>
                 <p class="flex gap-2 items-center"><i class="fa-solid fa-calendar"></i>
-                  <span><?= date('F j, Y', strtotime($row->date)) ?></span>
+                  <?= view_cell('DateFormatCell', ['date' => $row->date]) ?>
                 </p>
                 <p class="flex gap-2 items-center">
                   <i class="fa-solid fa-clock"></i>
@@ -148,7 +148,7 @@ use Config\Roles; ?>
                     <?= date('Y-m-d', strtotime($row->date)) != date('Y-m-d') ? 'disabled' : '' ?>> Manage
                   </a>
 
-                <?php endif; ?> 
+                <?php endif; ?>
               <?php endif; ?>
               <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-soft btn-sm">
                 Details
@@ -221,12 +221,12 @@ use Config\Roles; ?>
 
 <?= $this->section('scripts'); ?>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.querySelectorAll('[href="#modal-form-history"]');
     const appointmentIdInput = document.getElementById('appointmentId');
 
     buttons.forEach(button => {
-      button.addEventListener('click', function () {
+      button.addEventListener('click', function() {
         // Ambil appointment ID dari atribut data-id
         const appointmentId = button.getAttribute('data-id');
 

@@ -72,7 +72,7 @@ class AppointmentController extends BaseController
             ]);
             $baseUrl = base_url('admin/appointment');
         }
-        
+
         $result = $this->appointmentModel->getSortedAppointment($params);
 
         $data = [
@@ -185,6 +185,7 @@ class AppointmentController extends BaseController
 
     public function createAppointmentSubmit()
     {
+
         $patient = $this->patientModel->where('user_id', user_id())->first();
         $doctor = $this->doctorModel->find($this->request->getVar('id'));
 
