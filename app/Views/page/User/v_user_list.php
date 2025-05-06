@@ -11,8 +11,8 @@
 
     <form action="<?= $baseUrl ?>" method="get" class="">
         <div class="flex flex-grow items-center mb-4">
-            <input type="text" class="input input-bordered w-full md:w-auto flex-grow" name="search" value="<?= $params->search ?>"
-                placeholder="Search...">
+            <input type="text" class="input input-bordered w-full md:w-auto flex-grow" name="search"
+                value="<?= $params->search ?>" placeholder="Search...">
             <button type="submit" class="btn btn-primary ml-2">Search</button>
         </div>
 
@@ -51,42 +51,56 @@
             <thead>
                 <tr>
                     <th>
-                        <a href="<?= $params->getSortUrl('user_id', $baseUrl) ?>" class="link link-hover">
-                            ID <?= $params->isSortedBy('user_id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                        <a href="<?= $params->getSortUrl('username', $baseUrl) ?>" class="link link-hover">
+                            No.
+                            <?= $params->isSortedBy('username') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a href="<?= $params->getSortUrl('username', $baseUrl) ?>" class="link link-hover">
-                            Username <?= $params->isSortedBy('username') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                            Username
+                            <?= $params->isSortedBy('username') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a href="<?= $params->getSortUrl('email', $baseUrl) ?>" class="link link-hover">
-                            Email <?= $params->isSortedBy('email') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                            Email
+                            <?= $params->isSortedBy('email') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a href="<?= $params->getSortUrl('first_name', $baseUrl) ?>" class="link link-hover">
-                            Name <?= $params->isSortedBy('first_name') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                            Name
+                            <?= $params->isSortedBy('first_name') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a href="<?= $params->getSortUrl('doctor_category', $baseUrl) ?>" class="link link-hover">
-                            Category <?= $params->isSortedBy('doctor_category') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                            Category
+                            <?= $params->isSortedBy('doctor_category') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a href="<?= $params->getSortUrl('role', $baseUrl) ?>" class="link link-hover">
-                            Role <?= $params->isSortedBy('role') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                            Role
+                            <?= $params->isSortedBy('role') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
+                <?php
+                $total = $total ?? 0;
+                $start = ($params->page - 1) * $params->perPage;
+
+                $i = $params->order === 'asc'
+                    ? $total - $start
+                    : $start + 1;
+                ?>
                 <?php foreach ($users as $user): ?>
                     <tr>
-                        <td><?= $user->user_id ?></td>
+                        <td><?= $i ?><?php $params->order === 'asc' ? $i-- : $i++; ?></td>
                         <td><?= $user->username ?></td>
                         <td><?= $user->email ?></td>
                         <td><?= $user->first_name . ' ' . $user->last_name ?></td>
@@ -94,8 +108,10 @@
                         <td><?= ucfirst($user->role) ?></td>
                         <td>
                             <?php if ($user->role == 'patient'): ?>
-                                <a href="/admin/users/patient/profile/<?= $user->user_id ?>" class="btn btn-info btn-sm">Detail</a>
-                                <a href="/admin/users/patient/update/<?= $user->user_id ?>" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="/admin/users/patient/profile/<?= $user->user_id ?>"
+                                    class="btn btn-info btn-sm">Detail</a>
+                                <a href="/admin/users/patient/update/<?= $user->user_id ?>"
+                                    class="btn btn-warning btn-sm">Edit</a>
                                 <form action="/admin/users/patient/delete/<?= $user->user_id ?>" method="post" class="inline">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button type="submit" class="btn btn-error btn-sm"
@@ -104,8 +120,10 @@
                                     </button>
                                 </form>
                             <?php elseif ($user->role == 'doctor'): ?>
-                                <a href="/admin/users/doctor/profile/<?= $user->user_id ?>" class="btn btn-info btn-sm">Detail</a>
-                                <a href="/admin/users/doctor/update/<?= $user->user_id ?>" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="/admin/users/doctor/profile/<?= $user->user_id ?>"
+                                    class="btn btn-info btn-sm">Detail</a>
+                                <a href="/admin/users/doctor/update/<?= $user->user_id ?>"
+                                    class="btn btn-warning btn-sm">Edit</a>
                                 <form action="/admin/users/doctor/delete/<?= $user->user_id ?>" method="post" class="inline">
                                     <input type="hidden" name="_method" value="DELETE">
                                     <button type="submit" class="btn btn-error btn-sm"
@@ -120,6 +138,7 @@
                     </tr>
                 <?php endforeach; ?>
             </tbody>
+
         </table>
     </div>
 

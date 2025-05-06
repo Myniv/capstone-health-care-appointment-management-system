@@ -41,6 +41,8 @@ class DataParams
 
         $this->patient = $params['patient'] ?? '';
 
+        $this->doctor_category = $params['doctor_category'] ?? '';
+
         $this->sort = $params['sort'] ?? 'id';
         $this->order = $params['order'] ?? 'desc';
         $this->page = (int) ($params['page'] ?? 1);
@@ -61,6 +63,8 @@ class DataParams
             'doctor' => $this->doctor,
 
             'patient' => $this->patient,
+
+            'doctor_category' => $this->doctor_category,
 
             'sort' => $this->sort,
             'order' => $this->order,

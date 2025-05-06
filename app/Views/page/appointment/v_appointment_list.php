@@ -62,7 +62,7 @@ use Config\Roles; ?>
           <tr>
             <th>
               <a href="<?= $params->getSortUrl('id', $baseUrl) ?>" class="link link-hover">
-                ID <?= $params->isSortedBy('id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                No. <?= $params->isSortedBy('id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
               </a>
             </th>
             <th>Doctor</th>
@@ -76,9 +76,17 @@ use Config\Roles; ?>
         </thead>
         <tbody>
           <?php if (!empty($appointment)): ?>
+            <?php
+            $total = $total ?? 0;
+            $start = ($params->page - 1) * $params->perPage;
+
+            $i = $params->order === 'asc'
+              ? $total - $start
+              : $start + 1;
+            ?>
             <?php foreach ($appointment as $row): ?>
               <tr>
-                <td><?= $row->id ?></td>
+                <td><?= $i ?><?php $params->order === 'asc' ? $i-- : $i++; ?></td>
                 <td><?= $row->doctorFirstName ?>       <?= $row->doctorLastName ?></td>
                 <td><?= $row->patientFirstName ?>       <?= $row->patientLastName ?></td>
                 <td><?= $row->roomName ?></td>
@@ -148,7 +156,7 @@ use Config\Roles; ?>
                     <?= date('Y-m-d', strtotime($row->date)) != date('Y-m-d') ? 'disabled' : '' ?>> Manage
                   </a>
 
-                <?php endif; ?> 
+                <?php endif; ?>
               <?php endif; ?>
               <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-soft btn-sm">
                 Details

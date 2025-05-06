@@ -12,8 +12,8 @@
     <!-- Search and Filters -->
     <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap items-center gap-4 mb-4">
         <div class="flex flex-grow items-center">
-            <input type="text" class="input input-bordered w-full md:w-auto flex-grow" name="search" value="<?= $params->search ?>"
-                placeholder="Search...">
+            <input type="text" class="input input-bordered w-full md:w-auto flex-grow" name="search"
+                value="<?= $params->search ?>" placeholder="Search...">
             <button type="submit" class="btn btn-primary ml-2">Search</button>
         </div>
 
@@ -40,31 +40,43 @@
             <thead>
                 <tr>
                     <th>
-                        <a href="<?= $params->getSortUrl('id', $baseUrl) ?>" class="link link-hover">
-                            ID <?= $params->isSortedBy('id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                        <a href="<?= $params->getSortUrl('name', $baseUrl) ?>" class="link link-hover">
+                            No.
+                            <?= $params->isSortedBy('name') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a href="<?= $params->getSortUrl('name', $baseUrl) ?>" class="link link-hover">
-                            Name <?= $params->isSortedBy('name') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                            Name
+                            <?= $params->isSortedBy('name') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>
                         <a href="<?= $params->getSortUrl('description', $baseUrl) ?>" class="link link-hover">
-                            Description <?= $params->isSortedBy('description') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                            Description
+                            <?= $params->isSortedBy('description') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
                     <th>Action</th>
                 </tr>
             </thead>
             <tbody>
+                <?php
+                $total = $total ?? 0;
+                $start = ($params->page - 1) * $params->perPage;
+
+                $i = $params->order === 'asc'
+                    ? $total - $start
+                    : $start + 1;
+                ?>
                 <?php foreach ($doctor_category as $category): ?>
                     <tr>
-                        <td><?= $category->id ?></td>
+                        <td><?= $i ?><?php $params->order === 'asc' ? $i-- : $i++; ?></td>
                         <td><?= $category->name ?></td>
                         <td><?= $category->description ?></td>
                         <td>
-                            <a href="/admin/doctor-category/update/<?= $category->id ?>" class="btn btn-warning btn-sm">Edit</a>
+                            <a href="/admin/doctor-category/update/<?= $category->id ?>"
+                                class="btn btn-warning btn-sm">Edit</a>
                             <form action="/admin/doctor-category/delete/<?= $category->id ?>" method="post" class="inline">
                                 <input type="hidden" name="_method" value="DELETE">
                                 <button type="submit" class="btn btn-error btn-sm"
