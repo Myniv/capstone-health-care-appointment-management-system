@@ -90,7 +90,7 @@ use Config\Roles; ?>
                 <td><?= $row->doctorFirstName ?>       <?= $row->doctorLastName ?></td>
                 <td><?= $row->patientFirstName ?>       <?= $row->patientLastName ?></td>
                 <td><?= $row->roomName ?></td>
-                <td><?= date('F j, Y', strtotime($row->date)) ?></td>
+                <td><?= date('l, F j, Y', strtotime($row->date)) ?></td>
                 <td><?= date('g:i A', strtotime($row->startTime)) ?> -
                   <?= date('g:i A', strtotime($row->endTime)) ?>
                 </td>
@@ -133,7 +133,7 @@ use Config\Roles; ?>
                   <?php endif; ?>
                 </h2>
                 <p class="flex gap-2 items-center"><i class="fa-solid fa-calendar"></i>
-                  <span><?= date('F j, Y', strtotime($row->date)) ?></span>
+                  <?= view_cell('DateFormatCell', ['date' => $row->date]) ?>
                 </p>
                 <p class="flex gap-2 items-center">
                   <i class="fa-solid fa-clock"></i>

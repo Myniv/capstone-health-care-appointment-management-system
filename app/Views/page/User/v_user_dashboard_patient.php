@@ -46,7 +46,7 @@
                                         <?= date('g:i A', strtotime($appointment->endTime)) ?></span>
                                 </p>
                                 <p class="col-start-2 flex gap-2 items-center"><i class="fa-solid fa-calendar"></i>
-                                    <span><?= date('F j, Y', strtotime($appointment->date)) ?></span>
+                                    <?= view_cell('DateFormatCell', ['date' => $appointment->date]) ?>
                                 </p>
                             </div>
                         </div>

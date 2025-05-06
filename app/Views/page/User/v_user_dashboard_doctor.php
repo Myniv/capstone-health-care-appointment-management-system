@@ -40,7 +40,7 @@
                                 <h3 class="font-semibold">
                                     <?= $appointment->patientFirstName . ' ' . $appointment->patientLastName; ?>
                                 </h3>
-                                <p class="text-gray-700"><?= date('F j, Y', strtotime($appointment->date)) ?></p>
+                                <p class="text-gray-700"><?= view_cell('DateFormatCell', ['date' => $appointment->date]) ?></p>
                                 <span class="text-gray-700">Reason:
                                     <span class="text-gray-500">
                                         <?= $appointment->reason; ?>
