@@ -87,7 +87,7 @@ use Config\Roles; ?>
             <label for="dateDisplay" class="label">
               <span class="label-text">Date</span>
             </label>
-            <input type="date" id="dateDisplay" name="date" class="input input-bordered w-full"
+            <input type="text" id="dateDisplay" name="dateDisplay" class="input input-bordered w-full" autocomplete="off"
               value="<?= old('date', $date ?? '') ?>" min="<?= date('Y-m-d') ?>" onchange="this.form.submit()" />
           </div>
 
@@ -137,8 +137,8 @@ use Config\Roles; ?>
         <div class="text-end mt-4">
           <button type="submit"
             formaction="<?= $type == 'create' ?
-              base_url('appointment/create/submit') :
-              base_url(in_groups(Roles::ADMIN) ? 'admin/appointment/reschedule/submit' : 'appointment/reschedule/submit') ?>"
+                          base_url('appointment/create/submit') :
+                          base_url(in_groups(Roles::ADMIN) ? 'admin/appointment/reschedule/submit' : 'appointment/reschedule/submit') ?>"
             formmethod="post" class="btn btn-primary">
             <?= $type == 'create' ? 'Create' : 'Reschedule' ?>
           </button>
@@ -178,5 +178,33 @@ use Config\Roles; ?>
     button.classList.remove('btn-outline');
     button.classList.add('btn-primary', 'text-white');
   }
+
+  $(function() {
+    $("#dateDisplay").datepicker({
+      dateFormat: "DD, dd MM yy", // Display format: Monday, 2025-05-05
+      minDate: 0,
+      altField: "#dateInput", // Where the ISO value goes
+      altFormat: "yy-mm-dd", // What the server receives
+      onSelect: function(dateText, inst) {
+        const dateObj = $(this).datepicker("getDate");
+        const isoDate = $.datepicker.formatDate("yy-mm-dd", dateObj);
+
+        // Set hidden input value for form submission
+        $("#dateInput").val(isoDate);
+
+        // Optional: auto-submit form if you want
+        // $("#appointmentForm").submit();
+      }
+
+    });
+
+    // Set display if value already exists (e.g., on form reload)
+    const existingDate = $("#dateInput").val();
+    if (existingDate) {
+      const dateObj = $.datepicker.parseDate("yy-mm-dd", existingDate);
+      const displayText = $.datepicker.formatDate("DD, dd MM yy", dateObj);
+      $("#dateDisplay").val(displayText);
+    }
+  });
 </script>
 <?= $this->endSection(); ?>

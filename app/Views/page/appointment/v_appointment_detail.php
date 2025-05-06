@@ -84,7 +84,7 @@
                 $today = Time::parse('today');
                 $diff = $today->difference($appointment->date)->getDays();
                 if ($diff >= $cancelDue):
-                  ?>
+                ?>
                   <div class="card-actions justify-end">
                     <form action="/appointment/cancel" method="post" novalidate id="cancelForm" name="cancelForm">
                       <?= csrf_field() ?>
@@ -131,7 +131,7 @@
       <p class="font-bold">Details</p>
       <span class="flex gap-2 items-center">
         <i class="fa-solid fa-calendar"></i>
-        <?= date('F j, Y', strtotime($appointment->date)) ?></span>
+        <?= view_cell('DateFormatCell', ['date' => $appointment->date]) ?></span>
       <span class="flex gap-2 items-center">
         <i class="fa-solid fa-clock"></i>
         <span><?= date('g:i A', strtotime($appointment->start_time)) ?> -

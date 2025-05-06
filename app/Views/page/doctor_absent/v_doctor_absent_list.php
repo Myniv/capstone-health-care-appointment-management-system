@@ -54,7 +54,7 @@
       <tbody>
         <?php foreach ($doctor_absent as $absent): ?>
           <tr>
-            <td><?= date('F j, Y', strtotime($absent->date)) ?></td>
+            <td> <?= view_cell('DateFormatCell', ['date' => $absent->date]) ?></td>
             <td class="w-2/3"><?= $absent->reason ?></td>
             <!-- <td> <a href="" class="btn btn-warning btn-sm">Button</a>
               <form action="" method="post" class="inline">

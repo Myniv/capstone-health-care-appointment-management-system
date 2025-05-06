@@ -6,7 +6,7 @@ use CodeIgniter\View\Cells\Cell;
 
 class BackButtonCell extends Cell
 {
-    public $backLinkBase; // Change from private to public
+    public $backLinkBase;
     public $backLink;
 
     public function mount()
