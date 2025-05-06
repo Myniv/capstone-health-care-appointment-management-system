@@ -11,7 +11,7 @@
 
 <div class="bg-base-100 p-6 rounded-md shadow-md">
     <?php if (session()->getFlashdata('error')): ?>
-        <div class="alert alert-error mb-3">
+        <div class="alert alert-error alert-soft mb-3">
             <?= esc(session()->getFlashdata('error')) ?>
         </div>
     <?php endif; ?>

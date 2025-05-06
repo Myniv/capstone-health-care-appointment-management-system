@@ -7,7 +7,7 @@
 <h2 class="text-2xl font-bold mb-4"><?= isset($education) ? 'Edit' : 'Add'; ?> Education</h2>
 
 <?php if (session('errors')): ?>
-  <div class="alert alert-error mb-4">
+  <div class="alert alert-error alert-soft mb-4">
     <ul>
       <?php foreach (session('errors') as $error): ?>
         <li><?= $error ?></li>

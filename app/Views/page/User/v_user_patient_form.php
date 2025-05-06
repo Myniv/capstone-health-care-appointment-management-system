@@ -12,7 +12,7 @@ use Config\Roles; ?>
 <h2 class="text-2xl font-bold mb-4"><?= isset($user) ? 'Edit Patient' : 'Add Patient'; ?></h2>
 
 <?php if (session()->getFlashdata('error')): ?>
-    <div class="alert alert-error mb-3">
+    <div class="alert alert-error alert-soft mb-3">
         <?= esc(session()->getFlashdata('error')) ?>
     </div>
 <?php endif; ?>

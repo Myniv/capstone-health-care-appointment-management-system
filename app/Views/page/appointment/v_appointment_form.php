@@ -16,7 +16,7 @@ use Config\Roles; ?>
 <h2 class="text-2xl font-bold mb-4"><?= $type == 'reschedule' ? 'Reschedule' : 'Create' ?> Appointment</h2>
 
 <?php if (session('errors')): ?>
-  <div class="alert alert-error mb-4">
+  <div class="alert alert-error alert-soft mb-4">
     <ul>
       <?php foreach (session('errors') as $error): ?>
         <li><?= $error ?></li>
@@ -71,6 +71,8 @@ use Config\Roles; ?>
       </div>
     </div>
   </div>
+
+
   <form
     action="<?= $type == 'create' ? base_url('appointment/create/form') : base_url(in_groups(Roles::ADMIN) ? 'admin/appointment/reschedule/form' : 'appointment/reschedule/form') ?>"
     method="get" enctype="multipart/form-data" id="appointmentForm" novalidate>
@@ -78,17 +80,23 @@ use Config\Roles; ?>
     <input type="hidden" name="id" value="<?= $doctor->id; ?>">
     <input type="hidden" name="schedule" id="scheduleInput" value="<?= old('schedule', $schedule ?? '') ?>">
     <input type="hidden" name="date" id="dateInput" value="<?= old('date', $date ?? '') ?>">
-
     <div class="card card-border bg-base-100 mb-4">
       <div class="card-body">
         <p class="text-gray-500/75 font-semibold mb-2">Doctor Practice Schedule</p>
+
+        <div class="alert alert-info alert-soft mb-4">
+          <i class="fa-solid fa-exclamation"></i>Note: You can make an appointment starting from today up to 7 days in advance.
+        </div>
         <div class="grid gap-2">
           <div class="grid gap-2">
             <label for="dateDisplay" class="label">
               <span class="label-text">Date</span>
             </label>
             <input type="text" id="dateDisplay" name="dateDisplay" class="input input-bordered w-full" autocomplete="off"
-              value="<?= old('date', $date ?? '') ?>" min="<?= date('Y-m-d') ?>" onchange="this.form.submit()" />
+              value="<?= old('date', $date ?? '') ?>"
+              min="<?= date('Y-m-d') ?>"
+              max="<?= date('Y-m-d', strtotime('+7 days')) ?>"
+              onchange="this.form.submit()" />
           </div>
 
           <div class="grid gap-2">
@@ -183,6 +191,7 @@ use Config\Roles; ?>
     $("#dateDisplay").datepicker({
       dateFormat: "DD, dd MM yy", // Display format: Monday, 2025-05-05
       minDate: 0,
+      maxDate: 7,
       altField: "#dateInput", // Where the ISO value goes
       altFormat: "yy-mm-dd", // What the server receives
       onSelect: function(dateText, inst) {

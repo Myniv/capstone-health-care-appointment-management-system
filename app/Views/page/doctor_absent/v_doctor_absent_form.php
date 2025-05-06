@@ -8,11 +8,13 @@
 
 <div class="bg-base-100 p-6 rounded-md shadow-md">
   <?php if (session()->getFlashdata('error')): ?>
-    <div class="alert alert-error mb-4">
+    <div class="alert alert-error alert-soft mb-4">
       <?= esc(session()->getFlashdata('error')) ?>
     </div>
   <?php endif; ?>
-
+  <div class="alert alert-info alert-soft mb-4">
+    <i class="fa-solid fa-exclamation"></i>You can add an absence with the minimum is 1 week from today.
+  </div>
   <form action="<?= base_url('doctor/absent/create') ?>" method="post" enctype="multipart/form-data" id="formData"
     novalidate>
     <?= csrf_field() ?>
@@ -104,7 +106,7 @@
     // jQuery UI Datepicker
     $("#dateDisplay").datepicker({
       dateFormat: "DD, dd MM yy", // What user sees
-      minDate: 0,
+      minDate: 7,
       altField: "#date", // Hidden ISO field to submit
       altFormat: "yy-mm-dd", // What gets submitted
       onSelect: function(dateText, inst) {
