@@ -13,9 +13,6 @@ use Config\Roles; ?>
     <!-- Tailwind CSS & DaisyUI -->
     <link rel="stylesheet" href="<?= base_url('assets/css/tailwind.css') ?>">
 
-    <!-- Tailwind CSS via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-
     <!-- Tailwind CSS & DaisyUI CDN-->
     <!-- <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" /> -->
@@ -75,23 +72,23 @@ use Config\Roles; ?>
 
     <!-- Additional Scripts -->
     <?= $this->renderSection('scripts'); ?>
-    <script>
-        const aside = document.querySelector('aside')
-        const menuToggle = document.getElementById('sidebar-toggle')
-        const overlay = document.getElementById('sidebar-overlay')
+    <?php if (logged_in()): ?>
+        <script>
+            const aside = document.querySelector('aside')
+            const menuToggle = document.getElementById('sidebar-toggle')
+            const overlay = document.getElementById('sidebar-overlay')
 
-        console.log(overlay)
+            menuToggle.addEventListener('click', () => {
+                aside.classList.toggle('-translate-x-full'); // Tampilkan/hilangkan sidebar
+                overlay.classList.toggle('hidden'); // Tampilkan/hilangkan overlay
+            });
 
-        menuToggle.addEventListener('click', () => {
-            aside.classList.toggle('-translate-x-full'); // Tampilkan/hilangkan sidebar
-            overlay.classList.toggle('hidden'); // Tampilkan/hilangkan overlay
-        });
-
-        overlay.addEventListener('click', () => {
-            aside.classList.add('-translate-x-full'); // Sembunyikan sidebar
-            overlay.classList.add('hidden'); // Sembunyikan overlay
-        });
-    </script>
+            overlay.addEventListener('click', () => {
+                aside.classList.add('-translate-x-full'); // Sembunyikan sidebar
+                overlay.classList.add('hidden'); // Sembunyikan overlay
+            });
+        </script>
+    <?php endif; ?>
 </body>
 
 </html>
