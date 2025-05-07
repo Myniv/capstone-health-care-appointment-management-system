@@ -38,7 +38,7 @@ use Config\Roles; ?>
     <div class="form-control">
       <div class="input-group ml-2">
         <select name="order" class="select select-bordered" onchange="this.form.submit()">
-          <option value="desc" <?= ($params->order == 'desc') ? 'selected' : '' ?>>Newest</option>
+          <option value="desc" <?= ($params->order == 'desc') ? 'selected' : '' ?>>Latest</option>
           <option value="asc" <?= ($params->order == 'asc') ? 'selected' : '' ?>>Oldest</option>
           <option value="furthest" <?= ($params->order == 'furthest') ? 'selected' : '' ?>>Furthest</option>
           <option value="nearest" <?= ($params->order == 'nearest') ? 'selected' : '' ?>>Nearest</option>
