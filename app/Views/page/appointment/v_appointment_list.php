@@ -87,8 +87,8 @@ use Config\Roles; ?>
             <?php foreach ($appointment as $row): ?>
               <tr>
                 <td><?= $i ?><?php $params->order === 'asc' ? $i-- : $i++; ?></td>
-                <td><?= $row->doctorFirstName ?>       <?= $row->doctorLastName ?></td>
-                <td><?= $row->patientFirstName ?>       <?= $row->patientLastName ?></td>
+                <td><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></td>
+                <td><?= $row->patientFirstName ?> <?= $row->patientLastName ?></td>
                 <td><?= $row->roomName ?></td>
                 <td><?= date('l, F j, Y', strtotime($row->date)) ?></td>
                 <td><?= date('g:i A', strtotime($row->startTime)) ?> -
@@ -108,13 +108,13 @@ use Config\Roles; ?>
       </table>
     </div>
   <?php else: ?>
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
       <?php foreach ($appointment as $row): ?>
         <div class="card border bg-base-100 w-full">
           <div class="card-body">
             <div class="flex gap-4 items-center">
               <div class="avatar">
-                <div class="w-24 rounded-full">
+                <div class="w-16 h-16 lg:w-20 lg:h-20 rounded-full">
                   <?php if (in_groups(Roles::PATIENT)): ?>
                     <img src="<?= base_url('profile-picture?path=' . $row->doctorProfilePicture); ?>"
                       alt="Profile Picture <?= $row->doctorFirstName . ' ' . $row->doctorLastName; ?>">
@@ -127,9 +127,9 @@ use Config\Roles; ?>
               <div class="grid gap-2">
                 <h2 class="card-title">
                   <?php if (in_groups(Roles::PATIENT)): ?>
-                    <p><?= $row->doctorFirstName ?>       <?= $row->doctorLastName ?></p>
+                    <p><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></p>
                   <?php else: ?>
-                    <p><?= $row->patientFirstName ?>       <?= $row->patientLastName ?></p>
+                    <p><?= $row->patientFirstName ?> <?= $row->patientLastName ?></p>
                   <?php endif; ?>
                 </h2>
                 <p class="flex gap-2 items-center"><i class="fa-solid fa-calendar"></i>
@@ -152,10 +152,9 @@ use Config\Roles; ?>
               <?php if (in_groups(Roles::DOCTOR)): ?>
                 <?php if ($row->status == 'booking'): ?>
                   <a href="#modal-form-history" data-id="<?= $row->id; ?>"
-                    class="btn btn-primary btn-sm <?= ($row->date == date('Y-m-d')) ? 'pointer-events-none opacity-50' : '' ?>"
-                    <?= date('Y-m-d', strtotime($row->date)) != date('Y-m-d') ? 'disabled' : '' ?>> Manage
+                    class="btn btn-primary btn-sm <?= date('Y-m-d', strtotime($row->date)) > date('Y-m-d') ? 'btn-disabled' : '' ?>">
+                    Manage
                   </a>
-
                 <?php endif; ?>
               <?php endif; ?>
               <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-soft btn-sm">
@@ -229,12 +228,12 @@ use Config\Roles; ?>
 
 <?= $this->section('scripts'); ?>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.querySelectorAll('[href="#modal-form-history"]');
     const appointmentIdInput = document.getElementById('appointmentId');
 
     buttons.forEach(button => {
-      button.addEventListener('click', function () {
+      button.addEventListener('click', function() {
         // Ambil appointment ID dari atribut data-id
         const appointmentId = button.getAttribute('data-id');
 

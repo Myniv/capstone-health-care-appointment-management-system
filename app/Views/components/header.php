@@ -33,7 +33,7 @@ if (in_groups(Roles::DOCTOR)) {
             <a href="/dashboard" class="btn btn-ghost normal-case font-black text-3xl text-primary">HealthCare</a>
         <?php elseif (in_groups(Roles::DOCTOR)): ?>
             <a href="/doctor/dashboard" class="btn btn-ghost normal-case font-black text-3xl text-primary">HealthCare</a>
-        <?php elseif (in_groups(Roles::DOCTOR)): ?>
+        <?php elseif (in_groups(Roles::ADMIN)): ?>
             <a href="/admin/dashboard" class="btn btn-ghost normal-case font-black text-3xl text-primary">HealthCare</a>
         <?php else: ?>
             <a href="/" class="btn btn-ghost normal-case font-black text-3xl text-primary">HealthCare</a>
