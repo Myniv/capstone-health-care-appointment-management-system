@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <div class="stats bg-base-100 shadow-md">
+    <div class="stats bg-base-100 shadow-md today-appointment">
         <div class="stat">
             <div class="stat-title">Today Appointment</div>
             <div class="stat-value text-secondary"><?= count($appointments); ?></div>
@@ -20,7 +20,7 @@
     </div>
 
     <div class="card md:col-span-2 bg-base-100 shadow-md h-full">
-        <div class="card-body">
+        <div class="card-body upcoming-appointmnet">
             <div class="flex justify-between">
                 <h3 class="card-title">Upcoming Appointment</h3>
                 <a class="btn btn-sm btn-primary" href="<?= base_url('doctor/appointment'); ?>">View All</a>
@@ -61,7 +61,7 @@
     </div>
 
     <div class="card bg-base-100 shadow-md h-full">
-        <div class="card-body">
+        <div class="card-body doctor-schedule">
             <div class="card-title">Doctor Schedule</div>
             <?php if (!empty($appointments)): ?>
                 <ul class="list rounded-box border">
@@ -155,6 +155,7 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('scripts'); ?>
+<script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const buttons = document.querySelectorAll('[href="#modal-form-history"]');
@@ -170,5 +171,56 @@
             });
         });
     });
+
+    const isOnboardingDoctor = sessionStorage.getItem('isOnboardingDoctor');
+
+    if (!isOnboardingDoctor) {
+        const driver = window.driver.js.driver;
+
+        const driverObj = driver({
+            showProgress: true,
+            steps: [{
+                element: ".appointment-list",
+                popover: {
+                    title: 'Appointment List',
+                    description: "Tautan untuk melihat seluruh riwayat dan jadwal janji temu."
+                }
+            }, {
+                element: ".doctor-absent",
+                popover: {
+                    title: 'Doctor Absent',
+                    description: "Riwayat pemeriksaan dan pengobatan yang pernah dilakukan pasien."
+                }
+            }, {
+                element: ".operational-reports",
+                popover: {
+                    title: "Operational Reports",
+                    description: "Menghasilkan laporan appointment dan history untuk kebutuhan operasional."
+                }
+            }, {
+                element: ".today-appointment",
+                popover: {
+                    title: "Today Appointment",
+                    description: "Menampilkan jumlah appointment hari ini."
+                }
+            }, {
+                element: ".upcoming-appointmnet",
+                popover: {
+                    title: 'Upcoming Appointment',
+                    description: "Menampilkan daftar janji temu yang akan datang."
+                }
+            }, {
+                element: ".doctor-schedule",
+                popover: {
+                    title: 'Doctor Schedule',
+                    description: "Menampilkan daftar jadwal dokter yang akan datang."
+                }
+            }]
+        });
+
+        driverObj.drive();
+
+        sessionStorage.setItem('isOnboardingDoctor', 'true');
+    }
 </script>
 <?= $this->endSection(); ?>

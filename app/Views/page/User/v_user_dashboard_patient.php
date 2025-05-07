@@ -12,17 +12,17 @@
         </div>
     </div>
 
-    <div class="card shadow-md bg-base-100">
+    <div class="card shadow-md bg-base-100 create-appointment">
         <div class="card-body">
             <a href="/find-doctor" class="btn btn-soft btn-success">+ Create Appointment</a>
         </div>
     </div>
 
     <div class="card shadow-md bg-base-100 md:col-span-2 h-full">
-        <div class="card-body">
+        <div class="card-body upcoming-appointmnet">
             <div class="flex justify-between">
                 <h3 class="card-title">Upcoming Appointment</h3>
-                <a class="p-2 rounded-md text-sm text-primary duration-300 hover:bg-primary hover:text-base-100" href="appointment">View All</a>
+                <a class="p-2 rounded-md text-sm text-primary duration-300 hover:bg-primary hover:text-base-100 appointment-list" href="appointment">View All</a>
             </div>
             <?php if (!empty($appointments)): ?>
                 <?php foreach ($appointments as $appointment): ?>
@@ -65,10 +65,10 @@
     </div>
 
     <div class="card shadow-md bg-base-100 h-full">
-        <div class="card-body">
+        <div class="card-body medical-history">
             <div class="flex justify-between">
                 <h3 class="card-title">Medical History</h3>
-                <a class="p-2 rounded-md text-sm text-primary duration-300 hover:bg-primary hover:text-base-100" href="profile/history">View All</a>
+                <a class="p-2 rounded-md text-sm text-primary duration-300 hover:bg-primary hover:text-base-100 history-list" href="profile/history">View All</a>
             </div>
             <?php if (!empty($histories)): ?>
                 <?php foreach ($histories as $history): ?>
@@ -149,6 +149,7 @@
 <?= $this->endSection(); ?>
 
 <?= $this->section('scripts'); ?>
+<script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const links = document.querySelectorAll('#btn-modal-medical-history');
@@ -191,5 +192,50 @@
             });
         });
     });
+
+    const isOnboardingPatient = sessionStorage.getItem('isOnboardingPatient');
+
+    if (!isOnboardingPatient) {
+        const driver = window.driver.js.driver;
+
+        const driverObj = driver({
+            showProgress: true,
+            steps: [{
+                element: ".upcoming-appointmnet",
+                popover: {
+                    title: 'Upcoming Appointment',
+                    description: "Menampilkan daftar janji temu yang akan datang."
+                }
+            }, {
+                element: ".appointment-list",
+                popover: {
+                    title: 'Appointment List',
+                    description: "Tautan untuk melihat seluruh riwayat dan jadwal janji temu."
+                }
+            }, {
+                element: ".medical-history",
+                popover: {
+                    title: 'Medical History',
+                    description: "Riwayat pemeriksaan dan pengobatan yang pernah dilakukan pasien."
+                }
+            }, {
+                element: ".history-list",
+                popover: {
+                    title: 'History List',
+                    description: "Tautan untuk melihat seluruh catatan medis sebelumnya."
+                }
+            }, {
+                element: ".create-appointment",
+                popover: {
+                    title: "Create Appointment",
+                    description: "Tombol utama untuk membuat janji temu baru dengan dokter."
+                }
+            }]
+        });
+
+        driverObj.drive();
+
+        sessionStorage.setItem('isOnboardingPatient', 'true');
+    }
 </script>
 <?= $this->endSection(); ?>

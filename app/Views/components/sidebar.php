@@ -5,7 +5,7 @@ use Config\Roles; ?>
 <div class="flex flex-col h-full">
     <ul class="menu mt-6 p-4 w-full">
         <?php if (in_groups(Roles::ADMIN)): ?>
-            <li>
+            <li class="user-management">
                 <a href="/admin/users" class="active:bg-primary active:text-white">
                     <div class="flex gap-4 items-center">
                         <i class="fa-solid fa-users"></i>
@@ -13,7 +13,7 @@ use Config\Roles; ?>
                     </div>
                 </a>
             </li>
-            <li>
+            <li class="override-appointment">
                 <a href="/admin/appointment" class="active:bg-primary active:text-white">
                     <div class="flex gap-2 items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
@@ -23,7 +23,7 @@ use Config\Roles; ?>
                     </div>
                 </a>
             </li>
-            <li>
+            <li class="system-settings">
                 <a href="/admin/setting" class="active:bg-primary active:text-white">
                     <div class="flex gap-4 items-center">
                         <i class="fa-solid fa-gear"></i>
@@ -36,7 +36,7 @@ use Config\Roles; ?>
             $uri = uri_string();
             $isResourcesActive = str_contains($uri, 'admin/doctor');
             ?>
-            <li class="hoverable">
+            <li class="hoverable doctor-management">
                 <details class="group" <?= $isResourcesActive ? 'open' : '' ?>>
                     <summary
                         class="flex justify-between cursor-pointer px-3 py-2 rounded-lg <?= $isResourcesActive ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">
@@ -71,7 +71,7 @@ use Config\Roles; ?>
             $uri = uri_string();
             $isResourcesActive = str_contains($uri, 'admin/equipment') || str_contains($uri, 'admin/inventory') || str_contains($uri, 'admin/room');
             ?>
-            <li class="hoverable">
+            <li class="hoverable facility-management">
                 <details class="group" <?= $isResourcesActive ? 'open' : '' ?>>
                     <summary
                         class="flex justify-between cursor-pointer px-3 py-2 rounded-lg <?= $isResourcesActive ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">
@@ -115,9 +115,9 @@ use Config\Roles; ?>
 
             <?php
             $uri = uri_string();
-            $isReportsActive = str_contains($uri, 'report/user') || str_contains($uri, 'report/history') || str_contains($uri, 'report/appointment');
+            $isReportsActive = str_contains($uri, 'report/user') || str_contains($uri, 'report/resources') || str_contains($uri, 'report/history') || str_contains($uri, 'report/appointment');
             ?>
-            <li class="hoverable">
+            <li class="hoverable operational-reports">
                 <details class="group" <?= $isReportsActive ? 'open' : '' ?>>
                     <summary
                         class="flex justify-between cursor-pointer px-3 py-2 rounded-lg <?= $isReportsActive ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">
@@ -179,7 +179,7 @@ use Config\Roles; ?>
                     </div>
                 </a>
             </li>
-            <li>
+            <li class="appointment-list">
                 <a href="/doctor/appointment" class="active:bg-primary active:text-white">
                     <div class="flex gap-4 items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -189,7 +189,7 @@ use Config\Roles; ?>
                     </div>
                 </a>
             </li>
-            <li>
+            <li class="doctor-absent">
                 <a href="/doctor/absent" class="active:bg-primary active:text-white">
                     <div class="flex gap-4 items-center">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -204,7 +204,7 @@ use Config\Roles; ?>
             $uri = uri_string();
             $isReportsActive = str_contains($uri, 'report/user') || str_contains($uri, 'report/history') || str_contains($uri, 'report/appointment');
             ?>
-            <li class="hoverable">
+            <li class="hoverable operational-reports">
                 <details class="group" <?= $isReportsActive ? 'open' : '' ?>>
                     <summary
                         class="flex justify-between cursor-pointer px-3 py-2 rounded-lg <?= $isReportsActive ? 'bg-base-300 text-black' : 'hover:bg-base-200' ?>">
