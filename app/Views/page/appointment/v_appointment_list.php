@@ -122,7 +122,7 @@ use Config\Roles; ?>
           <div class="card-body">
             <div class="flex gap-4 items-center">
               <div class="avatar">
-                <div class="w-24 rounded-full">
+                <div class="w-16 h-16 lg:w-20 lg:h-20 rounded-full">
                   <?php if (in_groups(Roles::PATIENT)): ?>
                     <img src="<?= base_url('profile-picture?path=' . $row->doctorProfilePicture); ?>"
                       alt="Profile Picture <?= $row->doctorFirstName . ' ' . $row->doctorLastName; ?>">
@@ -160,10 +160,9 @@ use Config\Roles; ?>
               <?php if (in_groups(Roles::DOCTOR)): ?>
                 <?php if ($row->status == 'booking'): ?>
                   <a href="#modal-form-history" data-id="<?= $row->id; ?>"
-                    class="btn btn-primary btn-sm <?= ($row->date == date('Y-m-d')) ? 'pointer-events-none opacity-50' : '' ?>"
-                    <?= date('Y-m-d', strtotime($row->date)) != date('Y-m-d') ? 'disabled' : '' ?>> Manage
+                    class="btn btn-primary btn-sm <?= date('Y-m-d', strtotime($row->date)) > date('Y-m-d') ? 'btn-disabled' : '' ?>">
+                    Manage
                   </a>
-
                 <?php endif; ?>
               <?php endif; ?>
               <a href="/appointment/detail/<?= $row->id ?>" class="btn btn-soft btn-sm">
