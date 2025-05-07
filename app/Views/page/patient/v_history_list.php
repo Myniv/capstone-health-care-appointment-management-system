@@ -6,26 +6,34 @@
 
     <section class="flex-grow p-6 rounded-lg flex flex-col bg-base-100 shadow-md">
         <h1 class="font-bold text-2xl mb-4">Medical History</h1>
-        <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap items-center gap-4 mb-4">
-            <div class="flex flex-grow items-center gap-2">
-                <input
-                    type="text"
-                    class="input input-bordered w-full md:w-auto flex-grow"
-                    name="search"
-                    value="<?= $params->search ?>"
-                    placeholder="Search...">
-                <input
-                    type="date"
-                    name="date"
-                    class="input input-bordered <?= session('errors.date') ? 'input-error' : '' ?>"
-                    value="<?= $params->date ?>"
-                    placeholder="Select Date" />
-                <button type="submit" class="btn btn-primary ml-2">Search</button>
-            </div>
 
-            <div class="w-full md:w-auto">
-                <a href="<?= $params->getResetUrl($baseUrl) ?>" class="btn btn-primary">Reset</a>
-            </div>
+        <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap gap-2 mb-4">
+            <input
+                type="text"
+                class="input input-bordered flex-grow"
+                name="search"
+                value="<?= $params->search ?>"
+                placeholder="Search...">
+
+            <input
+                type="date"
+                name="date"
+                class="input input-bordered w-full md:w-1/4"
+                value="<?= $params->date ?>"
+                placeholder="Select Date" />
+
+            <select name="order" class="select select-bordered w-full md:w-1/4">
+                <option value="desc" <?= ($params->order == 'desc') ? 'selected' : '' ?>>
+                    Latest
+                </option>
+                <option value="asc" <?= ($params->order == 'asc') ? 'selected' : '' ?>>
+                    Oldest
+                </option>
+            </select>
+
+            <button type="submit" class="btn btn-primary w-full md:w-auto">Search</button>
+
+            <a href="<?= $params->getResetUrl($baseUrl) ?>" class="btn btn-primary w-full md:w-auto">Reset</a>
         </form>
 
         <?php if (!empty($histories)): ?>

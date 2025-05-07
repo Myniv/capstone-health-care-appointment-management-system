@@ -66,8 +66,8 @@ class PatientController extends BaseController
             "doctor" => $this->request->getGet("doctor"),
             "date" => $this->request->getGet("date"),
             "search" => $this->request->getGet("search"),
-            // "sort" => $this->request->getGet("sort"),
-            // "order" => $this->request->getGet("order"),
+            "sort" => 'historyId',
+            "order" => $this->request->getGet("order"),
             "perPage" => 4,
             "page" => $this->request->getGet("page_histories"),
         ]);
@@ -79,7 +79,7 @@ class PatientController extends BaseController
             'pager' => $result['pager'],
             'total' => $result['total'],
             'params' => $params,
-            'baseUrl' => base_url('history'),
+            'baseUrl' => base_url('profile/history'),
             'user' => $user
         ];
 
