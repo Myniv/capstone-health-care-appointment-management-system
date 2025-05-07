@@ -40,9 +40,9 @@
             <thead>
                 <tr>
                     <th>
-                        <a href="<?= $params->getSortUrl('rooms.id', $baseUrl) ?>" class="link link-hover">
-                            ID
-                            <?= $params->isSortedBy('rooms.id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                        <a href="<?= $params->getSortUrl('rooms.name', $baseUrl) ?>" class="link link-hover">
+                            No.
+                            <?= $params->isSortedBy('rooms.name') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
 
@@ -68,9 +68,17 @@
                 </tr>
             </thead>
             <tbody>
+                <?php
+                $total = $total ?? 0;
+                $start = ($params->page - 1) * $params->perPage;
+
+                $i = $params->order === 'asc'
+                    ? $total - $start
+                    : $start + 1;
+                ?>
                 <?php foreach ($rooms as $room): ?>
                     <tr>
-                        <td><?= $room->id ?></td>
+                        <td><?= $i ?><?php $params->order === 'asc' ? $i-- : $i++; ?></td>
                         <td><?= $room->name ?></td>
                         <td><?= $room->function ?></td>
                         <td><?= $room->status ?></td>

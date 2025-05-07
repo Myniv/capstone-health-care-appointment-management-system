@@ -23,7 +23,7 @@
                 <option value="">All Doctor Category</option>
                 <?php foreach ($doctor_category as $group): ?>
                     <option value="<?= $group->id ?>" <?= $params->doctor_category == $group->id ? 'selected' : '' ?>>
-                        <?= $group->name ?>
+                        <?= ucfirst($group->name) ?>
                     </option>
                 <?php endforeach; ?>
             </select>
@@ -52,9 +52,9 @@
             <thead>
                 <tr>
                     <th>
-                        <a href="<?= $params->getSortUrl('doctor_id', $baseUrl) ?>" class="link link-hover">
-                            ID
-                            <?= $params->isSortedBy('doctor_id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                        <a href="<?= $params->getSortUrl('doctor_first_name', $baseUrl) ?>" class="link link-hover">
+                            No.
+                            <?= $params->isSortedBy('doctor_first_name') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
 
@@ -110,17 +110,25 @@
                 </tr>
             </thead>
             <tbody>
+                <?php
+                $total = $total ?? 0;
+                $start = ($params->page - 1) * $params->perPage;
+
+                $i = $params->order === 'asc'
+                    ? $total - $start
+                    : $start + 1;
+                ?>
                 <?php foreach ($doctor_schedule as $schedule): ?>
                     <tr>
-                        <td><?= $schedule->id ?></td>
-                        <td><?= $schedule->doctor_first_name ?> <?= $schedule->doctor_last_name ?></td>
+                        <td><?= $i ?><?php $params->order === 'asc' ? $i-- : $i++; ?></td>
+                        <td><?= ucfirst($schedule->doctor_first_name) ?>     <?= $schedule->doctor_last_name ?></td>
                         <td><?= $schedule->doctor_email ?></td>
-                        <td><?= $schedule->doctor_category_name ?></td>
+                        <td><?= ucfirst($schedule->doctor_category_name) ?></td>
                         <td><?= $schedule->room_name ?></td>
                         <td><?= $schedule->start_time ?></td>
                         <td><?= $schedule->end_time ?></td>
                         <td><?= $schedule->max_patient ?></td>
-                        <td><?= $schedule->status ?></td>
+                        <td><?= ucfirst($schedule->status) ?></td>
                         <td>
                             <a href="/admin/doctor-schedule/update/<?= $schedule->id ?>"
                                 class="btn btn-warning btn-sm">Edit</a>

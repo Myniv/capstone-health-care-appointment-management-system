@@ -55,9 +55,9 @@
             <thead>
                 <tr>
                     <th>
-                        <a href="<?= $params->getSortUrl('equipments.id', $baseUrl) ?>" class="link link-hover">
-                            ID
-                            <?= $params->isSortedBy('equipments.id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                        <a href="<?= $params->getSortUrl('equipments.name', $baseUrl) ?>" class="link link-hover">
+                            No.
+                            <?= $params->isSortedBy('equipments.name') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
 
@@ -89,9 +89,17 @@
                 </tr>
             </thead>
             <tbody>
+                <?php
+                $total = $total ?? 0;
+                $start = ($params->page - 1) * $params->perPage;
+
+                $i = $params->order === 'asc'
+                    ? $total - $start
+                    : $start + 1;
+                ?>
                 <?php foreach ($equipments as $equipment): ?>
                     <tr>
-                        <td><?= $equipment->id ?></td>
+                        <td><?= $i ?><?php $params->order === 'asc' ? $i-- : $i++; ?></td>
                         <td><?= $equipment->name ?></td>
                         <td><?= $equipment->function ?></td>
                         <td><?= $equipment->stock ?></td>

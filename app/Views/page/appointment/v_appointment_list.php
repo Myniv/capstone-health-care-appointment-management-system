@@ -62,7 +62,7 @@ use Config\Roles; ?>
           <tr>
             <th>
               <a href="<?= $params->getSortUrl('id', $baseUrl) ?>" class="link link-hover">
-                ID <?= $params->isSortedBy('id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
+                No. <?= $params->isSortedBy('id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
               </a>
             </th>
             <th>Doctor</th>
@@ -76,11 +76,19 @@ use Config\Roles; ?>
         </thead>
         <tbody>
           <?php if (!empty($appointment)): ?>
+            <?php
+            $total = $total ?? 0;
+            $start = ($params->page - 1) * $params->perPage;
+
+            $i = $params->order === 'asc'
+              ? $total - $start
+              : $start + 1;
+            ?>
             <?php foreach ($appointment as $row): ?>
               <tr>
-                <td><?= $row->id ?></td>
-                <td><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></td>
-                <td><?= $row->patientFirstName ?> <?= $row->patientLastName ?></td>
+                <td><?= $i ?><?php $params->order === 'asc' ? $i-- : $i++; ?></td>
+                <td><?= $row->doctorFirstName ?>       <?= $row->doctorLastName ?></td>
+                <td><?= $row->patientFirstName ?>       <?= $row->patientLastName ?></td>
                 <td><?= $row->roomName ?></td>
                 <td><?= date('l, F j, Y', strtotime($row->date)) ?></td>
                 <td><?= date('g:i A', strtotime($row->startTime)) ?> -
@@ -119,9 +127,9 @@ use Config\Roles; ?>
               <div class="grid gap-2">
                 <h2 class="card-title">
                   <?php if (in_groups(Roles::PATIENT)): ?>
-                    <p><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></p>
+                    <p><?= $row->doctorFirstName ?>       <?= $row->doctorLastName ?></p>
                   <?php else: ?>
-                    <p><?= $row->patientFirstName ?> <?= $row->patientLastName ?></p>
+                    <p><?= $row->patientFirstName ?>       <?= $row->patientLastName ?></p>
                   <?php endif; ?>
                 </h2>
                 <p class="flex gap-2 items-center"><i class="fa-solid fa-calendar"></i>
@@ -221,12 +229,12 @@ use Config\Roles; ?>
 
 <?= $this->section('scripts'); ?>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function () {
     const buttons = document.querySelectorAll('[href="#modal-form-history"]');
     const appointmentIdInput = document.getElementById('appointmentId');
 
     buttons.forEach(button => {
-      button.addEventListener('click', function() {
+      button.addEventListener('click', function () {
         // Ambil appointment ID dari atribut data-id
         const appointmentId = button.getAttribute('data-id');
 

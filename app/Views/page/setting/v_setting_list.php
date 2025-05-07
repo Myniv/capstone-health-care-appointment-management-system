@@ -41,7 +41,7 @@
                 <tr>
                     <th>
                         <a href="<?= $params->getSortUrl('settings.id', $baseUrl) ?>" class="link link-hover">
-                            ID
+                            No.
                             <?= $params->isSortedBy('settings.id') ? ($params->getSortDirection() == 'asc' ? '↑' : '↓') : '↕' ?>
                         </a>
                     </th>
@@ -68,9 +68,17 @@
                 </tr>
             </thead>
             <tbody>
+                <?php
+                $total = $total ?? 0;
+                $start = ($params->page - 1) * $params->perPage;
+
+                $i = $params->order === 'asc'
+                    ? $total - $start
+                    : $start + 1;
+                ?>
                 <?php foreach ($settings as $setting): ?>
                     <tr>
-                        <td><?= $setting->id ?></td>
+                        <td><?= $i ?><?php $params->order === 'asc' ? $i-- : $i++; ?></td>
                         <td><?= $setting->key ?></td>
                         <td><?= $setting->value ?></td>
                         <td><?= $setting->description ?></td>
