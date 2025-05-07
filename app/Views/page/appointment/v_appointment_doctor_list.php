@@ -15,7 +15,7 @@ use Config\Roles; ?>
 <div class="bg-base-100 p-6 rounded-md shadow-md">
   <!-- Search and Filters -->
   <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap items-center gap-4 mb-4">
-    <div class="flex flex-grow items-center gap-2">
+    <div class="flex flex-grow items-center gap-2 search-doctor">
       <input type="text" class="input input-bordered w-full md:w-auto flex-grow" name="search" value="<?= $params->search ?>"
         placeholder="Search...">
       <button type="submit" class="btn btn-primary ml-2">Search</button>
@@ -40,14 +40,14 @@ use Config\Roles; ?>
 
   <p class="text-gray-500/75 font-semibold mb-4">Doctor List</p>
 
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 select-doctor">
     <?php foreach ($doctors as $row): ?>
       <div class="card border bg-base-100 w-full">
         <div class="card-body">
           <div class="flex flex-col md:flex-row gap-4 items-center">
             <!-- Avatar -->
             <div class="avatar flex-shrink-0">
-              <div class="w-16 h-16 lg:w-24 lg:h-24 rounded-full overflow-hidden">
+              <div class="w-16 h-16 lg:w-20 lg:h-20 rounded-full overflow-hidden">
                 <img src="<?= base_url('profile-picture?path=' . $row->profile_picture); ?>"
                   alt="Profile Picture <?= $row->first_name . ' ' . $row->last_name; ?>"
                   class="object-cover w-full h-full">
@@ -65,7 +65,7 @@ use Config\Roles; ?>
           <!-- Appointment Button -->
           <form action="/appointment/create/form">
             <div class="card-actions justify-end mt-4">
-              <button type="submit" class="btn btn-primary w-full md:w-auto">Create Appointment</button>
+              <button type="submit" class="btn btn-primary w-full md:w-auto create-appointment">Create Appointment</button>
             </div>
             <input type="text" name="id" hidden value="<?= $row->id ?>">
           </form>
@@ -82,4 +82,45 @@ use Config\Roles; ?>
     </div>
   </div>
 </div>
+<?= $this->endSection(); ?>
+
+<?= $this->section('scripts'); ?>
+<script src="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.js.iife.js"></script>
+
+<?php if (in_groups(Roles::PATIENT)): ?>
+  <script>
+    const isOnboardingDoctorList = sessionStorage.getItem('isOnboardingDoctorList');
+
+    if (!isOnboardingDoctorList) {
+      const driver = window.driver.js.driver;
+
+      const driverObj = driver({
+        showProgress: true,
+        steps: [{
+          element: ".search-doctor",
+          popover: {
+            title: 'Search Doctor',
+            description: "Memilih dokter spesifik berdasarkan pencarian nama dokter."
+          }
+        }, {
+          element: ".select-doctor",
+          popover: {
+            title: 'Select Doctor',
+            description: "Memilih dokter berdasarkan spesialisasi atau kategori dokter yang dibutuhkan."
+          }
+        }, {
+          element: ".create-appointment",
+          popover: {
+            title: "Create Appointment",
+            description: "Tombol masuk ke halamana form appointment."
+          }
+        }]
+      });
+
+      driverObj.drive();
+
+      sessionStorage.setItem('isOnboardingDoctorList', 'true');
+    }
+  </script>
+<?php endif; ?>
 <?= $this->endSection(); ?>

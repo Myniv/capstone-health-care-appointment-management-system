@@ -38,6 +38,9 @@ use Config\Roles; ?>
 
     <!-- jQuery UI -->
     <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+    <!-- driverjs CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@latest/dist/driver.css" />
 </head>
 
 <body class="flex flex-col min-h-screen bg-base-100" data-theme="light">
