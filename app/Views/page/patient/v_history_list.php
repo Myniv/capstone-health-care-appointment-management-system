@@ -15,14 +15,20 @@
                 value="<?= $params->search ?>"
                 placeholder="Search...">
 
+            <button type="submit" class="btn btn-primary w-full md:w-auto">Search</button>
+
             <input
                 type="date"
                 name="date"
-                class="input input-bordered w-full md:w-1/4"
+                class="input input-bordered w-full md:w-1/5 <?= session('errors.date') ? 'input-error' : '' ?>"
                 value="<?= $params->date ?>"
-                placeholder="Select Date" />
+                placeholder="Select Date"
+                onchange="this.form.submit()" />
 
-            <select name="order" class="select select-bordered w-full md:w-1/4">
+            <select
+                name="order"
+                class="select select-bordered w-full md:w-1/5"
+                onchange="this.form.submit()">
                 <option value="desc" <?= ($params->order == 'desc') ? 'selected' : '' ?>>
                     Latest
                 </option>
@@ -30,8 +36,6 @@
                     Oldest
                 </option>
             </select>
-
-            <button type="submit" class="btn btn-primary w-full md:w-auto">Search</button>
 
             <a href="<?= $params->getResetUrl($baseUrl) ?>" class="btn btn-primary w-full md:w-auto">Reset</a>
         </form>

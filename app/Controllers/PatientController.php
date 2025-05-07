@@ -68,7 +68,7 @@ class PatientController extends BaseController
             "search" => $this->request->getGet("search"),
             "sort" => 'historyId',
             "order" => $this->request->getGet("order"),
-            "perPage" => 4,
+            "perPage" => 5,
             "page" => $this->request->getGet("page_histories"),
         ]);
 

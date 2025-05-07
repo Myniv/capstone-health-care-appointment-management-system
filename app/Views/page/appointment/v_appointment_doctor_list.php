@@ -14,25 +14,27 @@ use Config\Roles; ?>
 
 <div class="bg-base-100 p-6 rounded-md shadow-md">
   <!-- Search and Filters -->
-  <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap items-center gap-4 mb-4">
-    <div class="flex flex-grow items-center gap-2 search-doctor">
-      <input type="text" class="input input-bordered w-full md:w-auto flex-grow" name="search" value="<?= $params->search ?>"
-        placeholder="Search...">
-      <button type="submit" class="btn btn-primary ml-2">Search</button>
-    </div>
+  <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap gap-2 mb-4 search-doctor">
+    <input
+      type="text"
+      class="input input-bordered flex-grow"
+      name="search"
+      value="<?= $params->search ?>"
+      placeholder="Search...">
 
-    <div class="form-control w-full md:w-1/4">
-      <select name="perPage" class="select select-bordered" onchange="this.form.submit()">
-        <option value="2" <?= ($params->perPage == 2) ? 'selected' : '' ?>>2 per Page</option>
-        <option value="5" <?= ($params->perPage == 5) ? 'selected' : '' ?>>5 per Page</option>
-        <option value="10" <?= ($params->perPage == 10) ? 'selected' : '' ?>>10 per Page</option>
-        <option value="25" <?= ($params->perPage == 25) ? 'selected' : '' ?>>25 per Page</option>
-      </select>
-    </div>
+    <button type="submit" class="btn btn-primary w-full md:w-auto">Search</button>
 
-    <div class="form-control w-full md:w-auto">
-      <a href="<?= $params->getResetUrl($baseUrl) ?>" class="btn btn-primary">Reset</a>
-    </div>
+    <select
+      name="perPage"
+      class="select select-bordered w-full md:w-1/4"
+      onchange="this.form.submit()">
+      <option value="2" <?= ($params->perPage == 2) ? 'selected' : '' ?>>2 per Page</option>
+      <option value="5" <?= ($params->perPage == 5) ? 'selected' : '' ?>>5 per Page</option>
+      <option value="10" <?= ($params->perPage == 10) ? 'selected' : '' ?>>10 per Page</option>
+      <option value="25" <?= ($params->perPage == 25) ? 'selected' : '' ?>>25 per Page</option>
+    </select>
+
+    <a href="<?= $params->getResetUrl($baseUrl) ?>" class="btn btn-primary w-full md:w-auto">Reset</a>
 
     <input type="hidden" name="sort" value="<?= $params->sort; ?>">
     <input type="hidden" name="order" value="<?= $params->order; ?>">

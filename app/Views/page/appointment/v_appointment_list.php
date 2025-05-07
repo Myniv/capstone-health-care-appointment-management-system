@@ -27,37 +27,45 @@ use Config\Roles; ?>
   <?php endif; ?>
 
   <!-- Search and Filters -->
-  <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap items-center gap-4 mb-4">
-    <div class="flex flex-grow items-center gap-2">
-      <input type="text" class="input input-bordered w-full md:w-auto flex-grow" name="search"
-        value="<?= $params->search ?>" placeholder="Search...">
-      <input type="date" name="date" class="input input-bordered <?= session('errors.date') ? 'input-error' : '' ?>"
-        value="<?= $params->date ?>" placeholder="Select Date" />
-      <button type="submit" class="btn btn-primary ml-2">Search</button>
-    </div>
-    <div class="form-control">
-      <div class="input-group ml-2">
-        <select name="order" class="select select-bordered" onchange="this.form.submit()">
-          <option value="desc" <?= ($params->order == 'desc') ? 'selected' : '' ?>>Latest</option>
-          <option value="asc" <?= ($params->order == 'asc') ? 'selected' : '' ?>>Oldest</option>
-          <option value="furthest" <?= ($params->order == 'furthest') ? 'selected' : '' ?>>Furthest</option>
-          <option value="nearest" <?= ($params->order == 'nearest') ? 'selected' : '' ?>>Nearest</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-control w-full md:w-1/4">
-      <select name="perPage" class="select select-bordered" onchange="this.form.submit()">
-        <option value="2" <?= ($params->perPage == 2) ? 'selected' : '' ?>>2 per Page</option>
-        <option value="5" <?= ($params->perPage == 5) ? 'selected' : '' ?>>5 per Page</option>
-        <option value="10" <?= ($params->perPage == 10) ? 'selected' : '' ?>>10 per Page</option>
-        <option value="25" <?= ($params->perPage == 25) ? 'selected' : '' ?>>25 per Page</option>
-      </select>
-    </div>
+  <form action="<?= $baseUrl ?>" method="get" class="flex flex-wrap gap-2 mb-4">
+    <input
+      type="text"
+      class="input input-bordered flex-grow"
+      name="search"
+      value="<?= $params->search ?>"
+      placeholder="Search...">
 
+    <button type="submit" class="btn btn-primary w-full md:w-auto">Search</button>
 
-    <div class="form-control w-full md:w-auto">
-      <a href="<?= $params->getResetUrl($baseUrl) ?>" class="btn btn-primary">Reset</a>
-    </div>
+    <input
+      type="date"
+      name="date"
+      class="input input-bordered w-full md:w-1/6 <?= session('errors.date') ? 'input-error' : '' ?>"
+      value="<?= $params->date ?>"
+      placeholder="Select Date"
+      onchange="this.form.submit()" />
+
+    <select
+      name="order"
+      class="select select-bordered w-full md:w-1/6"
+      onchange="this.form.submit()">
+      <option value="desc" <?= ($params->order == 'desc') ? 'selected' : '' ?>>Latest</option>
+      <option value="asc" <?= ($params->order == 'asc') ? 'selected' : '' ?>>Oldest</option>
+      <option value="furthest" <?= ($params->order == 'furthest') ? 'selected' : '' ?>>Furthest</option>
+      <option value="nearest" <?= ($params->order == 'nearest') ? 'selected' : '' ?>>Nearest</option>
+    </select>
+
+    <select
+      name="perPage"
+      class="select select-bordered w-full md:w-1/6"
+      onchange="this.form.submit()">
+      <option value="2" <?= ($params->perPage == 2) ? 'selected' : '' ?>>2 per Page</option>
+      <option value="5" <?= ($params->perPage == 5) ? 'selected' : '' ?>>5 per Page</option>
+      <option value="10" <?= ($params->perPage == 10) ? 'selected' : '' ?>>10 per Page</option>
+      <option value="25" <?= ($params->perPage == 25) ? 'selected' : '' ?>>25 per Page</option>
+    </select>
+
+    <a href="<?= $params->getResetUrl($baseUrl) ?>" class="btn btn-primary w-full md:w-auto">Reset</a>
 
     <input type="hidden" name="sort" value="<?= $params->sort ?>">
   </form>
@@ -178,7 +186,7 @@ use Config\Roles; ?>
 
   <!-- Pagination -->
   <div class="mt-8 text-center">
-    <?= $pager->links('appointment', 'custom_pager') ?>
+    <?= $pager->links('appointments', 'custom_pager') ?>
     <div class="mt-2">
       <small>Show <?= count($appointment) ?> of <?= $total ?> total data (Page <?= $params->page ?>)</small>
     </div>

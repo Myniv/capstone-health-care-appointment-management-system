@@ -44,7 +44,7 @@ class AppointmentController extends BaseController
                 "sort" => $this->request->getGet("sort"),
                 "order" => $this->request->getGet("order"),
                 "perPage" => $this->request->getGet("perPage"),
-                "page" => $this->request->getGet("page_appointment"),
+                "page" => $this->request->getGet("page_appointments"),
                 "doctor" => $doctorId,
             ]);
 
@@ -57,7 +57,7 @@ class AppointmentController extends BaseController
                 "sort" => $this->request->getGet("sort"),
                 "order" => $this->request->getGet("order"),
                 "perPage" => $this->request->getGet("perPage"),
-                "page" => $this->request->getGet("page_appointment"),
+                "page" => $this->request->getGet("page_appointments"),
                 "patient" => $patientId,
             ]);
             $baseUrl = base_url('appointment');
@@ -68,7 +68,7 @@ class AppointmentController extends BaseController
                 "sort" => $this->request->getGet("sort"),
                 "order" => $this->request->getGet("order"),
                 "perPage" => $this->request->getGet("perPage"),
-                "page" => $this->request->getGet("page_appointment"),
+                "page" => $this->request->getGet("page_appointments"),
             ]);
             $baseUrl = base_url('admin/appointment');
         }
@@ -167,7 +167,7 @@ class AppointmentController extends BaseController
                 "sort" => $this->request->getGet("sort"),
                 "order" => $this->request->getGet("order"),
                 "perPage" => $this->request->getGet("perPage"),
-                "page" => $this->request->getGet("page_users"),
+                "page" => $this->request->getGet("page_doctors"),
             ]);
             $result = $this->doctorModel->getFilteredDoctors($params);
 
