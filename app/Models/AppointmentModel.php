@@ -137,7 +137,7 @@ class AppointmentModel extends Model
         // }
 
         if (empty($params->sort)) {
-            $params->sort = 'date';
+            $params->sort = 'created_at';
         }
         if (empty($params->order)) {
             $params->order = 'desc';
@@ -147,7 +147,7 @@ class AppointmentModel extends Model
             $this->where('doctors.id', $params->doctor);
         }
 
-        if(!empty($params->patient)) {
+        if (!empty($params->patient)) {
             $this->where('patients.id', $params->patient);
         }
 
@@ -170,12 +170,19 @@ class AppointmentModel extends Model
             'doctor_id',
             'room_id',
             'date',
+            'created_at'
         ];
 
-        $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'date';
+        $sort = in_array($params->sort, $allowedSort) ? $params->sort : 'created_at';
         $order = $params->sort ? (($params->order === 'desc') ? 'DESC' : 'ASC') : 'DESC';
 
-        $this->orderBy($sort, $order);
+        if ($params->order == 'asc' || $params->order == 'desc') {
+            $this->orderBy($sort, $order);
+        } else if ($params->order == 'furthest') {
+            $this->orderBy('date', 'desc');
+        } else {
+            $this->orderBy('date', 'asc');
+        }
 
         return [
             'appointments' => $this->paginate($params->perPage, 'appointments', $params->page),

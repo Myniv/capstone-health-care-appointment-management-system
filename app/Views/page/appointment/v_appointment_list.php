@@ -35,7 +35,16 @@ use Config\Roles; ?>
         value="<?= $params->date ?>" placeholder="Select Date" />
       <button type="submit" class="btn btn-primary ml-2">Search</button>
     </div>
-
+    <div class="form-control">
+      <div class="input-group ml-2">
+        <select name="order" class="select select-bordered" onchange="this.form.submit()">
+          <option value="desc" <?= ($params->order == 'desc') ? 'selected' : '' ?>>Newest</option>
+          <option value="asc" <?= ($params->order == 'asc') ? 'selected' : '' ?>>Oldest</option>
+          <option value="furthest" <?= ($params->order == 'furthest') ? 'selected' : '' ?>>Furthest</option>
+          <option value="nearest" <?= ($params->order == 'nearest') ? 'selected' : '' ?>>Nearest</option>
+        </select>
+      </div>
+    </div>
     <div class="form-control w-full md:w-1/4">
       <select name="perPage" class="select select-bordered" onchange="this.form.submit()">
         <option value="2" <?= ($params->perPage == 2) ? 'selected' : '' ?>>2 per Page</option>
@@ -51,7 +60,6 @@ use Config\Roles; ?>
     </div>
 
     <input type="hidden" name="sort" value="<?= $params->sort ?>">
-    <input type="hidden" name="order" value="<?= $params->order; ?>">
   </form>
 
   <!-- Table -->
@@ -87,8 +95,8 @@ use Config\Roles; ?>
             <?php foreach ($appointment as $row): ?>
               <tr>
                 <td><?= $i ?><?php $params->order === 'asc' ? $i-- : $i++; ?></td>
-                <td><?= $row->doctorFirstName ?>       <?= $row->doctorLastName ?></td>
-                <td><?= $row->patientFirstName ?>       <?= $row->patientLastName ?></td>
+                <td><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></td>
+                <td><?= $row->patientFirstName ?> <?= $row->patientLastName ?></td>
                 <td><?= $row->roomName ?></td>
                 <td><?= date('l, F j, Y', strtotime($row->date)) ?></td>
                 <td><?= date('g:i A', strtotime($row->startTime)) ?> -
@@ -108,7 +116,7 @@ use Config\Roles; ?>
       </table>
     </div>
   <?php else: ?>
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 ">
       <?php foreach ($appointment as $row): ?>
         <div class="card border bg-base-100 w-full">
           <div class="card-body">
@@ -127,9 +135,9 @@ use Config\Roles; ?>
               <div class="grid gap-2">
                 <h2 class="card-title">
                   <?php if (in_groups(Roles::PATIENT)): ?>
-                    <p><?= $row->doctorFirstName ?>       <?= $row->doctorLastName ?></p>
+                    <p><?= $row->doctorFirstName ?> <?= $row->doctorLastName ?></p>
                   <?php else: ?>
-                    <p><?= $row->patientFirstName ?>       <?= $row->patientLastName ?></p>
+                    <p><?= $row->patientFirstName ?> <?= $row->patientLastName ?></p>
                   <?php endif; ?>
                 </h2>
                 <p class="flex gap-2 items-center"><i class="fa-solid fa-calendar"></i>
@@ -229,12 +237,12 @@ use Config\Roles; ?>
 
 <?= $this->section('scripts'); ?>
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.querySelectorAll('[href="#modal-form-history"]');
     const appointmentIdInput = document.getElementById('appointmentId');
 
     buttons.forEach(button => {
-      button.addEventListener('click', function () {
+      button.addEventListener('click', function() {
         // Ambil appointment ID dari atribut data-id
         const appointmentId = button.getAttribute('data-id');
 

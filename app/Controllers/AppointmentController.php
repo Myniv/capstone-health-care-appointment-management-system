@@ -41,7 +41,7 @@ class AppointmentController extends BaseController
             $params = new DataParams([
                 "search" => $this->request->getGet("search"),
                 "date" => $this->request->getGet("date"),
-                "sort" => 'date',
+                "sort" => $this->request->getGet("sort"),
                 "order" => $this->request->getGet("order"),
                 "perPage" => $this->request->getGet("perPage"),
                 "page" => $this->request->getGet("page_appointment"),
@@ -54,7 +54,7 @@ class AppointmentController extends BaseController
             $params = new DataParams([
                 "search" => $this->request->getGet("search"),
                 "date" => $this->request->getGet("date"),
-                "sort" => 'date',
+                "sort" => $this->request->getGet("sort"),
                 "order" => $this->request->getGet("order"),
                 "perPage" => $this->request->getGet("perPage"),
                 "page" => $this->request->getGet("page_appointment"),
@@ -65,7 +65,7 @@ class AppointmentController extends BaseController
             $params = new DataParams([
                 "search" => $this->request->getGet("search"),
                 "date" => $this->request->getGet("date"),
-                "sort" => 'date',
+                "sort" => $this->request->getGet("sort"),
                 "order" => $this->request->getGet("order"),
                 "perPage" => $this->request->getGet("perPage"),
                 "page" => $this->request->getGet("page_appointment"),
