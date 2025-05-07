@@ -129,50 +129,76 @@ class DoctorScheduleController extends BaseController
         return redirect()->to(base_url('admin/doctor-schedule'))->with('success', 'Data Berhasil Ditambahkan');
     }
 
+
     public function checkAvailability()
     {
-        // Enable CSRF protection for this request
         $this->validateAjaxRequest();
 
-        // Get JSON data from request
         $json = $this->request->getJSON(true);
         $roomId = $json['room_id'] ?? '';
+        $doctorId = $json['doctor_id'] ?? '';
         $startTime = $json['start_time'] ?? '';
         $endTime = $json['end_time'] ?? '';
         $scheduleId = $json['schedule_id'] ?? null; // For edit mode
 
-        // Format times for database comparison (adding today's date)
         $date = date('Y-m-d');
         $startDateTime = $date . ' ' . $startTime;
         $endDateTime = $date . ' ' . $endTime;
 
-        // Query to check for conflicts
-        $query = $this->doctorScheduleModel->select('doctor_schedules.*')
+        $response = [
+            'room_conflict' => false,
+            'doctor_conflict' => false,
+            'message' => null
+        ];
+
+        $roomQuery = $this->doctorScheduleModel->select('doctor_schedules.*')
             ->where('room_id', $roomId)
             ->groupStart()
             ->where('start_time <', $endDateTime)
             ->where('end_time >', $startDateTime)
             ->groupEnd();
 
-        // Exclude current schedule if in edit mode
         if ($scheduleId) {
-            $query->where('id !=', $scheduleId);
+            $roomQuery->where('id !=', $scheduleId);
         }
 
-        $result = $query->get();
+        $roomResult = $roomQuery->get();
+        $response['room_conflict'] = $roomResult->getNumRows() > 0;
 
-        $conflict = $result->getNumRows() > 0;
+        if ($response['room_conflict']) {
+            $response['message'] = 'Room is already booked during this time.';
+        }
+
+        $doctorQuery = $this->doctorScheduleModel->select('doctor_schedules.*')
+            ->where('doctor_id', $doctorId)
+            ->groupStart()
+            ->where('start_time <', $endDateTime)
+            ->where('end_time >', $startDateTime)
+            ->groupEnd();
+
+        if ($scheduleId) {
+            $doctorQuery->where('id !=', $scheduleId);
+        }
+
+        $doctorResult = $doctorQuery->get();
+        $response['doctor_conflict'] = $doctorResult->getNumRows() > 0;
+
+        if ($response['doctor_conflict']) {
+            $response['message'] = $response['room_conflict']
+                ? 'Both room and doctor are already scheduled during this time.'
+                : 'Doctor is already scheduled during this time.';
+        }
 
         // Return JSON response
         return $this->response->setJSON([
-            'conflict' => $conflict,
-            'message' => $conflict ? 'Room is already booked during this time.' : null
+            'conflict' => $response['room_conflict'] || $response['doctor_conflict'],
+            'room_conflict' => $response['room_conflict'],
+            'doctor_conflict' => $response['doctor_conflict'],
+            'message' => $response['message']
         ]);
     }
 
-    /**
-     * Validate AJAX request
-     */
+
     private function validateAjaxRequest()
     {
         if (!$this->request->isAJAX()) {
@@ -183,25 +209,17 @@ class DoctorScheduleController extends BaseController
     public function getRoomSchedules($roomId)
     {
         try {
-            // Simplify the query first to see if it works
-            $schedules = $this->doctorScheduleModel
-                ->where('room_id', $roomId)
+            // Skip Ajax validation for now to debug issues
+            // $this->validateAjaxRequest();
+
+            $schedules = $this->doctorScheduleModel->select("doctor_schedules.*, 
+            CONCAT(doctors.first_name, ' ', doctors.last_name) as doctor_name")
+                ->join('doctors', 'doctors.id = doctor_schedules.doctor_id')
+                ->where('doctor_schedules.room_id', $roomId)
+                ->orderBy('doctor_schedules.start_time', 'ASC')
                 ->findAll();
 
-            // Then add doctor names if needed
-            $doctorIds = array_column($schedules, 'doctor_id');
-            $doctors = [];
-
-            if (!empty($doctorIds)) {
-                $doctorResults = $this->doctorModel->whereIn('id', $doctorIds)->findAll();
-                foreach ($doctorResults as $doctor) {
-                    $doctors[$doctor->id] = $doctor->first_name . ' ' . $doctor->last_name;
-                }
-            }
-
-            // Format the schedules with doctor names
             foreach ($schedules as &$schedule) {
-                $schedule->doctor_name = $doctors[$schedule->doctor_id] ?? 'Unknown Doctor';
                 $schedule->start_time = date('H:i', strtotime($schedule->start_time));
                 $schedule->end_time = date('H:i', strtotime($schedule->end_time));
             }
@@ -216,6 +234,37 @@ class DoctorScheduleController extends BaseController
             return $this->response->setStatusCode(500)->setJSON([
                 'success' => false,
                 'error' => 'Failed to fetch room schedules: ' . $e->getMessage()
+            ]);
+        }
+    }
+
+    public function getDoctorSchedules($doctorId)
+    {
+        try {
+            // $this->validateAjaxRequest();
+
+            $schedules = $this->doctorScheduleModel->select('doctor_schedules.*, 
+            rooms.name as room_name')
+                ->join('rooms', 'rooms.id = doctor_schedules.room_id')
+                ->where('doctor_schedules.doctor_id', $doctorId)
+                ->orderBy('doctor_schedules.start_time', 'ASC')
+                ->findAll();
+
+            foreach ($schedules as &$schedule) {
+                $schedule->start_time = date('H:i', strtotime($schedule->start_time));
+                $schedule->end_time = date('H:i', strtotime($schedule->end_time));
+            }
+
+            return $this->response->setJSON([
+                'success' => true,
+                'schedules' => $schedules
+            ]);
+        } catch (\Exception $e) {
+            log_message('error', 'Error in getDoctorSchedules: ' . $e->getMessage());
+
+            return $this->response->setStatusCode(500)->setJSON([
+                'success' => false,
+                'error' => 'Failed to fetch doctor schedules: ' . $e->getMessage()
             ]);
         }
     }
