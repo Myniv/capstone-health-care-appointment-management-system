@@ -195,8 +195,8 @@ class AppointmentController extends BaseController
             $room_id = $this->doctorScheduleModel->find($this->request->getVar('schedule'))->room_id;
         }
 
-
         $isAppointmentExist = $this->appointmentModel
+            ->where('patient_id', $patient->id)
             ->where('date', $this->request->getVar('date'))
             ->where('doctor_schedule_id', $this->request->getVar('schedule'))
             ->countAllResults();

@@ -1,6 +1,10 @@
 <?= $this->extend('layouts/admin_layout'); ?>
 <?= $this->section('content'); ?>
 <div class="container mx-auto mt-4">
+    <div class="mb-4">
+        <?= view_cell('BackButtonCell', ['backLink' => null]) ?>
+    </div>
+    
     <h2 class="text-2xl font-bold mb-4"><?= isset($schedule) ? 'Edit Doctor Schedule' : 'Add Doctor Schedule'; ?></h2>
     <?php if (session()->getFlashdata('error')): ?>
         <div class="alert alert-error mb-4">
